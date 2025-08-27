@@ -1,10 +1,10 @@
-import './style.css';
+import "./style.css";
 
-import { setStage, Vector2d } from './core/services/stage.ts';
+import { setStage, Vector2d } from "./core/services/stage.ts";
 
 const stageContainer = document.querySelector<HTMLDivElement>("#parkey-plan-stage")!;
 function onViewportChange(data: { scale: Vector2d; position: Vector2d }) {
-  console.log(data);
+  // console.log(data);
 }
 
 const { setStageMode } = setStage({ stageContainer, onViewportChange });

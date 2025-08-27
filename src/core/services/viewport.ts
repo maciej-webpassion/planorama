@@ -1,12 +1,15 @@
 import { Stage } from 'konva/lib/Stage';
+import { Vector2d } from 'konva/lib/types';
 
 import { effect } from '@preact/signals-core';
 
 import { getPositionValue, getScaleValue, setScaleAndPosValue } from '../store/stage';
+import { setStageDraggableWithMode } from './stage';
 
 let timeout: number;
 let loopActive = false;
 let STAGE: Stage;
+const TOUCH_SCALE_ACCELERATION = 0;
 
 export const setViewport = (stage: Stage, stageContainer: HTMLDivElement): void => {
   STAGE = stage;
@@ -50,7 +53,7 @@ function fitStageIntoParentContainer(stage: Stage, stageContainer: HTMLDivElemen
 }
 
 function zoomStage(stage: Stage, scaleBy: number) {
-  stage.on("wheel", (e) => {
+  stage.on('wheel', (e) => {
     // stop default scrolling
     e.evt.preventDefault();
 
@@ -85,6 +88,95 @@ function zoomStage(stage: Stage, scaleBy: number) {
     };
 
     setScaleAndPosValue(newPos, { x: newScale, y: newScale });
+  });
+
+  function getDistance(p1: Vector2d, p2: Vector2d) {
+    return Math.hypot(p2.x - p1.x, p2.y - p1.y);
+  }
+
+  function getCenter(p1: Vector2d, p2: Vector2d) {
+    return {
+      x: (p1.x + p2.x) / 2,
+      y: (p1.y + p2.y) / 2,
+    };
+  }
+
+  function getNewScale(stage: Stage, dist: number, lastDist: number): number {
+    let factor = dist / lastDist;
+
+    if (factor > 1) {
+      factor += TOUCH_SCALE_ACCELERATION;
+    } else {
+      factor -= TOUCH_SCALE_ACCELERATION;
+    }
+
+    return stage.scaleX() * factor;
+  }
+
+  let lastCenter: Vector2d | null = null;
+  let lastDist = 0;
+
+  stage.on('touchmove', function (e) {
+    e.evt.preventDefault();
+    const touch1 = e.evt.touches[0];
+    const touch2 = e.evt.touches[1];
+
+    if (touch1 && touch2) {
+      // if the stage was under Konva's drag&drop
+      // we need to stop it, and implement our own pan logic with two pointers
+      stage.draggable(false);
+
+      const p1 = {
+        x: touch1.clientX,
+        y: touch1.clientY,
+      };
+      const p2 = {
+        x: touch2.clientX,
+        y: touch2.clientY,
+      };
+
+      if (!lastCenter) {
+        lastCenter = getCenter(p1, p2);
+        return;
+      }
+
+      const newCenter = getCenter(p1, p2);
+      const dist = getDistance(p1, p2);
+
+      console.log(dist);
+
+      if (!lastDist) {
+        lastDist = dist;
+      }
+
+      // local coordinates of center point
+      const pointTo = {
+        x: (newCenter.x - stage.x()) / stage.scaleX(),
+        y: (newCenter.y - stage.y()) / stage.scaleX(),
+      };
+
+      const scale = getNewScale(stage, dist, lastDist);
+
+      // calculate new position of the stage
+      const dx = newCenter.x - lastCenter.x;
+      const dy = newCenter.y - lastCenter.y;
+
+      const newPos = {
+        x: newCenter.x - pointTo.x * scale + dx,
+        y: newCenter.y - pointTo.y * scale + dy,
+      };
+
+      setScaleAndPosValue(newPos, { x: scale, y: scale });
+
+      lastDist = dist;
+      lastCenter = newCenter;
+    }
+  });
+
+  stage.on('touchend', function () {
+    lastDist = 0;
+    lastCenter = null;
+    setStageDraggableWithMode(stage);
   });
 }
 

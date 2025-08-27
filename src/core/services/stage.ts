@@ -1,8 +1,8 @@
-import Konva from "konva";
-import { Stage } from "konva/lib/Stage";
-import { Vector2d } from "konva/lib/types";
+import Konva from 'konva';
+import { Stage } from 'konva/lib/Stage';
+import { Vector2d } from 'konva/lib/types';
 
-import { effect } from "@preact/signals-core";
+import { effect } from '@preact/signals-core';
 
 import {
   getModeValue,
@@ -12,10 +12,10 @@ import {
   setPositionValue,
   setScaleValue,
   StageMode,
-} from "../store/stage";
-import { setBackground } from "./background";
-import { setItemsLayer } from "./items/items";
-import { setViewport } from "./viewport";
+} from '../store/stage';
+import { setBackground } from './background';
+import { setItemsLayer } from './items/items';
+import { setViewport } from './viewport';
 
 export interface ParkeyPlanConfig {
   stageContainer: HTMLDivElement;
@@ -28,7 +28,7 @@ export interface ParkeyPlan {
   setStageMode: (mode: StageMode) => void;
 }
 
-export type { Vector2d } from "konva/lib/types";
+export type { Vector2d } from 'konva/lib/types';
 
 let stage: Stage;
 export const setStage = (config: ParkeyPlanConfig): ParkeyPlan => {
@@ -41,23 +41,28 @@ export const setStage = (config: ParkeyPlanConfig): ParkeyPlan => {
     setItemsLayer(stage);
 
     effect(() => {
-      onViewportChange({ scale: getScaleValue(), position: getPositionValue() });
+      onViewportChange({
+        scale: getScaleValue(),
+        position: getPositionValue(),
+      });
     });
 
     // on mode change
     effect(() => {
-      const mode = getModeValue();
-      if (mode === "viewport") {
-        stage.draggable(true);
-      } else {
-        stage.draggable(false);
-      }
+      // const mode = getModeValue();
+      // if (mode === "viewport") {
+      //   stage.draggable(true);
+      // } else {
+      //   stage.draggable(false);
+      // }
+      setStageDraggableWithMode(stage);
     });
   }
 
   function setStageScale(scale: Vector2d) {
     setScaleValue(scale);
   }
+
   function setStageMode(mode: StageMode) {
     setModeValue(mode);
   }
@@ -75,6 +80,11 @@ function createStage(stageContainer: HTMLDivElement): Stage {
       setPositionValue(pos);
       return this.getAbsolutePosition();
     },
-    name: "parkey-stage",
+    name: 'parkey-stage',
   });
+}
+
+export function setStageDraggableWithMode(stage: Stage) {
+  const mode = getModeValue();
+  stage.draggable(mode === 'viewport' ? true : false);
 }
