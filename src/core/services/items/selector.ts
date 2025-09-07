@@ -8,7 +8,7 @@ import { orderBy } from 'lodash-es';
 
 import { effect } from '@preact/signals-core';
 
-import { ITEM_NAME } from '../../config/config.const';
+import { ITEM_NAME, TRANSFORMER_PADDING } from '../../config/config.const';
 import { getItemGap } from '../../store/item';
 import { getAlignX } from '../../store/select';
 import { getModeValue } from '../../store/stage';
@@ -165,7 +165,7 @@ function getHelperObjects() {
 
   const tr = new Transformer({
     rotateAnchorOffset: 60,
-    padding: 10,
+    padding: TRANSFORMER_PADDING,
     resizeEnabled: false,
     useSingleNodeRotation: true,
     rotationSnaps: getRotationSnaps(10),
@@ -258,12 +258,22 @@ function alignItemX(tr: Transformer, itemsLayer: Layer, stage: Stage) {
    * Y starting point - AVG from all items Y center pos, after transform
    */
   const Y_STARTING_POINT =
-    items.reduce((acc, shape) => acc + shape.getClientRect().y + shape.getClientRect().height / 2, 0) / items.length;
+    items.reduce((acc, shape) => {
+      const box = shape.getClientRect({ relativeTo: stage });
+      return acc + box.y + box.height / 2;
+    }, 0) / items.length;
 
   /**
    * X starting point - sum of all widths, divided by 2 added to selection rect center
    */
-  const X_STARTING_POINT = rect.width / 2 - items.reduce((acc, shape) => acc + shape.getClientRect().width, 0) / 2;
+  const X_STARTING_POINT =
+    rect.x +
+    (rect.width + TRANSFORMER_PADDING) / 2 -
+    items.reduce((acc, shape) => {
+      const box = shape.getClientRect({ relativeTo: stage });
+      return acc + box.width + spreadGap;
+    }, 0) /
+      2;
 
   const sortedItems = orderBy(items, (shape) =>
     Math.min(shape.getClientRect({ relativeTo: stage }).x, shape.getAttr('x'))
@@ -272,12 +282,8 @@ function alignItemX(tr: Transformer, itemsLayer: Layer, stage: Stage) {
   sortedItems.reduce((acc, shape) => {
     const box = shape.getClientRect({ relativeTo: stage });
 
-    console.log(shape.name());
-
-    const clientRect = shape.getClientRect({ relativeTo: stage });
-
-    const cy = clientRect.y + clientRect.height / 2;
-    const cx = clientRect.x + clientRect.width / 2;
+    const cy = box.y + box.height / 2;
+    const cx = box.x + box.width / 2;
 
     const yDiff = cy - shape.y();
     const yPos = Y_STARTING_POINT - yDiff;
