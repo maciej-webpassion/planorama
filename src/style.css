@@ -65,3 +65,10 @@ h1 {
   top: 20px;
   left: 20px;
 }
+
+.selection-tools {
+  position: absolute;
+  z-index: 100;
+  top: 55px;
+  left: 20px;
+}

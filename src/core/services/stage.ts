@@ -4,6 +4,7 @@ import { Vector2d } from 'konva/lib/types';
 
 import { effect } from '@preact/signals-core';
 
+import { setAlignX } from '../store/select';
 import {
   getModeValue,
   getPositionValue,
@@ -17,21 +18,22 @@ import { setBackground } from './background';
 import { setItemsLayer } from './items/items';
 import { setViewport } from './viewport';
 
-export interface ParkeyPlanConfig {
+export interface PlanoramaConfig {
   stageContainer: HTMLDivElement;
   onViewportChange: (data: { scale: Vector2d; position: Vector2d }) => void;
 }
 
-export interface ParkeyPlan {
+export interface Planorama {
   stage: Stage;
   setStageScale: (scale: Vector2d) => void;
   setStageMode: (mode: StageMode) => void;
+  setXAlignment: () => void;
 }
 
 export type { Vector2d } from 'konva/lib/types';
 
 let stage: Stage;
-export const setStage = (config: ParkeyPlanConfig): ParkeyPlan => {
+export const setStage = (config: PlanoramaConfig): Planorama => {
   const { stageContainer, onViewportChange } = config;
   if (!stage) {
     stage = createStage(stageContainer);
@@ -67,7 +69,20 @@ export const setStage = (config: ParkeyPlanConfig): ParkeyPlan => {
     setModeValue(mode);
   }
 
-  return { stage, setStageScale, setStageMode };
+  function setXAlignment() {
+    setAlignX();
+  }
+
+  function setYAlignment(mode: StageMode) {
+    setModeValue(mode);
+  }
+
+  // const selectionActions = {
+  //   setXAlignment: setXAlignment(),
+  //   setYAlignment: setYAlignment(),
+  // };
+
+  return { stage, setStageScale, setStageMode, setXAlignment };
 };
 
 function createStage(stageContainer: HTMLDivElement): Stage {
@@ -80,7 +95,7 @@ function createStage(stageContainer: HTMLDivElement): Stage {
       setPositionValue(pos);
       return this.getAbsolutePosition();
     },
-    name: 'parkey-stage',
+    name: 'planorama-stage',
   });
 }
 

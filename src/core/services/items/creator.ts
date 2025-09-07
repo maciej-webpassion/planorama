@@ -1,16 +1,18 @@
-import { Group } from "konva/lib/Group";
-import { Layer } from "konva/lib/Layer";
-import { Line } from "konva/lib/shapes/Line";
-import { Rect } from "konva/lib/shapes/Rect";
-import { Text } from "konva/lib/shapes/Text";
-import { Stage } from "konva/lib/Stage";
+import { Group } from 'konva/lib/Group';
+import { Layer } from 'konva/lib/Layer';
+import { Line } from 'konva/lib/shapes/Line';
+import { Rect } from 'konva/lib/shapes/Rect';
+import { Text } from 'konva/lib/shapes/Text';
+import { Stage } from 'konva/lib/Stage';
 
-import { getModeValue } from "../../store/stage";
-import { calculateDistance, calculateRotationAngle, nearestAngle } from "../calc";
-import { Vector2d } from "../stage";
-import { createItem } from "./items";
+import { getItemGap } from '../../store/item';
+import { getModeValue } from '../../store/stage';
+import { calculateDistance, calculateRotationAngle, nearestAngle } from '../calc';
+import { Vector2d } from '../stage';
+import { createItem } from './items';
 
 export const setCreator = (layer: Layer, stage: Stage) => {
+  const gap = getItemGap();
   let isPaint = false;
   let lastLine: Line;
   let rect: Rect;
@@ -19,10 +21,10 @@ export const setCreator = (layer: Layer, stage: Stage) => {
   let itemsCount = 0;
   let lastPos: Vector2d | null = null;
   let text: Text;
-  const itemWidth = 90 + 10;
+  const itemWidth = 90 + gap;
 
-  stage.on("mousedown touchstart", function () {
-    if (getModeValue() !== "create") return;
+  stage.on('mousedown touchstart', function () {
+    if (getModeValue() !== 'create') return;
 
     if (isPaint) {
       if (group) group.destroy();
@@ -34,12 +36,12 @@ export const setCreator = (layer: Layer, stage: Stage) => {
     if (!lastPos) return;
 
     lastLine = new Line({
-      stroke: "#df4b26",
+      stroke: '#df4b26',
       strokeWidth: 2,
-      globalCompositeOperation: "source-over",
+      globalCompositeOperation: 'source-over',
       // round cap for smoother lines
-      lineCap: "round",
-      lineJoin: "round",
+      lineCap: 'round',
+      lineJoin: 'round',
       points: [0, 0],
     });
 
@@ -49,7 +51,7 @@ export const setCreator = (layer: Layer, stage: Stage) => {
       width: 1,
       height: 190,
       cornerRadius: 8,
-      stroke: "#7592b6",
+      stroke: '#7592b6',
       strokeScaleEnabled: false,
       strokeWidth: 2,
       opacity: 0.9,
@@ -59,13 +61,13 @@ export const setCreator = (layer: Layer, stage: Stage) => {
     text = new Text({
       x: 0,
       y: 0,
-      text: "12",
+      text: '12',
       fontSize: 30,
-      fontFamily: "Arial",
-      fill: "#555",
+      fontFamily: 'Arial',
+      fill: '#555',
       width: 100,
       padding: 0,
-      align: "left",
+      align: 'left',
       offsetY: 120,
     });
 
@@ -73,13 +75,13 @@ export const setCreator = (layer: Layer, stage: Stage) => {
       x: lastPos.x,
       y: lastPos.y,
       rotation: 0,
-      name: "parkey-creator-group",
+      name: 'planorama-creator-group',
     });
 
     itemsGroup = new Group({
       x: 0,
       y: 0,
-      name: "parkey-creator-items-group",
+      name: 'planorama-creator-items-group',
       offsetY: 90,
       offsetX: -5,
     });
@@ -91,9 +93,9 @@ export const setCreator = (layer: Layer, stage: Stage) => {
     layer.add(group);
   });
 
-  stage.on("mouseup touchend", function () {
-    if (getModeValue() !== "create") return;
-    itemsGroup.find("Rect").forEach((item) => {
+  stage.on('mouseup touchend', function () {
+    if (getModeValue() !== 'create') return;
+    itemsGroup.find('Rect').forEach((item) => {
       const pos = item.getAbsolutePosition(this);
       createItem(pos.x, pos.y, item.getAbsoluteRotation());
     });
@@ -103,8 +105,8 @@ export const setCreator = (layer: Layer, stage: Stage) => {
   });
 
   // and core function - drawing
-  stage.on("mousemove touchmove", function (e) {
-    if (getModeValue() !== "create") return;
+  stage.on('mousemove touchmove', function (e) {
+    if (getModeValue() !== 'create') return;
     if (!isPaint) {
       return;
     }
@@ -130,7 +132,7 @@ export const setCreator = (layer: Layer, stage: Stage) => {
           width: 90,
           height: 180,
           cornerRadius: 8,
-          stroke: "#7592b6",
+          stroke: '#7592b6',
           strokeWidth: 1,
         });
 

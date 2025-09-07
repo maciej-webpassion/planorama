@@ -1,16 +1,26 @@
-import { Group } from "konva/lib/Group";
-import { Layer } from "konva/lib/Layer";
-import { Rect } from "konva/lib/shapes/Rect";
-import { Transformer } from "konva/lib/shapes/Transformer";
-import { Stage } from "konva/lib/Stage";
-import { Util } from "konva/lib/Util";
+import { Group } from 'konva/lib/Group';
+import { Layer } from 'konva/lib/Layer';
+import { Rect } from 'konva/lib/shapes/Rect';
+import { Transformer } from 'konva/lib/shapes/Transformer';
+import { Stage } from 'konva/lib/Stage';
+import { Util } from 'konva/lib/Util';
+import { orderBy } from 'lodash-es';
 
-import { getModeValue } from "../../store/stage";
+import { effect } from '@preact/signals-core';
+
+import { ITEM_NAME } from '../../config/config.const';
+import { getItemGap } from '../../store/item';
+import { getAlignX } from '../../store/select';
+import { getModeValue } from '../../store/stage';
+
+let LAYER: Layer;
 
 export const setSelector = (layer: Layer, itemsLayer: Layer, stage: Stage) => {
-  console.log("setSelector");
+  console.log('setSelector');
 
   const { group, selectionRectangle, tr } = getHelperObjects();
+
+  LAYER = layer;
 
   layer.add(group);
   layer.add(tr);
@@ -19,13 +29,13 @@ export const setSelector = (layer: Layer, itemsLayer: Layer, stage: Stage) => {
   let x1: number, y1: number, x2: number, y2: number;
   let selecting = false;
 
-  stage.on("mousedown touchstart", (e) => {
-    if (tr.nodes().length && e.target.name() !== "back" && e.target.name() !== "rotater _anchor") {
+  stage.on('mousedown touchstart', (e) => {
+    if (tr.nodes().length && e.target.name() !== 'back' && e.target.name() !== 'rotater _anchor') {
       moveItemsBackToLayer(group, itemsLayer, tr, stage);
     }
 
-    if (getModeValue() !== "select") return;
-    if (!["background", "parkey-stage"].includes(e.target.name())) return;
+    if (getModeValue() !== 'select') return;
+    if (!['background', 'planorama-stage'].includes(e.target.name())) return;
 
     e.evt.preventDefault();
     x1 = stage.getRelativePointerPosition()!.x;
@@ -38,8 +48,8 @@ export const setSelector = (layer: Layer, itemsLayer: Layer, stage: Stage) => {
     selecting = true;
   });
 
-  stage.on("mousemove touchmove", (e) => {
-    if (getModeValue() !== "select") return;
+  stage.on('mousemove touchmove', (e) => {
+    if (getModeValue() !== 'select') return;
     if (!selecting) return;
 
     e.evt.preventDefault();
@@ -55,8 +65,8 @@ export const setSelector = (layer: Layer, itemsLayer: Layer, stage: Stage) => {
     });
   });
 
-  stage.on("mouseup touchend", (e) => {
-    if (getModeValue() !== "select" || tr.nodes().length > 0) return;
+  stage.on('mouseup touchend', (e) => {
+    if (getModeValue() !== 'select' || tr.nodes().length > 0) return;
 
     // do nothing if we didn't start selection
     selecting = false;
@@ -77,8 +87,8 @@ export const setSelector = (layer: Layer, itemsLayer: Layer, stage: Stage) => {
   });
 
   // clicks should select/deselect shapes
-  stage.on("click tap", function (e) {
-    if (getModeValue() !== "select") return;
+  stage.on('click tap', function (e) {
+    if (getModeValue() !== 'select') return;
     // if we are selecting with rect, do nothing
     if (selectionRectangle.visible()) {
       return;
@@ -89,27 +99,35 @@ export const setSelector = (layer: Layer, itemsLayer: Layer, stage: Stage) => {
       // tr.nodes([]);
       return;
     }
+    console.log(e.target);
 
-    if (e.target.hasName("parkey-item")) {
-      console.log("click on item");
+    if (e.target.hasName(ITEM_NAME)) {
+      console.log('click on item');
 
       // tr.nodes([e.target]);
     }
 
     // do nothing if clicked NOT on our rectangles
-    if (!e.target.hasName("parkey-item")) {
+    if (!e.target.hasName(ITEM_NAME)) {
       return;
+    }
+  });
+
+  effect(() => {
+    const v = getAlignX();
+    if (v > 0) {
+      alignItemX(tr, itemsLayer, stage);
     }
   });
 };
 
-function getSelected(stage: Stage, selectionRectangle: any): { intersected: Group[]; notIntersected: Group[] } {
+function getSelected(stage: Stage, selectionRectangle: Rect): { intersected: Group[]; notIntersected: Group[] } {
   const output = {
     intersected: [] as Group[],
     notIntersected: [] as Group[],
   };
 
-  const shapes = stage.find<Group>(".parkey-item");
+  const shapes = stage.find<Group>(`.${ITEM_NAME}`);
   const box = selectionRectangle.getClientRect();
   // return shapes.filter((shape) => Util.haveIntersection(box, shape.getClientRect())) as Shape<ShapeConfig>[];
   shapes.forEach((shape: Group) => {
@@ -136,11 +154,11 @@ function getHelperObjects() {
   const group = new Group();
 
   const selectionRectangle = new Rect({
-    fill: "rgba(78,191,255,0.1)",
+    fill: 'rgba(78,191,255,0.1)',
     visible: false,
     // disable events to not interrupt with events
     listening: false,
-    stroke: "#4ebfff",
+    stroke: '#4ebfff',
     strokeWidth: 2,
     strokeScaleEnabled: false,
   });
@@ -171,12 +189,14 @@ function moveItemsBackToLayer(group: Group, itemsLayer: Layer, tr: Transformer, 
       ...transform,
       scaleX: 1,
       scaleY: 1,
-      x: transform.x,
-      y: transform.y,
     });
   });
 
   // reset group transforms
+  resetGroupTransforms(group, tr);
+}
+
+function resetGroupTransforms(group: Group, tr: Transformer) {
   group.setAttrs({
     x: 0,
     y: 0,
@@ -186,7 +206,6 @@ function moveItemsBackToLayer(group: Group, itemsLayer: Layer, tr: Transformer, 
   });
   group.clearCache();
   group.destroyChildren();
-  console.log(group.getChildren());
   tr.nodes([]);
 }
 
@@ -208,4 +227,77 @@ function moveSelectedItemsToTransformer(
 
   tr.nodes([group]);
   group.cache();
+}
+
+function alignItemX(tr: Transformer, itemsLayer: Layer, stage: Stage) {
+  const nodes = tr.nodes();
+
+  const rect = tr.getClientRect();
+
+  if (nodes.length === 0) return;
+
+  const group: Group = nodes[0] as Group;
+
+  const items = [...group.getChildren()];
+
+  // spread items by X axis
+  const spreadGap = getItemGap(); // amount to spread items by
+
+  items.forEach((shape) => {
+    const transform = shape.getAbsoluteTransform(stage).decompose();
+    shape.moveTo(itemsLayer);
+    // Apply attributes to count bounding box
+    shape.setAttrs({
+      ...transform,
+      scaleX: 1,
+      scaleY: 1,
+    });
+  });
+
+  /**
+   * Y starting point - AVG from all items Y center pos, after transform
+   */
+  const Y_STARTING_POINT =
+    items.reduce((acc, shape) => acc + shape.getClientRect().y + shape.getClientRect().height / 2, 0) / items.length;
+
+  /**
+   * X starting point - sum of all widths, divided by 2 added to selection rect center
+   */
+  const X_STARTING_POINT = rect.width / 2 - items.reduce((acc, shape) => acc + shape.getClientRect().width, 0) / 2;
+
+  const sortedItems = orderBy(items, (shape) =>
+    Math.min(shape.getClientRect({ relativeTo: stage }).x, shape.getAttr('x'))
+  );
+
+  sortedItems.reduce((acc, shape) => {
+    const box = shape.getClientRect({ relativeTo: stage });
+
+    console.log(shape.name());
+
+    const clientRect = shape.getClientRect({ relativeTo: stage });
+
+    const cy = clientRect.y + clientRect.height / 2;
+    const cx = clientRect.x + clientRect.width / 2;
+
+    const yDiff = cy - shape.y();
+    const yPos = Y_STARTING_POINT - yDiff;
+
+    const xDiff = cx - shape.x();
+    const xPos = X_STARTING_POINT + acc + (box.width / 2 - xDiff);
+    shape.setAttrs({
+      x: xPos,
+      y: yPos,
+    });
+    return acc + box.width + spreadGap;
+  }, 0);
+
+  resetGroupTransforms(group, tr);
+
+  // and select again
+  // items.forEach((item) => {
+  //   group.add(item);
+  // });
+
+  // tr.nodes([group]);
+  // group.cache();
 }

@@ -23,7 +23,10 @@ export const createItem = (x: number, y: number, rotation: number) => {
     y,
     rotation,
     draggable: false,
-    name: "parkey-item",
+    name: 'planorama-item',
+    // offsetX: 45,
+    // offsetY: 90,
+    perfectDrawEnabled: false,
   });
 
   const item = new Konva.Rect({
@@ -32,25 +35,27 @@ export const createItem = (x: number, y: number, rotation: number) => {
     width: 90,
     height: 180,
     cornerRadius: 8,
-    stroke: "#7592b6",
+    stroke: '#7592b6',
     strokeWidth: 1,
     opacity: 0.5,
+    perfectDrawEnabled: false,
   });
 
-  item.on("mouseover", function () {
+  item.on('mouseover', function () {
     this.strokeWidth(2);
   });
-  item.on("mouseout", function () {
+  item.on('mouseout', function () {
     this.strokeWidth(1);
   });
 
-  Konva.Image.fromURL("assets/spot.svg", function (img) {
+  Konva.Image.fromURL('assets/spot.svg', function (img) {
     img.setAttrs({
       x: 9,
       y: 15,
       scaleX: 0.25,
       scaleY: 0.25,
       listening: false,
+      perfectDrawEnabled: false,
     });
     group.add(img);
   });
