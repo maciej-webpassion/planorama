@@ -1,5 +1,6 @@
 import { Group } from 'konva/lib/Group';
 import { Layer } from 'konva/lib/Layer';
+import { Shape, ShapeConfig } from 'konva/lib/Shape';
 import { Rect } from 'konva/lib/shapes/Rect';
 import { Transformer } from 'konva/lib/shapes/Transformer';
 import { Stage } from 'konva/lib/Stage';
@@ -116,7 +117,7 @@ export const setSelector = (layer: Layer, itemsLayer: Layer, stage: Stage) => {
   effect(() => {
     const v = getAlignX();
     if (v > 0) {
-      alignItemX(tr, itemsLayer, stage);
+      alignItemsX(tr, itemsLayer, stage);
     }
   });
 };
@@ -229,10 +230,15 @@ function moveSelectedItemsToTransformer(
   group.cache();
 }
 
-function alignItemX(tr: Transformer, itemsLayer: Layer, stage: Stage) {
+/**
+ * Align items horizontally
+ * @param tr
+ * @param itemsLayer
+ * @param stage
+ * @returns
+ */
+function alignItemsX(tr: Transformer, itemsLayer: Layer, stage: Stage) {
   const nodes = tr.nodes();
-
-  const rect = tr.getClientRect();
 
   if (nodes.length === 0) return;
 
@@ -241,7 +247,7 @@ function alignItemX(tr: Transformer, itemsLayer: Layer, stage: Stage) {
   const items = [...group.getChildren()];
 
   // spread items by X axis
-  const spreadGap = getItemGap(); // amount to spread items by
+  const SPREAD_GAP = getItemGap(); // amount to spread items by
 
   items.forEach((shape) => {
     const transform = shape.getAbsoluteTransform(stage).decompose();
@@ -254,26 +260,8 @@ function alignItemX(tr: Transformer, itemsLayer: Layer, stage: Stage) {
     });
   });
 
-  /**
-   * Y starting point - AVG from all items Y center pos, after transform
-   */
-  const Y_STARTING_POINT =
-    items.reduce((acc, shape) => {
-      const box = shape.getClientRect({ relativeTo: stage });
-      return acc + box.y + box.height / 2;
-    }, 0) / items.length;
-
-  /**
-   * X starting point - sum of all widths, divided by 2 added to selection rect center
-   */
-  const X_STARTING_POINT =
-    rect.x +
-    (rect.width + TRANSFORMER_PADDING) / 2 -
-    items.reduce((acc, shape) => {
-      const box = shape.getClientRect({ relativeTo: stage });
-      return acc + box.width + spreadGap;
-    }, 0) /
-      2;
+  const Y_STARTING_POINT = getYStartingPoint(items, stage);
+  const X_STARTING_POINT = getXStartingPoint(items, stage, SPREAD_GAP);
 
   const sortedItems = orderBy(items, (shape) =>
     Math.min(shape.getClientRect({ relativeTo: stage }).x, shape.getAttr('x'))
@@ -294,7 +282,7 @@ function alignItemX(tr: Transformer, itemsLayer: Layer, stage: Stage) {
       x: xPos,
       y: yPos,
     });
-    return acc + box.width + spreadGap;
+    return acc + box.width + SPREAD_GAP;
   }, 0);
 
   resetGroupTransforms(group, tr);
@@ -306,4 +294,31 @@ function alignItemX(tr: Transformer, itemsLayer: Layer, stage: Stage) {
 
   // tr.nodes([group]);
   // group.cache();
+}
+
+/**
+ * Y starting point - AVG from all items Y center pos, after transform
+ */
+function getYStartingPoint(items: (Group | Shape<ShapeConfig>)[], stage: Stage) {
+  return (
+    items.reduce((acc, shape) => {
+      const box = shape.getClientRect({ relativeTo: stage });
+      return acc + box.y + box.height / 2;
+    }, 0) / items.length
+  );
+}
+
+/**
+ * X starting point - AVG from all items X center pos, after transform
+ */
+function getXStartingPoint(items: (Group | Shape<ShapeConfig>)[], stage: Stage, gap: number) {
+  const [xAvg, widthAcc] = items.reduce(
+    (acc, shape) => {
+      const box = shape.getClientRect({ relativeTo: stage });
+      return [acc[0] + box.x + box.width / 2, acc[1] + box.width + gap];
+    },
+    [0, 0]
+  );
+
+  return xAvg / items.length - (widthAcc - gap) / 2;
 }
