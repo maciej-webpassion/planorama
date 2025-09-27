@@ -31,6 +31,16 @@ rotationMode.addEventListener('change', () => {
   setSpreadOpts({ withRotation: value as RotationMode, radius: rotationValue });
 });
 
+rotationRadius.addEventListener('change', () => {
+  let value = rotationMode.value as any;
+  if (value === 'none') {
+    value = null;
+  }
+
+  const rotationValue = rotationRadius.value ? parseInt(rotationRadius.value, 10) : 500;
+  setSpreadOpts({ withRotation: value as RotationMode, radius: rotationValue });
+});
+
 modeSelector.addEventListener('change', () => {
   setStageMode(modeSelector.value as any);
 });
