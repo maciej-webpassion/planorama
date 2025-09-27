@@ -18,6 +18,28 @@
     <div class="selection-tools">
       <button id="btn-align-x">Align X</button>
       <button id="btn-align-y">Align Y</button>
+
+      <form id="form-spread-opts">
+        <fieldset>
+          <legend>Spread by Circle Options:</legend>
+          <label for="select-rotation">With Rotation:</label>
+          <select id="select-rotation" name="select-rotation">
+            <option value="none">None</option>
+            <option value="outside">Outside</option>
+            <option value="inside">Inside</option>
+          </select>
+
+          <label for="input-radius">Radius:</label>
+          <input
+            type="number"
+            id="input-radius"
+            name="input-radius"
+            value="500"
+            min="0"
+          />
+        </fieldset>
+      </form>
+      <button id="btn-spread-circle">Spread by Circle</button>
     </div>
     <script type="module" src="/src/main.ts"></script>
   </body>

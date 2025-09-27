@@ -4,16 +4,8 @@ import { Vector2d } from 'konva/lib/types';
 
 import { effect } from '@preact/signals-core';
 
-import { setAlignX } from '../store/select';
-import {
-  getModeValue,
-  getPositionValue,
-  getScaleValue,
-  setModeValue,
-  setPositionValue,
-  setScaleValue,
-  StageMode,
-} from '../store/stage';
+import { setAlignX, setAlignY, setSpreadByCircle, setSpreadByOpts, SpreadByOpts } from '../store/select';
+import { getModeValue, getPositionValue, getScaleValue, setModeValue, setPositionValue, setScaleValue, StageMode } from '../store/stage';
 import { setBackground } from './background';
 import { setItemsLayer } from './items/items';
 import { setViewport } from './viewport';
@@ -28,6 +20,9 @@ export interface Planorama {
   setStageScale: (scale: Vector2d) => void;
   setStageMode: (mode: StageMode) => void;
   setXAlignment: () => void;
+  setYAlignment: () => void;
+  spreadItemsByCircle: () => void;
+  setSpreadOpts: (opts: SpreadByOpts) => void;
 }
 
 export type { Vector2d } from 'konva/lib/types';
@@ -73,8 +68,16 @@ export const setStage = (config: PlanoramaConfig): Planorama => {
     setAlignX();
   }
 
-  function setYAlignment(mode: StageMode) {
-    setModeValue(mode);
+  function setYAlignment() {
+    setAlignY();
+  }
+
+  function spreadItemsByCircle() {
+    setSpreadByCircle();
+  }
+
+  function setSpreadOpts(opts: SpreadByOpts) {
+    setSpreadByOpts(opts);
   }
 
   // const selectionActions = {
@@ -82,7 +85,7 @@ export const setStage = (config: PlanoramaConfig): Planorama => {
   //   setYAlignment: setYAlignment(),
   // };
 
-  return { stage, setStageScale, setStageMode, setXAlignment };
+  return { stage, setStageScale, setStageMode, setXAlignment, setYAlignment, spreadItemsByCircle, setSpreadOpts };
 };
 
 function createStage(stageContainer: HTMLDivElement): Stage {
