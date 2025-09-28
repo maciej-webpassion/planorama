@@ -2,6 +2,8 @@ import Konva from 'konva';
 import { Layer } from 'konva/lib/Layer';
 import { Stage } from 'konva/lib/Stage';
 
+import { ITEM_NAME } from '../../config/config.const';
+import { getCreatorCurrentItemConfig } from '../../store/item';
 import { setCreator } from './creator';
 import { setSelector } from './selector';
 
@@ -18,44 +20,51 @@ export const setItemsLayer = (stage: Stage) => {
 };
 
 export const createItem = (x: number, y: number, rotation: number) => {
+  const CURRENT_ITEM = getCreatorCurrentItemConfig();
+  if (!CURRENT_ITEM) return;
+
   const group = new Konva.Group({
     x,
     y,
     rotation,
     draggable: false,
-    name: 'planorama-item',
-    // offsetX: 45,
-    // offsetY: 90,
+    name: ITEM_NAME,
     perfectDrawEnabled: false,
+    type: CURRENT_ITEM.name,
   });
 
   const item = new Konva.Rect({
     x: 0,
     y: 0,
-    width: 90,
-    height: 180,
+    width: CURRENT_ITEM.width,
+    height: CURRENT_ITEM.height,
     cornerRadius: 8,
-    stroke: '#7592b6',
-    strokeWidth: 1,
-    opacity: 0.5,
+    opacity: 0.1,
     perfectDrawEnabled: false,
   });
 
-  item.on('mouseover', function () {
-    this.strokeWidth(2);
+  item.on('mouseover', function (e) {
+    this.fill('#3D63EB');
+    const stage = e.target.getStage();
+    if (stage) {
+      stage.container().style.cursor = 'pointer';
+    }
   });
-  item.on('mouseout', function () {
-    this.strokeWidth(1);
+  item.on('mouseout', function (e) {
+    this.fill('');
+    const stage = e.target.getStage();
+    if (stage) {
+      stage.container().style.cursor = 'default';
+    }
   });
 
-  Konva.Image.fromURL('assets/spot.svg', function (img) {
+  Konva.Image.fromURL(CURRENT_ITEM.src, function (img) {
     img.setAttrs({
-      x: 9,
-      y: 15,
-      scaleX: 0.25,
-      scaleY: 0.25,
+      x: 0,
+      y: 0,
       listening: false,
       perfectDrawEnabled: false,
+      scale: CURRENT_ITEM.scale,
     });
     group.add(img);
   });

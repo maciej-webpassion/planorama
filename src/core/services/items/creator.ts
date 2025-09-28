@@ -5,14 +5,15 @@ import { Rect } from 'konva/lib/shapes/Rect';
 import { Text } from 'konva/lib/shapes/Text';
 import { Stage } from 'konva/lib/Stage';
 
-import { getItemGap } from '../../store/item';
+import { getCreatorCurrentItemConfig, getItemGap } from '../../store/item';
 import { getModeValue } from '../../store/stage';
 import { calculateDistance, calculateRotationAngle, nearestAngle } from '../calc';
 import { Vector2d } from '../stage';
 import { createItem } from './items';
 
 export const setCreator = (layer: Layer, stage: Stage) => {
-  const gap = getItemGap();
+  const GAP = getItemGap();
+
   let isPaint = false;
   let lastLine: Line;
   let rect: Rect;
@@ -21,10 +22,17 @@ export const setCreator = (layer: Layer, stage: Stage) => {
   let itemsCount = 0;
   let lastPos: Vector2d | null = null;
   let text: Text;
-  const itemWidth = 90 + gap;
+  let itemWidth = 0;
+  let CURRENT_ITEM = getCreatorCurrentItemConfig();
+
+  console.log('CURRENT_ITEM', CURRENT_ITEM);
 
   stage.on('mousedown touchstart', function () {
     if (getModeValue() !== 'create') return;
+    CURRENT_ITEM = getCreatorCurrentItemConfig();
+    if (!CURRENT_ITEM) return;
+
+    itemWidth = CURRENT_ITEM.width + GAP;
 
     if (isPaint) {
       if (group) group.destroy();
@@ -49,13 +57,13 @@ export const setCreator = (layer: Layer, stage: Stage) => {
       x: 0,
       y: 0,
       width: 1,
-      height: 190,
+      height: CURRENT_ITEM.height + 10,
       cornerRadius: 8,
       stroke: '#7592b6',
       strokeScaleEnabled: false,
       strokeWidth: 2,
       opacity: 0.9,
-      offsetY: 95,
+      offsetY: CURRENT_ITEM.height / 2 + 5,
     });
 
     text = new Text({
@@ -68,7 +76,7 @@ export const setCreator = (layer: Layer, stage: Stage) => {
       width: 100,
       padding: 0,
       align: 'left',
-      offsetY: 120,
+      offsetY: CURRENT_ITEM.height / 2 + 30,
     });
 
     group = new Group({
@@ -82,7 +90,7 @@ export const setCreator = (layer: Layer, stage: Stage) => {
       x: 0,
       y: 0,
       name: 'planorama-creator-items-group',
-      offsetY: 90,
+      offsetY: CURRENT_ITEM.height / 2,
       offsetX: -5,
     });
 
@@ -107,6 +115,7 @@ export const setCreator = (layer: Layer, stage: Stage) => {
   // and core function - drawing
   stage.on('mousemove touchmove', function (e) {
     if (getModeValue() !== 'create') return;
+    if (!CURRENT_ITEM) return;
     if (!isPaint) {
       return;
     }
@@ -129,8 +138,8 @@ export const setCreator = (layer: Layer, stage: Stage) => {
         const item = new Rect({
           x: i * itemWidth,
           y: 0,
-          width: 90,
-          height: 180,
+          width: CURRENT_ITEM.width,
+          height: CURRENT_ITEM.height,
           cornerRadius: 8,
           stroke: '#7592b6',
           strokeWidth: 1,

@@ -15,14 +15,10 @@ import { alignItemsY } from '../calc/select/align-y';
 import { spreadItemsByCircle } from '../calc/select/circle-spread';
 import { resetGroupTransforms } from '../calc/select/common';
 
-let LAYER: Layer;
-
 export const setSelector = (layer: Layer, itemsLayer: Layer, stage: Stage) => {
   console.log('setSelector');
 
   const { group, selectionRectangle, tr } = getHelperObjects();
-
-  LAYER = layer;
 
   layer.add(group);
   layer.add(tr);

@@ -4,6 +4,7 @@ import { Vector2d } from 'konva/lib/types';
 
 import { effect } from '@preact/signals-core';
 
+import { ItemConfig, setCreatorCurrentItemConfig } from '../store/item';
 import { setAlignX, setAlignY, setSpreadByCircle, setSpreadByOpts, SpreadByOpts } from '../store/select';
 import { getModeValue, getPositionValue, getScaleValue, setModeValue, setPositionValue, setScaleValue, StageMode } from '../store/stage';
 import { setBackground } from './background';
@@ -12,7 +13,8 @@ import { setViewport } from './viewport';
 
 export interface PlanoramaConfig {
   stageContainer: HTMLDivElement;
-  onViewportChange: (data: { scale: Vector2d; position: Vector2d }) => void;
+  onViewportChange?: (data: { scale: Vector2d; position: Vector2d }) => void;
+  onViewModeChange?: (mode: StageMode) => void;
 }
 
 export interface Planorama {
@@ -23,13 +25,14 @@ export interface Planorama {
   setYAlignment: () => void;
   spreadItemsByCircle: () => void;
   setSpreadOpts: (opts: SpreadByOpts) => void;
+  setCreatorCurrentItem: (config: ItemConfig) => void;
 }
 
 export type { Vector2d } from 'konva/lib/types';
 
 let stage: Stage;
 export const setStage = (config: PlanoramaConfig): Planorama => {
-  const { stageContainer, onViewportChange } = config;
+  const { stageContainer, onViewportChange, onViewModeChange } = config;
   if (!stage) {
     stage = createStage(stageContainer);
 
@@ -38,7 +41,7 @@ export const setStage = (config: PlanoramaConfig): Planorama => {
     setItemsLayer(stage);
 
     effect(() => {
-      onViewportChange({
+      onViewportChange?.({
         scale: getScaleValue(),
         position: getPositionValue(),
       });
@@ -52,7 +55,7 @@ export const setStage = (config: PlanoramaConfig): Planorama => {
       // } else {
       //   stage.draggable(false);
       // }
-      setStageDraggableWithMode(stage);
+      setStageDraggableWithMode(stage, onViewModeChange);
     });
   }
 
@@ -80,12 +83,25 @@ export const setStage = (config: PlanoramaConfig): Planorama => {
     setSpreadByOpts(opts);
   }
 
+  function setCreatorCurrentItem(config: ItemConfig) {
+    setCreatorCurrentItemConfig(config);
+  }
+
   // const selectionActions = {
   //   setXAlignment: setXAlignment(),
   //   setYAlignment: setYAlignment(),
   // };
 
-  return { stage, setStageScale, setStageMode, setXAlignment, setYAlignment, spreadItemsByCircle, setSpreadOpts };
+  return {
+    stage,
+    setStageScale,
+    setStageMode,
+    setXAlignment,
+    setYAlignment,
+    spreadItemsByCircle,
+    setSpreadOpts,
+    setCreatorCurrentItem,
+  };
 };
 
 function createStage(stageContainer: HTMLDivElement): Stage {
@@ -102,7 +118,8 @@ function createStage(stageContainer: HTMLDivElement): Stage {
   });
 }
 
-export function setStageDraggableWithMode(stage: Stage) {
+export function setStageDraggableWithMode(stage: Stage, onViewModeChange?: (mode: StageMode) => void) {
   const mode = getModeValue();
+  onViewModeChange?.(mode);
   stage.draggable(mode === 'viewport' ? true : false);
 }
