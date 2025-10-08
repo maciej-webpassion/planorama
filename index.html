@@ -18,7 +18,7 @@
     <div class="selection-tools">
       <button id="btn-align-x">Align X</button>
       <button id="btn-align-y">Align Y</button>
-
+      <hr />
       <form id="form-spread-opts">
         <fieldset>
           <legend>Spread by Circle Options:</legend>
@@ -40,11 +40,20 @@
         </fieldset>
       </form>
       <button id="btn-spread-circle">Spread by Circle</button>
-
+      <hr />
       <div>
         <button id="btn-creator-computer">Computer Item</button>
         <button id="btn-creator-parking">Parking Spot</button>
       </div>
+      <hr />
+      <form id="form-spread-opts">
+        <fieldset>
+          <legend>Gap Size:</legend>
+
+          <label for="input-gap">Gap:</label>
+          <input type="number" id="input-gap" name="input-gap" value="10" />
+        </fieldset>
+      </form>
     </div>
     <script type="module" src="/src/main.ts"></script>
   </body>

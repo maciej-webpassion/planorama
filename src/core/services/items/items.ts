@@ -3,7 +3,7 @@ import { Layer } from 'konva/lib/Layer';
 import { Stage } from 'konva/lib/Stage';
 
 import { ITEM_NAME } from '../../config/config.const';
-import { getCreatorCurrentItemConfig } from '../../store/item';
+import { getCreatorCurrentItemConfig, getOnItemMouseOver } from '../../store/item';
 import { setCreator } from './creator';
 import { setSelector } from './selector';
 
@@ -21,6 +21,7 @@ export const setItemsLayer = (stage: Stage) => {
 
 export const createItem = (x: number, y: number, rotation: number) => {
   const CURRENT_ITEM = getCreatorCurrentItemConfig();
+  const onItemMouseOver = getOnItemMouseOver();
   if (!CURRENT_ITEM) return;
 
   const group = new Konva.Group({
@@ -48,6 +49,15 @@ export const createItem = (x: number, y: number, rotation: number) => {
     const stage = e.target.getStage();
     if (stage) {
       stage.container().style.cursor = 'pointer';
+      const parent = this.getParent();
+      onItemMouseOver({
+        type: parent?.attrs.type,
+        boundingBox: parent?.getClientRect({ relativeTo: stage }),
+        internalId: parent?._id,
+        pos: parent?.getRelativePointerPosition(),
+        scale: stage.attrs.scaleX,
+        e,
+      });
     }
   });
   item.on('mouseout', function (e) {

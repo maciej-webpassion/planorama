@@ -12,7 +12,8 @@ import { Vector2d } from '../stage';
 import { createItem } from './items';
 
 export const setCreator = (layer: Layer, stage: Stage) => {
-  const GAP = getItemGap();
+  let GAP = getItemGap();
+  let CURRENT_ITEM = getCreatorCurrentItemConfig();
 
   let isPaint = false;
   let lastLine: Line;
@@ -23,12 +24,12 @@ export const setCreator = (layer: Layer, stage: Stage) => {
   let lastPos: Vector2d | null = null;
   let text: Text;
   let itemWidth = 0;
-  let CURRENT_ITEM = getCreatorCurrentItemConfig();
 
   console.log('CURRENT_ITEM', CURRENT_ITEM);
 
   stage.on('mousedown touchstart', function () {
     if (getModeValue() !== 'create') return;
+    GAP = getItemGap();
     CURRENT_ITEM = getCreatorCurrentItemConfig();
     if (!CURRENT_ITEM) return;
 
@@ -43,41 +44,9 @@ export const setCreator = (layer: Layer, stage: Stage) => {
     lastPos = stage.getRelativePointerPosition();
     if (!lastPos) return;
 
-    lastLine = new Line({
-      stroke: '#df4b26',
-      strokeWidth: 2,
-      globalCompositeOperation: 'source-over',
-      // round cap for smoother lines
-      lineCap: 'round',
-      lineJoin: 'round',
-      points: [0, 0],
-    });
-
-    rect = new Rect({
-      x: 0,
-      y: 0,
-      width: 1,
-      height: CURRENT_ITEM.height + 10,
-      cornerRadius: 8,
-      stroke: '#7592b6',
-      strokeScaleEnabled: false,
-      strokeWidth: 2,
-      opacity: 0.9,
-      offsetY: CURRENT_ITEM.height / 2 + 5,
-    });
-
-    text = new Text({
-      x: 0,
-      y: 0,
-      text: '12',
-      fontSize: 30,
-      fontFamily: 'Arial',
-      fill: '#555',
-      width: 100,
-      padding: 0,
-      align: 'left',
-      offsetY: CURRENT_ITEM.height / 2 + 30,
-    });
+    lastLine = createHelperLine();
+    rect = createCreatorRect(CURRENT_ITEM.height + 10, CURRENT_ITEM.height / 2 + 5);
+    text = createHelperText(CURRENT_ITEM.height / 2 + 30);
 
     group = new Group({
       x: lastPos.x,
@@ -135,17 +104,7 @@ export const setCreator = (layer: Layer, stage: Stage) => {
       itemsCount = count;
       itemsGroup.destroyChildren();
       for (let i = 0; i < count; i++) {
-        const item = new Rect({
-          x: i * itemWidth,
-          y: 0,
-          width: CURRENT_ITEM.width,
-          height: CURRENT_ITEM.height,
-          cornerRadius: 8,
-          stroke: '#7592b6',
-          strokeWidth: 1,
-        });
-
-        itemsGroup.add(item);
+        itemsGroup.add(getItemRect(i * itemWidth, CURRENT_ITEM.width, CURRENT_ITEM.height));
       }
     }
 
@@ -157,3 +116,79 @@ export const setCreator = (layer: Layer, stage: Stage) => {
     group.rotation(rotation);
   });
 };
+
+/**
+ * Creates a rectangle used for item placement preview.
+ * @param height
+ * @param offsetY
+ * @returns Rect
+ */
+function createCreatorRect(height: number, offsetY: number): Rect {
+  return new Rect({
+    x: 0,
+    y: 0,
+    width: 1,
+    height,
+    cornerRadius: 8,
+    stroke: '#7592b6',
+    strokeScaleEnabled: false,
+    strokeWidth: 2,
+    opacity: 0.9,
+    offsetY,
+  });
+}
+
+/**
+ * Creates a helper line for item placement preview.
+ * @returns Line
+ */
+function createHelperLine(): Line {
+  return new Line({
+    stroke: '#df4b26',
+    strokeWidth: 2,
+    globalCompositeOperation: 'source-over',
+    // round cap for smoother lines
+    lineCap: 'round',
+    lineJoin: 'round',
+    points: [0, 0],
+  });
+}
+
+/**
+ * Creates a helper text for items count preview.
+ * @param offsetY
+ * @returns Text
+ */
+function createHelperText(offsetY: number): Text {
+  return new Text({
+    x: 0,
+    y: 0,
+    text: '12',
+    fontSize: 30,
+    fontFamily: 'Arial',
+    fill: '#555',
+    width: 100,
+    padding: 0,
+    align: 'left',
+    offsetY,
+  });
+}
+
+/**
+ * Creates a rectangle for single item placement preview.
+ * @param x
+ * @param width
+ * @param height
+ * @returns Rect
+ */
+function getItemRect(x: number, width: number, height: number): Rect {
+  return new Rect({
+    x,
+    y: 0,
+    width,
+    height,
+    cornerRadius: 8,
+    stroke: '#7592b6',
+    strokeWidth: 1,
+  });
+}

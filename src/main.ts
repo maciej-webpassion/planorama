@@ -31,14 +31,26 @@ function onViewModeChange(mode: string) {
   MODE = mode;
 }
 
+function onItemMouseOver(item: any) {
+  console.log('Item mouse over:', item);
+}
+
 let MODE = 'viewport';
 
-const { setStageMode, setXAlignment, setYAlignment, spreadItemsByCircle, setSpreadOpts, setCreatorCurrentItem } =
-  setStage({
-    stageContainer,
-    onViewportChange,
-    onViewModeChange,
-  });
+const {
+  setStageMode,
+  setXAlignment,
+  setYAlignment,
+  spreadItemsByCircle,
+  setSpreadOpts,
+  setCreatorCurrentItem,
+  setGap,
+} = setStage({
+  stageContainer,
+  onViewportChange,
+  onViewModeChange,
+  onItemMouseOver,
+});
 
 const modeSelector = document.querySelector<HTMLSelectElement>('#select-mode')!;
 const alignXButton = document.querySelector<HTMLButtonElement>('#btn-align-x')!;
@@ -50,6 +62,14 @@ const rotationRadius = document.querySelector<HTMLInputElement>('#input-radius')
 
 const computerItemButton = document.querySelector<HTMLButtonElement>('#btn-creator-computer')!;
 const parkingItemButton = document.querySelector<HTMLButtonElement>('#btn-creator-parking')!;
+
+const gapInput = document.querySelector<HTMLInputElement>('#input-gap')!;
+
+gapInput.addEventListener('change', () => {
+  const gap = gapInput.value ? parseInt(gapInput.value, 10) : 10;
+  console.log('Setting gap to:', gap);
+  setGap(gap);
+});
 
 rotationMode.addEventListener('change', () => {
   let value = rotationMode.value as any;

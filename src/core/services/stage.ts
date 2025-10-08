@@ -4,7 +4,7 @@ import { Vector2d } from 'konva/lib/types';
 
 import { effect } from '@preact/signals-core';
 
-import { ItemConfig, setCreatorCurrentItemConfig } from '../store/item';
+import { ItemConfig, setCreatorCurrentItemConfig, setItemGap, setOnItemMouseOver } from '../store/item';
 import { setAlignX, setAlignY, setSpreadByCircle, setSpreadByOpts, SpreadByOpts } from '../store/select';
 import { getModeValue, getPositionValue, getScaleValue, setModeValue, setPositionValue, setScaleValue, StageMode } from '../store/stage';
 import { setBackground } from './background';
@@ -15,6 +15,8 @@ export interface PlanoramaConfig {
   stageContainer: HTMLDivElement;
   onViewportChange?: (data: { scale: Vector2d; position: Vector2d }) => void;
   onViewModeChange?: (mode: StageMode) => void;
+  onItemMouseOver?: (item: any) => void;
+  onItemMouseOut?: (item: any) => void;
 }
 
 export interface Planorama {
@@ -26,13 +28,19 @@ export interface Planorama {
   spreadItemsByCircle: () => void;
   setSpreadOpts: (opts: SpreadByOpts) => void;
   setCreatorCurrentItem: (config: ItemConfig) => void;
+  setGap: (gap: number) => void;
 }
 
 export type { Vector2d } from 'konva/lib/types';
 
 let stage: Stage;
 export const setStage = (config: PlanoramaConfig): Planorama => {
-  const { stageContainer, onViewportChange, onViewModeChange } = config;
+  const { stageContainer, onViewportChange, onViewModeChange, onItemMouseOver } = config;
+
+  if (onItemMouseOver) {
+    onItemMouseOver && setOnItemMouseOver(onItemMouseOver);
+  }
+
   if (!stage) {
     stage = createStage(stageContainer);
 
@@ -101,6 +109,9 @@ export const setStage = (config: PlanoramaConfig): Planorama => {
     spreadItemsByCircle,
     setSpreadOpts,
     setCreatorCurrentItem,
+    setGap: (gap: number) => {
+      setItemGap(gap);
+    },
   };
 };
 

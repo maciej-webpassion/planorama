@@ -1,7 +1,5 @@
 import { Signal, signal } from '@preact/signals-core';
 
-
-
 const DEFAULT_ITEM_GAP = 10;
 
 export interface ItemConfig {
@@ -15,6 +13,7 @@ export interface ItemConfig {
 export const itemGap: Signal<number> = signal(DEFAULT_ITEM_GAP);
 export const creatorCurrentItemConfig: Signal<ItemConfig | null> = signal(null);
 export const creatorItemGroups: Signal<ItemConfig[]> = signal([]);
+export const onItemMouseOver: Signal<(item: any) => void> = signal(() => {});
 
 export const setItemGap = (value: number) => {
   itemGap.value = value;
@@ -34,3 +33,8 @@ export const setCreatorItemGroups = (groups: ItemConfig[]) => {
   creatorItemGroups.value = groups;
 };
 export const getCreatorItemGroups = (): ItemConfig[] => creatorItemGroups.value;
+
+export const setOnItemMouseOver = (fn: (item: any) => void) => {
+  onItemMouseOver.value = fn;
+};
+export const getOnItemMouseOver = (): ((item: any) => void) => onItemMouseOver.value;
