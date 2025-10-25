@@ -4,9 +4,23 @@ import { Vector2d } from 'konva/lib/types';
 
 import { effect } from '@preact/signals-core';
 
-import { ItemConfig, setCreatorCurrentItemConfig, setItemGap, setOnItemMouseOver } from '../store/item';
-import { setAlignX, setAlignY, setSpreadByCircle, setSpreadByOpts, SpreadByOpts } from '../store/select';
-import { getModeValue, getPositionValue, getScaleValue, setModeValue, setPositionValue, setScaleValue, StageMode } from '../store/stage';
+import {
+  ItemConfig,
+  setCreatorCurrentItemConfig,
+  setItemGap,
+  setOnItemMouseOut,
+  setOnItemMouseOver,
+} from '../store/item';
+import { setAlignX, setAlignY, setRotate, setSpreadByCircle, setSpreadByOpts, SpreadByOpts } from '../store/select';
+import {
+  getModeValue,
+  getPositionValue,
+  getScaleValue,
+  setModeValue,
+  setPositionValue,
+  setScaleValue,
+  StageMode,
+} from '../store/stage';
 import { setBackground } from './background';
 import { setItemsLayer } from './items/items';
 import { setViewport } from './viewport';
@@ -29,16 +43,21 @@ export interface Planorama {
   setSpreadOpts: (opts: SpreadByOpts) => void;
   setCreatorCurrentItem: (config: ItemConfig) => void;
   setGap: (gap: number) => void;
+  setRotation: (angle: number) => void;
 }
 
 export type { Vector2d } from 'konva/lib/types';
 
 let stage: Stage;
 export const setStage = (config: PlanoramaConfig): Planorama => {
-  const { stageContainer, onViewportChange, onViewModeChange, onItemMouseOver } = config;
+  const { stageContainer, onViewportChange, onViewModeChange, onItemMouseOver, onItemMouseOut } = config;
 
   if (onItemMouseOver) {
     onItemMouseOver && setOnItemMouseOver(onItemMouseOver);
+  }
+
+  if (onItemMouseOut) {
+    onItemMouseOut && setOnItemMouseOut(onItemMouseOut);
   }
 
   if (!stage) {
@@ -83,6 +102,10 @@ export const setStage = (config: PlanoramaConfig): Planorama => {
     setAlignY();
   }
 
+  function setRotation(angle: number) {
+    setRotate(angle);
+  }
+
   function spreadItemsByCircle() {
     setSpreadByCircle();
   }
@@ -109,6 +132,7 @@ export const setStage = (config: PlanoramaConfig): Planorama => {
     spreadItemsByCircle,
     setSpreadOpts,
     setCreatorCurrentItem,
+    setRotation,
     setGap: (gap: number) => {
       setItemGap(gap);
     },

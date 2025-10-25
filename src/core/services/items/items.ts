@@ -3,7 +3,8 @@ import { Layer } from 'konva/lib/Layer';
 import { Stage } from 'konva/lib/Stage';
 
 import { ITEM_NAME } from '../../config/config.const';
-import { getCreatorCurrentItemConfig, getOnItemMouseOver } from '../../store/item';
+import { getCreatorCurrentItemConfig, getOnItemMouseOut, getOnItemMouseOver } from '../../store/item';
+import { getCenterOfBoundingBox, stageToWindow } from '../calc/utils';
 import { setCreator } from './creator';
 import { setSelector } from './selector';
 
@@ -22,6 +23,7 @@ export const setItemsLayer = (stage: Stage) => {
 export const createItem = (x: number, y: number, rotation: number) => {
   const CURRENT_ITEM = getCreatorCurrentItemConfig();
   const onItemMouseOver = getOnItemMouseOver();
+  const onItemMouseOut = getOnItemMouseOut();
   if (!CURRENT_ITEM) return;
 
   const group = new Konva.Group({
@@ -55,6 +57,7 @@ export const createItem = (x: number, y: number, rotation: number) => {
         boundingBox: parent?.getClientRect({ relativeTo: stage }),
         internalId: parent?._id,
         pos: parent?.getRelativePointerPosition(),
+        itemCenter: stageToWindow(stage, getCenterOfBoundingBox(parent?.getClientRect({ relativeTo: stage }))),
         scale: stage.attrs.scaleX,
         e,
       });
@@ -65,6 +68,16 @@ export const createItem = (x: number, y: number, rotation: number) => {
     const stage = e.target.getStage();
     if (stage) {
       stage.container().style.cursor = 'default';
+      const parent = this.getParent();
+      onItemMouseOut({
+        type: parent?.attrs.type,
+        boundingBox: parent?.getClientRect({ relativeTo: stage }),
+        internalId: parent?._id,
+        pos: parent?.getRelativePointerPosition(),
+        itemCenter: stageToWindow(stage, getCenterOfBoundingBox(parent?.getClientRect({ relativeTo: stage }))),
+        scale: stage.attrs.scaleX,
+        e,
+      });
     }
   });
 

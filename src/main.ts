@@ -4,7 +4,7 @@ import { setStage, Vector2d } from './core/services/stage.ts';
 import { ItemConfig } from './core/store/item/index.ts';
 import { RotationMode } from './core/store/select/index.ts';
 
-const stageContainer = document.querySelector<HTMLDivElement>('#parkey-plan-stage')!;
+const stageContainer = document.querySelector<HTMLDivElement>('#planorama-stage')!;
 function onViewportChange(data: { scale: Vector2d; position: Vector2d }) {
   // console.log(data);
 }
@@ -33,6 +33,17 @@ function onViewModeChange(mode: string) {
 
 function onItemMouseOver(item: any) {
   console.log('Item mouse over:', item);
+  tooltip.classList.add('visible');
+  if (item.itemCenter) {
+    tooltip.style.left = item.itemCenter.x + 'px';
+    tooltip.style.top = item.itemCenter.y + 'px';
+    tooltip.innerText = `Id: ${item.internalId} Item: ${item.type}`;
+  }
+}
+
+function onItemMouseOut(item: any) {
+  console.log('Item mouse out:', item);
+  tooltip.classList.remove('visible');
 }
 
 let MODE = 'viewport';
@@ -45,16 +56,19 @@ const {
   setSpreadOpts,
   setCreatorCurrentItem,
   setGap,
+  setRotation,
 } = setStage({
   stageContainer,
   onViewportChange,
   onViewModeChange,
   onItemMouseOver,
+  onItemMouseOut,
 });
 
 const modeSelector = document.querySelector<HTMLSelectElement>('#select-mode')!;
 const alignXButton = document.querySelector<HTMLButtonElement>('#btn-align-x')!;
 const alignYButton = document.querySelector<HTMLButtonElement>('#btn-align-y')!;
+const rotateButton = document.querySelector<HTMLButtonElement>('#btn-rotate')!;
 const spreadByCircleButton = document.querySelector<HTMLButtonElement>('#btn-spread-circle')!;
 
 const rotationMode = document.querySelector<HTMLSelectElement>('#select-rotation')!;
@@ -64,6 +78,7 @@ const computerItemButton = document.querySelector<HTMLButtonElement>('#btn-creat
 const parkingItemButton = document.querySelector<HTMLButtonElement>('#btn-creator-parking')!;
 
 const gapInput = document.querySelector<HTMLInputElement>('#input-gap')!;
+const tooltip = document.querySelector<HTMLDivElement>('#tooltip')!;
 
 gapInput.addEventListener('change', () => {
   const gap = gapInput.value ? parseInt(gapInput.value, 10) : 10;
@@ -99,6 +114,14 @@ alignXButton.addEventListener('click', () => {
   setXAlignment();
 });
 
+alignYButton.addEventListener('click', () => {
+  setYAlignment();
+});
+rotateButton.addEventListener('click', () => {
+  const angleInput = document.querySelector<HTMLInputElement>('#input-rotate')!;
+  const angle = angleInput.value ? parseFloat(angleInput.value) : 0;
+  setRotation(angle);
+});
 alignYButton.addEventListener('click', () => {
   setYAlignment();
 });

@@ -6,55 +6,77 @@
     <title>Planorama Tests</title>
   </head>
   <body>
-    <div id="app"></div>
-    <div id="parkey-plan-stage" class="stage"></div>
-    <div class="select">
-      <select id="select-mode">
-        <option value="viewport">Viewport</option>
-        <option value="create">Create</option>
-        <option value="select">Select</option>
-      </select>
-    </div>
-    <div class="selection-tools">
-      <button id="btn-align-x">Align X</button>
-      <button id="btn-align-y">Align Y</button>
-      <hr />
-      <form id="form-spread-opts">
-        <fieldset>
-          <legend>Spread by Circle Options:</legend>
-          <label for="select-rotation">With Rotation:</label>
-          <select id="select-rotation" name="select-rotation">
-            <option value="none">None</option>
-            <option value="outside">Outside</option>
-            <option value="inside">Inside</option>
+    <div class="layout">
+      <div class="sidebar">
+        <div class="select">
+          <select id="select-mode">
+            <option value="viewport">Viewport</option>
+            <option value="create">Create</option>
+            <option value="select">Select</option>
           </select>
+        </div>
+        <div class="selection-tools">
+          <button id="btn-align-x">Align X</button>
+          <button id="btn-align-y">Align Y</button>
+          <button id="btn-rotate">Rotate</button>
+          <hr />
+          <form>
+            <fieldset>
+              <legend>Spread by Circle Options:</legend>
+              <label for="select-rotation">With Rotation:</label>
+              <select id="select-rotation" name="select-rotation">
+                <option value="none">None</option>
+                <option value="outside">Outside</option>
+                <option value="inside">Inside</option>
+              </select>
 
-          <label for="input-radius">Radius:</label>
-          <input
-            type="number"
-            id="input-radius"
-            name="input-radius"
-            value="500"
-            min="0"
-          />
-        </fieldset>
-      </form>
-      <button id="btn-spread-circle">Spread by Circle</button>
-      <hr />
-      <div>
-        <button id="btn-creator-computer">Computer Item</button>
-        <button id="btn-creator-parking">Parking Spot</button>
+              <label for="input-radius">Radius:</label>
+              <input
+                type="number"
+                id="input-radius"
+                name="input-radius"
+                value="500"
+                min="0"
+              />
+            </fieldset>
+          </form>
+          <button id="btn-spread-circle">Spread by Circle</button>
+          <hr />
+          <div>
+            <button id="btn-creator-computer">Computer Item</button>
+            <button id="btn-creator-parking">Parking Spot</button>
+          </div>
+          <hr />
+          <form>
+            <fieldset>
+              <legend>Gap Size:</legend>
+
+              <label for="input-gap">Gap:</label>
+              <input type="number" id="input-gap" name="input-gap" value="10" />
+            </fieldset>
+          </form>
+          <hr />
+          <form>
+            <fieldset>
+              <legend>Rotate (degrees):</legend>
+
+              <label for="input-rotate">Angle:</label>
+              <input
+                type="number"
+                id="input-rotate"
+                name="input-rotate"
+                value="0"
+              />
+            </fieldset>
+          </form>
+        </div>
       </div>
-      <hr />
-      <form id="form-spread-opts">
-        <fieldset>
-          <legend>Gap Size:</legend>
-
-          <label for="input-gap">Gap:</label>
-          <input type="number" id="input-gap" name="input-gap" value="10" />
-        </fieldset>
-      </form>
+      <div class="stage">
+        <div id="planorama-stage" class="p-stage"></div>
+      </div>
     </div>
+
+    <div id="tooltip">Tooltip</div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
