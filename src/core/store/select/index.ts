@@ -35,8 +35,8 @@ export const getAlignY = (): number => alignY.value;
 /**
  * Increment rotation signal to trigger rotation effect
  */
-export const setRotate = (angle: number) => {
-  rotate.value = angle;
+export const setRotate = () => {
+  rotate.value += 1;
 };
 export const getRotate = (): number => rotate.value;
 

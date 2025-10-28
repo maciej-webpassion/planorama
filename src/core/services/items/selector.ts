@@ -8,12 +8,13 @@ import { Util } from 'konva/lib/Util';
 import { effect } from '@preact/signals-core';
 
 import { ITEM_NAME, TRANSFORMER_PADDING } from '../../config/config.const';
-import { getAlignX, getAlignY, getSpreadByCircle } from '../../store/select';
+import { getAlignX, getAlignY, getRotate, getSpreadByCircle } from '../../store/select';
 import { getModeValue } from '../../store/stage';
 import { alignItemsX } from '../calc/select/align-x';
 import { alignItemsY } from '../calc/select/align-y';
 import { spreadItemsByCircle } from '../calc/select/circle-spread';
 import { resetGroupTransforms } from '../calc/select/common';
+import { rotateItems } from '../calc/select/rotate-items';
 
 export const setSelector = (layer: Layer, itemsLayer: Layer, stage: Stage) => {
   console.log('setSelector');
@@ -129,6 +130,13 @@ export const setSelector = (layer: Layer, itemsLayer: Layer, stage: Stage) => {
     const spreadV = getSpreadByCircle();
     if (spreadV > 0) {
       spreadItemsByCircle(tr, itemsLayer, stage);
+    }
+  });
+
+  effect(() => {
+    const rotate = getRotate();
+    if (rotate > 0) {
+      rotateItems(tr, itemsLayer, stage);
     }
   });
 };

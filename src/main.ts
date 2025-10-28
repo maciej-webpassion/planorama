@@ -57,6 +57,7 @@ const {
   setCreatorCurrentItem,
   setGap,
   setRotation,
+  setRotationAngle,
 } = setStage({
   stageContainer,
   onViewportChange,
@@ -68,7 +69,10 @@ const {
 const modeSelector = document.querySelector<HTMLSelectElement>('#select-mode')!;
 const alignXButton = document.querySelector<HTMLButtonElement>('#btn-align-x')!;
 const alignYButton = document.querySelector<HTMLButtonElement>('#btn-align-y')!;
+
 const rotateButton = document.querySelector<HTMLButtonElement>('#btn-rotate')!;
+const angleInput = document.querySelector<HTMLInputElement>('#input-rotate')!;
+
 const spreadByCircleButton = document.querySelector<HTMLButtonElement>('#btn-spread-circle')!;
 
 const rotationMode = document.querySelector<HTMLSelectElement>('#select-rotation')!;
@@ -117,11 +121,16 @@ alignXButton.addEventListener('click', () => {
 alignYButton.addEventListener('click', () => {
   setYAlignment();
 });
+
 rotateButton.addEventListener('click', () => {
-  const angleInput = document.querySelector<HTMLInputElement>('#input-rotate')!;
-  const angle = angleInput.value ? parseFloat(angleInput.value) : 0;
-  setRotation(angle);
+  setRotation();
 });
+
+angleInput.addEventListener('change', () => {
+  const angle = angleInput.value ? parseInt(angleInput.value, 10) : 0;
+  setRotationAngle(angle);
+});
+
 alignYButton.addEventListener('click', () => {
   setYAlignment();
 });

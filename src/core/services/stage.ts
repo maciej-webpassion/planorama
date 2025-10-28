@@ -8,6 +8,7 @@ import {
   ItemConfig,
   setCreatorCurrentItemConfig,
   setItemGap,
+  setItemRotationAngle,
   setOnItemMouseOut,
   setOnItemMouseOver,
 } from '../store/item';
@@ -43,7 +44,8 @@ export interface Planorama {
   setSpreadOpts: (opts: SpreadByOpts) => void;
   setCreatorCurrentItem: (config: ItemConfig) => void;
   setGap: (gap: number) => void;
-  setRotation: (angle: number) => void;
+  setRotation: () => void;
+  setRotationAngle: (angle: number) => void;
 }
 
 export type { Vector2d } from 'konva/lib/types';
@@ -102,8 +104,8 @@ export const setStage = (config: PlanoramaConfig): Planorama => {
     setAlignY();
   }
 
-  function setRotation(angle: number) {
-    setRotate(angle);
+  function setRotation() {
+    setRotate();
   }
 
   function spreadItemsByCircle() {
@@ -135,6 +137,9 @@ export const setStage = (config: PlanoramaConfig): Planorama => {
     setRotation,
     setGap: (gap: number) => {
       setItemGap(gap);
+    },
+    setRotationAngle: (angle: number) => {
+      setItemRotationAngle(angle);
     },
   };
 };
