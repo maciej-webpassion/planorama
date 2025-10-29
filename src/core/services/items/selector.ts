@@ -5,10 +5,8 @@ import { Transformer } from 'konva/lib/shapes/Transformer';
 import { Stage } from 'konva/lib/Stage';
 import { Util } from 'konva/lib/Util';
 
-import { effect } from '@preact/signals-core';
-
 import { ITEM_NAME, TRANSFORMER_PADDING } from '../../config/config.const';
-import { getAlignX, getAlignY, getRotate, getSpreadByCircle } from '../../store/select';
+import { on } from '../../store/event-bus';
 import { getModeValue } from '../../store/stage';
 import { alignItemsX } from '../calc/select/align-x';
 import { alignItemsY } from '../calc/select/align-y';
@@ -20,8 +18,6 @@ const TRANSFORMER_OBJECT_NAMES = ['back', 'rotater _anchor'];
 const STAGE_OBJECT_NAMES = ['background', 'planorama-stage'];
 
 export const setSelector = (layer: Layer, itemsLayer: Layer, stage: Stage) => {
-  console.log('setSelector');
-
   const { group, selectionRectangle, tr } = getHelperObjects();
 
   layer.add(group);
@@ -32,7 +28,8 @@ export const setSelector = (layer: Layer, itemsLayer: Layer, stage: Stage) => {
   let selecting = false;
 
   stage.on('mousedown touchstart', (e) => {
-    console.log(e.target.name());
+    const itemCount = stage.find(`.${ITEM_NAME}`).length;
+    console.log(itemCount);
 
     if (tr.nodes().length && !TRANSFORMER_OBJECT_NAMES.includes(e.target.name())) {
       const targetParent = e?.target?.parent;
@@ -104,17 +101,17 @@ export const setSelector = (layer: Layer, itemsLayer: Layer, stage: Stage) => {
 
     // if click on empty area - remove all selections
     if (e.target === stage) {
-      // tr.nodes([]);
       return;
     }
-    console.log(e.evt.metaKey);
-    console.log(e.target);
 
     const targetParent = e?.target?.parent as Group;
-    if (targetParent?.hasName(ITEM_NAME)) {
-      console.log('click on item');
-      console.log(tr.nodes());
 
+    // do nothing if clicked NOT on our rectangles
+    if (!targetParent?.hasName(ITEM_NAME)) {
+      return;
+    }
+
+    if (targetParent?.hasName(ITEM_NAME)) {
       let cleanupPreviousSelection = true;
       if (e.evt.ctrlKey || e.evt.metaKey) {
         cleanupPreviousSelection = false;
@@ -122,39 +119,34 @@ export const setSelector = (layer: Layer, itemsLayer: Layer, stage: Stage) => {
 
       addItemToTransformer(tr, group, targetParent, itemsLayer, cleanupPreviousSelection);
     }
+  });
 
-    // do nothing if clicked NOT on our rectangles
-    if (!targetParent?.hasName(ITEM_NAME)) {
-      return;
+  on('align-x', () => {
+    alignItemsX(tr, itemsLayer, stage);
+  });
+
+  on('align-y', () => {
+    alignItemsY(tr, itemsLayer, stage);
+  });
+
+  on('spread-circle', () => {
+    spreadItemsByCircle(tr, itemsLayer, stage);
+  });
+
+  on('rotate', () => {
+    rotateItems(tr, itemsLayer, stage);
+  });
+
+  on('discard-selection', () => {
+    if (getModeValue() !== 'select') return;
+    if (tr.nodes().length > 0) {
+      moveItemsBackToLayer(group, itemsLayer, tr);
     }
   });
 
-  effect(() => {
-    const xV = getAlignX();
-    if (xV > 0) {
-      alignItemsX(tr, itemsLayer, stage);
-    }
-  });
-
-  effect(() => {
-    const yV = getAlignY();
-    if (yV > 0) {
-      alignItemsY(tr, itemsLayer, stage);
-    }
-  });
-
-  effect(() => {
-    const spreadV = getSpreadByCircle();
-    if (spreadV > 0) {
-      spreadItemsByCircle(tr, itemsLayer, stage);
-    }
-  });
-
-  effect(() => {
-    const rotate = getRotate();
-    if (rotate > 0) {
-      rotateItems(tr, itemsLayer, stage);
-    }
+  on('delete-selected-items', () => {
+    if (getModeValue() !== 'select') return;
+    deleteSelectedItems(tr);
   });
 };
 
@@ -257,7 +249,7 @@ function moveSelectedItemsToTransformer(
   group.cache();
 }
 
-export function addItemToTransformer(
+function addItemToTransformer(
   tr: Transformer,
   selectionGroup: Group,
   item: Group,
@@ -266,12 +258,22 @@ export function addItemToTransformer(
 ) {
   item.remove();
   if (cleanupPreviousSelection) {
-    console.log('cleanup');
-
     moveItemsBackToLayer(selectionGroup, itemsLayer, tr);
   }
   selectionGroup.add(item);
 
   tr.nodes([selectionGroup]);
   selectionGroup.cache();
+}
+
+function deleteSelectedItems(tr: Transformer) {
+  if (getModeValue() !== 'select') return;
+  const selectionGroup = tr.nodes() as Group[];
+
+  if (selectionGroup.length > 0) {
+    selectionGroup[0].getChildren().forEach((node) => {
+      node.destroy();
+    });
+    resetGroupTransforms(selectionGroup[0], tr);
+  }
 }

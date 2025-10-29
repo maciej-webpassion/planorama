@@ -58,6 +58,8 @@ const {
   setGap,
   setRotation,
   setRotationAngle,
+  discardSelection,
+  deleteSelectedItems,
 } = setStage({
   stageContainer,
   onViewportChange,
@@ -131,10 +133,6 @@ angleInput.addEventListener('change', () => {
   setRotationAngle(angle);
 });
 
-alignYButton.addEventListener('click', () => {
-  setYAlignment();
-});
-
 spreadByCircleButton.addEventListener('click', () => {
   spreadItemsByCircle();
 });
@@ -145,6 +143,17 @@ computerItemButton.addEventListener('click', () => {
 
 parkingItemButton.addEventListener('click', () => {
   setCreatorCurrentItem(TMP_GROUPS[0]);
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    discardSelection();
+  }
+
+  if (e.key === 'Delete' || e.key === 'Backspace') {
+    deleteSelectedItems();
+  }
+  e.preventDefault();
 });
 
 setTimeout(() => {

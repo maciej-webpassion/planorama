@@ -4,6 +4,7 @@ import { Vector2d } from 'konva/lib/types';
 
 import { effect } from '@preact/signals-core';
 
+import { emit } from '../store/event-bus';
 import {
   ItemConfig,
   setCreatorCurrentItemConfig,
@@ -12,7 +13,7 @@ import {
   setOnItemMouseOut,
   setOnItemMouseOver,
 } from '../store/item';
-import { setAlignX, setAlignY, setRotate, setSpreadByCircle, setSpreadByOpts, SpreadByOpts } from '../store/select';
+import { setSpreadByOpts, SpreadByOpts } from '../store/select';
 import {
   getModeValue,
   getPositionValue,
@@ -46,6 +47,8 @@ export interface Planorama {
   setGap: (gap: number) => void;
   setRotation: () => void;
   setRotationAngle: (angle: number) => void;
+  discardSelection: () => void;
+  deleteSelectedItems: () => void;
 }
 
 export type { Vector2d } from 'konva/lib/types';
@@ -96,22 +99,6 @@ export const setStage = (config: PlanoramaConfig): Planorama => {
     setModeValue(mode);
   }
 
-  function setXAlignment() {
-    setAlignX();
-  }
-
-  function setYAlignment() {
-    setAlignY();
-  }
-
-  function setRotation() {
-    setRotate();
-  }
-
-  function spreadItemsByCircle() {
-    setSpreadByCircle();
-  }
-
   function setSpreadOpts(opts: SpreadByOpts) {
     setSpreadByOpts(opts);
   }
@@ -120,21 +107,18 @@ export const setStage = (config: PlanoramaConfig): Planorama => {
     setCreatorCurrentItemConfig(config);
   }
 
-  // const selectionActions = {
-  //   setXAlignment: setXAlignment(),
-  //   setYAlignment: setYAlignment(),
-  // };
-
   return {
     stage,
     setStageScale,
     setStageMode,
-    setXAlignment,
-    setYAlignment,
-    spreadItemsByCircle,
+    setXAlignment: () => emit('align-x'),
+    setYAlignment: () => emit('align-y'),
+    spreadItemsByCircle: () => emit('spread-circle'),
+    setRotation: () => emit('rotate'),
+    discardSelection: () => emit('discard-selection'),
+    deleteSelectedItems: () => emit('delete-selected-items'),
     setSpreadOpts,
     setCreatorCurrentItem,
-    setRotation,
     setGap: (gap: number) => {
       setItemGap(gap);
     },

@@ -7,46 +7,11 @@ export interface SpreadByOpts {
   radius: number;
 }
 
-export const alignX: Signal<number> = signal(0);
-export const alignY: Signal<number> = signal(0);
-export const rotate: Signal<number> = signal(0);
-export const spreadByCircle: Signal<number> = signal(0);
 export const spreadByOpts: Signal<SpreadByOpts> = signal({
   withRotation: null,
   radius: 500,
 });
 
-/**
- * Increment alignX signal to trigger alignment effect
- */
-export const setAlignX = () => {
-  alignX.value += 1;
-};
-export const getAlignX = (): number => alignX.value;
-
-/**
- * Increment alignY signal to trigger alignment effect
- */
-export const setAlignY = () => {
-  alignY.value += 1;
-};
-export const getAlignY = (): number => alignY.value;
-
-/**
- * Increment rotation signal to trigger rotation effect
- */
-export const setRotate = () => {
-  rotate.value += 1;
-};
-export const getRotate = (): number => rotate.value;
-
-/**
- * Increment spreadByCircle signal to trigger spread by circle effect
- */
-export const setSpreadByCircle = () => {
-  spreadByCircle.value += 1;
-};
-export const getSpreadByCircle = (): number => spreadByCircle.value;
 export const setSpreadByOpts = (opts: SpreadByOpts) => {
   spreadByOpts.value = opts;
 };
