@@ -11,9 +11,31 @@ import { setSelector } from './selector';
 let ITEMS_LAYER: Layer;
 let TRANSFORM_LAYER: Layer;
 
+const handleMouseAction = (e: any, object: any, type: 'over' | 'out', fn: (data: any) => void) => {
+  const stage = e.target.getStage();
+  if (stage) {
+    stage.container().style.cursor = type === 'over' ? 'pointer' : 'default';
+    object.fill(type === 'over' ? '#3D63EB' : '');
+    const parent = object.getParent();
+    fn({
+      type: parent?.attrs.type,
+      boundingBox: parent?.getClientRect({ relativeTo: stage }),
+      internalId: parent?._id,
+      pos: parent?.getRelativePointerPosition(),
+      itemCenter: stageToWindow(stage, getCenterOfBoundingBox(parent?.getClientRect({ relativeTo: stage }))),
+      scale: stage.attrs.scaleX,
+      e,
+    });
+  }
+};
+
 export const setItemsLayer = (stage: Stage) => {
-  ITEMS_LAYER = new Konva.Layer();
-  TRANSFORM_LAYER = new Konva.Layer();
+  ITEMS_LAYER = new Konva.Layer({
+    name: 'items-layer',
+  });
+  TRANSFORM_LAYER = new Konva.Layer({
+    name: 'transform-layer',
+  });
   stage.add(ITEMS_LAYER);
   stage.add(TRANSFORM_LAYER);
   setCreator(ITEMS_LAYER, stage);
@@ -47,38 +69,10 @@ export const createItem = (x: number, y: number, rotation: number) => {
   });
 
   item.on('mouseover', function (e) {
-    this.fill('#3D63EB');
-    const stage = e.target.getStage();
-    if (stage) {
-      stage.container().style.cursor = 'pointer';
-      const parent = this.getParent();
-      onItemMouseOver({
-        type: parent?.attrs.type,
-        boundingBox: parent?.getClientRect({ relativeTo: stage }),
-        internalId: parent?._id,
-        pos: parent?.getRelativePointerPosition(),
-        itemCenter: stageToWindow(stage, getCenterOfBoundingBox(parent?.getClientRect({ relativeTo: stage }))),
-        scale: stage.attrs.scaleX,
-        e,
-      });
-    }
+    handleMouseAction(e, this, 'over', onItemMouseOver);
   });
   item.on('mouseout', function (e) {
-    this.fill('');
-    const stage = e.target.getStage();
-    if (stage) {
-      stage.container().style.cursor = 'default';
-      const parent = this.getParent();
-      onItemMouseOut({
-        type: parent?.attrs.type,
-        boundingBox: parent?.getClientRect({ relativeTo: stage }),
-        internalId: parent?._id,
-        pos: parent?.getRelativePointerPosition(),
-        itemCenter: stageToWindow(stage, getCenterOfBoundingBox(parent?.getClientRect({ relativeTo: stage }))),
-        scale: stage.attrs.scaleX,
-        e,
-      });
-    }
+    handleMouseAction(e, this, 'out', onItemMouseOut);
   });
 
   Konva.Image.fromURL(CURRENT_ITEM.src, function (img) {

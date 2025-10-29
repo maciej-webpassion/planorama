@@ -16,6 +16,9 @@ import { spreadItemsByCircle } from '../calc/select/circle-spread';
 import { resetGroupTransforms } from '../calc/select/common';
 import { rotateItems } from '../calc/select/rotate-items';
 
+const TRANSFORMER_OBJECT_NAMES = ['back', 'rotater _anchor'];
+const STAGE_OBJECT_NAMES = ['background', 'planorama-stage'];
+
 export const setSelector = (layer: Layer, itemsLayer: Layer, stage: Stage) => {
   console.log('setSelector');
 
@@ -29,12 +32,18 @@ export const setSelector = (layer: Layer, itemsLayer: Layer, stage: Stage) => {
   let selecting = false;
 
   stage.on('mousedown touchstart', (e) => {
-    if (tr.nodes().length && e.target.name() !== 'back' && e.target.name() !== 'rotater _anchor') {
-      moveItemsBackToLayer(group, itemsLayer, tr, stage);
+    console.log(e.target.name());
+
+    if (tr.nodes().length && !TRANSFORMER_OBJECT_NAMES.includes(e.target.name())) {
+      const targetParent = e?.target?.parent;
+      if (targetParent?.hasName(ITEM_NAME)) {
+        return;
+      }
+      moveItemsBackToLayer(group, itemsLayer, tr);
     }
 
     if (getModeValue() !== 'select') return;
-    if (!['background', 'planorama-stage'].includes(e.target.name())) return;
+    if (!STAGE_OBJECT_NAMES.includes(e.target.name())) return;
 
     e.evt.preventDefault();
     x1 = stage.getRelativePointerPosition()!.x;
@@ -98,16 +107,24 @@ export const setSelector = (layer: Layer, itemsLayer: Layer, stage: Stage) => {
       // tr.nodes([]);
       return;
     }
+    console.log(e.evt.metaKey);
     console.log(e.target);
 
-    if (e.target.hasName(ITEM_NAME)) {
+    const targetParent = e?.target?.parent as Group;
+    if (targetParent?.hasName(ITEM_NAME)) {
       console.log('click on item');
+      console.log(tr.nodes());
 
-      // tr.nodes([e.target]);
+      let cleanupPreviousSelection = true;
+      if (e.evt.ctrlKey || e.evt.metaKey) {
+        cleanupPreviousSelection = false;
+      }
+
+      addItemToTransformer(tr, group, targetParent, itemsLayer, cleanupPreviousSelection);
     }
 
     // do nothing if clicked NOT on our rectangles
-    if (!e.target.hasName(ITEM_NAME)) {
+    if (!targetParent?.hasName(ITEM_NAME)) {
       return;
     }
   });
@@ -171,7 +188,9 @@ function getRotationSnaps(jump: number) {
 }
 
 function getHelperObjects() {
-  const group = new Group();
+  const group = new Group({
+    name: 'selection-group',
+  });
 
   const selectionRectangle = new Rect({
     fill: 'rgba(78,191,255,0.1)',
@@ -190,6 +209,7 @@ function getHelperObjects() {
     useSingleNodeRotation: true,
     rotationSnaps: getRotationSnaps(10),
     shouldOverdrawWholeArea: true,
+    name: 'selection-transformer',
   });
 
   return {
@@ -199,7 +219,8 @@ function getHelperObjects() {
   };
 }
 
-function moveItemsBackToLayer(group: Group, itemsLayer: Layer, tr: Transformer, stage: Stage) {
+function moveItemsBackToLayer(group: Group, itemsLayer: Layer, tr: Transformer) {
+  const stage = tr.getStage()!;
   const items = [...group.getChildren()];
   items.forEach((shape) => {
     const transform = shape.getAbsoluteTransform(stage).decompose();
@@ -234,4 +255,23 @@ function moveSelectedItemsToTransformer(
 
   tr.nodes([group]);
   group.cache();
+}
+
+export function addItemToTransformer(
+  tr: Transformer,
+  selectionGroup: Group,
+  item: Group,
+  itemsLayer: Layer,
+  cleanupPreviousSelection: boolean
+) {
+  item.remove();
+  if (cleanupPreviousSelection) {
+    console.log('cleanup');
+
+    moveItemsBackToLayer(selectionGroup, itemsLayer, tr);
+  }
+  selectionGroup.add(item);
+
+  tr.nodes([selectionGroup]);
+  selectionGroup.cache();
 }
