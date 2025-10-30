@@ -2,14 +2,11 @@ import Konva from 'konva';
 import { Layer } from 'konva/lib/Layer';
 import { Stage } from 'konva/lib/Stage';
 
-import { ITEM_NAME } from '../../config/config.const';
+import { ITEM_NAME, ITEMS_LAYER_NAME, TRANSFORM_LAYER_NAME } from '../../config/config.const';
 import { getCreatorCurrentItemConfig, getOnItemMouseOut, getOnItemMouseOver } from '../../store/item';
 import { getCenterOfBoundingBox, stageToWindow } from '../calc/utils';
 import { setCreator } from './creator';
 import { setSelector } from './selector';
-
-let ITEMS_LAYER: Layer;
-let TRANSFORM_LAYER: Layer;
 
 const handleMouseAction = (e: any, object: any, type: 'over' | 'out', fn: (data: any) => void) => {
   const stage = e.target.getStage();
@@ -30,19 +27,20 @@ const handleMouseAction = (e: any, object: any, type: 'over' | 'out', fn: (data:
 };
 
 export const setItemsLayer = (stage: Stage) => {
-  ITEMS_LAYER = new Konva.Layer({
-    name: 'items-layer',
+  const itemsLayer = new Konva.Layer({
+    name: ITEMS_LAYER_NAME,
   });
-  TRANSFORM_LAYER = new Konva.Layer({
-    name: 'transform-layer',
+  const transformLayer = new Konva.Layer({
+    name: TRANSFORM_LAYER_NAME,
   });
-  stage.add(ITEMS_LAYER);
-  stage.add(TRANSFORM_LAYER);
-  setCreator(ITEMS_LAYER, stage);
-  setSelector(TRANSFORM_LAYER, ITEMS_LAYER, stage);
+  stage.add(itemsLayer);
+  stage.add(transformLayer);
+  setCreator(itemsLayer, stage);
+  setSelector(transformLayer, itemsLayer, stage);
 };
 
-export const createItem = (x: number, y: number, rotation: number) => {
+export const createItem = (x: number, y: number, rotation: number, stage: Stage) => {
+  const itemsLayer = stage.findOne(`.${ITEMS_LAYER_NAME}`) as Layer;
   const CURRENT_ITEM = getCreatorCurrentItemConfig();
   const onItemMouseOver = getOnItemMouseOver();
   const onItemMouseOut = getOnItemMouseOut();
@@ -88,5 +86,5 @@ export const createItem = (x: number, y: number, rotation: number) => {
 
   group.add(item);
 
-  ITEMS_LAYER.add(group);
+  itemsLayer.add(group);
 };

@@ -1,5 +1,8 @@
 import Konva from 'konva';
+import { Layer } from 'konva/lib/Layer';
 import { Stage } from 'konva/lib/Stage';
+
+import { BACKGROUND_LAYER_NAME } from '../config/config.const';
 
 const BG_SCALE = 1.9;
 
@@ -19,11 +22,17 @@ export const setBackground = (stage: Stage) => {
       y,
       scaleX: BG_SCALE,
       scaleY: BG_SCALE,
-      name: 'background',
+      name: BACKGROUND_LAYER_NAME,
     });
     bgLayer.add(bgImg);
   });
 
+  addDebugIndicators(bgLayer, stage);
+
+  bgLayer.moveToBottom();
+};
+
+function addDebugIndicators(bgLayer: Layer, stage: Stage) {
   // center indicator
   const circle = new Konva.Circle({
     radius: 10,
@@ -51,5 +60,4 @@ export const setBackground = (stage: Stage) => {
   bgLayer.add(circle);
   bgLayer.add(circle1);
   bgLayer.add(rect1);
-  bgLayer.moveToBottom();
-};
+}

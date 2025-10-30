@@ -1,6 +1,16 @@
 import { effect, signal } from '@preact/signals-core';
 
-type EventMap = Record<string, any>;
+type PlanoramaEvent =
+  | 'select:action:alignX'
+  | 'select:action:alignY'
+  | 'select:action:spreadCircle'
+  | 'select:action:rotate'
+  | 'select:action:discardSelection'
+  | 'select:action:deleteSelectedItems';
+
+type EventMap = {
+  [K in PlanoramaEvent]: any;
+};
 
 const eventSignal = signal<{ type: string; payload?: any } | null>(null);
 

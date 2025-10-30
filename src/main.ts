@@ -138,14 +138,18 @@ spreadByCircleButton.addEventListener('click', () => {
 });
 
 computerItemButton.addEventListener('click', () => {
+  setStageMode('create');
+  modeSelector.value = 'create';
   setCreatorCurrentItem(TMP_GROUPS[1]);
 });
 
 parkingItemButton.addEventListener('click', () => {
+  setStageMode('create');
+  modeSelector.value = 'create';
   setCreatorCurrentItem(TMP_GROUPS[0]);
 });
 
-document.addEventListener('keydown', (e) => {
+stageContainer.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     discardSelection();
   }
@@ -155,6 +159,8 @@ document.addEventListener('keydown', (e) => {
   }
   e.preventDefault();
 });
+
+stageContainer.tabIndex = 1;
 
 setTimeout(() => {
   // setStageScale({ x: 0.5, y: 0.5 });

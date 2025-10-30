@@ -4,6 +4,7 @@ import { Vector2d } from 'konva/lib/types';
 
 import { effect } from '@preact/signals-core';
 
+import { STAGE_NAME } from '../config/config.const';
 import { emit } from '../store/event-bus';
 import {
   ItemConfig,
@@ -111,12 +112,12 @@ export const setStage = (config: PlanoramaConfig): Planorama => {
     stage,
     setStageScale,
     setStageMode,
-    setXAlignment: () => emit('align-x'),
-    setYAlignment: () => emit('align-y'),
-    spreadItemsByCircle: () => emit('spread-circle'),
-    setRotation: () => emit('rotate'),
-    discardSelection: () => emit('discard-selection'),
-    deleteSelectedItems: () => emit('delete-selected-items'),
+    setXAlignment: () => emit('select:action:alignX'),
+    setYAlignment: () => emit('select:action:alignY'),
+    spreadItemsByCircle: () => emit('select:action:spreadCircle'),
+    setRotation: () => emit('select:action:rotate'),
+    discardSelection: () => emit('select:action:discardSelection'),
+    deleteSelectedItems: () => emit('select:action:deleteSelectedItems'),
     setSpreadOpts,
     setCreatorCurrentItem,
     setGap: (gap: number) => {
@@ -138,7 +139,7 @@ function createStage(stageContainer: HTMLDivElement): Stage {
       setPositionValue(pos);
       return this.getAbsolutePosition();
     },
-    name: 'planorama-stage',
+    name: STAGE_NAME,
   });
 }
 

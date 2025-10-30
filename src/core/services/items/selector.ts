@@ -5,7 +5,15 @@ import { Transformer } from 'konva/lib/shapes/Transformer';
 import { Stage } from 'konva/lib/Stage';
 import { Util } from 'konva/lib/Util';
 
-import { ITEM_NAME, TRANSFORMER_PADDING } from '../../config/config.const';
+import {
+  BACKGROUND_LAYER_NAME,
+  ITEM_NAME,
+  SELECTION_GROUP_NAME,
+  STAGE_NAME,
+  TRANSFORMER_NAME,
+  TRANSFORMER_OBJECT_NAMES,
+  TRANSFORMER_PADDING,
+} from '../../config/config.const';
 import { on } from '../../store/event-bus';
 import { getModeValue } from '../../store/stage';
 import { alignItemsX } from '../calc/select/align-x';
@@ -14,8 +22,7 @@ import { spreadItemsByCircle } from '../calc/select/circle-spread';
 import { resetGroupTransforms } from '../calc/select/common';
 import { rotateItems } from '../calc/select/rotate-items';
 
-const TRANSFORMER_OBJECT_NAMES = ['back', 'rotater _anchor'];
-const STAGE_OBJECT_NAMES = ['background', 'planorama-stage'];
+const STAGE_OBJECT_NAMES = [BACKGROUND_LAYER_NAME, STAGE_NAME];
 
 export const setSelector = (layer: Layer, itemsLayer: Layer, stage: Stage) => {
   const { group, selectionRectangle, tr } = getHelperObjects();
@@ -28,6 +35,7 @@ export const setSelector = (layer: Layer, itemsLayer: Layer, stage: Stage) => {
   let selecting = false;
 
   stage.on('mousedown touchstart', (e) => {
+    stage.container().focus();
     const itemCount = stage.find(`.${ITEM_NAME}`).length;
     console.log(itemCount);
 
@@ -104,7 +112,7 @@ export const setSelector = (layer: Layer, itemsLayer: Layer, stage: Stage) => {
       return;
     }
 
-    const targetParent = e?.target?.parent as Group;
+    const targetParent = e?.target?.getParent() as Group;
 
     // do nothing if clicked NOT on our rectangles
     if (!targetParent?.hasName(ITEM_NAME)) {
@@ -121,30 +129,30 @@ export const setSelector = (layer: Layer, itemsLayer: Layer, stage: Stage) => {
     }
   });
 
-  on('align-x', () => {
+  on('select:action:alignX', () => {
     alignItemsX(tr, itemsLayer, stage);
   });
 
-  on('align-y', () => {
+  on('select:action:alignY', () => {
     alignItemsY(tr, itemsLayer, stage);
   });
 
-  on('spread-circle', () => {
+  on('select:action:spreadCircle', () => {
     spreadItemsByCircle(tr, itemsLayer, stage);
   });
 
-  on('rotate', () => {
+  on('select:action:rotate', () => {
     rotateItems(tr, itemsLayer, stage);
   });
 
-  on('discard-selection', () => {
+  on('select:action:discardSelection', () => {
     if (getModeValue() !== 'select') return;
     if (tr.nodes().length > 0) {
       moveItemsBackToLayer(group, itemsLayer, tr);
     }
   });
 
-  on('delete-selected-items', () => {
+  on('select:action:deleteSelectedItems', () => {
     if (getModeValue() !== 'select') return;
     deleteSelectedItems(tr);
   });
@@ -181,7 +189,7 @@ function getRotationSnaps(jump: number) {
 
 function getHelperObjects() {
   const group = new Group({
-    name: 'selection-group',
+    name: SELECTION_GROUP_NAME,
   });
 
   const selectionRectangle = new Rect({
@@ -201,7 +209,7 @@ function getHelperObjects() {
     useSingleNodeRotation: true,
     rotationSnaps: getRotationSnaps(10),
     shouldOverdrawWholeArea: true,
-    name: 'selection-transformer',
+    name: TRANSFORMER_NAME,
   });
 
   return {

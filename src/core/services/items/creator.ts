@@ -74,7 +74,7 @@ export const setCreator = (layer: Layer, stage: Stage) => {
     if (getModeValue() !== 'create') return;
     itemsGroup.find('Rect').forEach((item) => {
       const pos = item.getAbsolutePosition(this);
-      createItem(pos.x, pos.y, item.getAbsoluteRotation());
+      createItem(pos.x, pos.y, item.getAbsoluteRotation(), stage);
     });
     isPaint = false;
     group.destroy();
