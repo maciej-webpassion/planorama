@@ -11,6 +11,7 @@ import {
   setCreatorCurrentItemConfig,
   setItemGap,
   setItemRotationAngle,
+  setOnItemMouseClick,
   setOnItemMouseOut,
   setOnItemMouseOver,
 } from '../store/item';
@@ -34,6 +35,7 @@ export interface PlanoramaConfig {
   onViewModeChange?: (mode: StageMode) => void;
   onItemMouseOver?: (item: any) => void;
   onItemMouseOut?: (item: any) => void;
+  onItemMouseClick?: (item: any) => void;
 }
 
 export interface Planorama {
@@ -56,7 +58,8 @@ export type { Vector2d } from 'konva/lib/types';
 
 let stage: Stage;
 export const setStage = (config: PlanoramaConfig): Planorama => {
-  const { stageContainer, onViewportChange, onViewModeChange, onItemMouseOver, onItemMouseOut } = config;
+  const { stageContainer, onViewportChange, onViewModeChange, onItemMouseOver, onItemMouseOut, onItemMouseClick } =
+    config;
 
   if (onItemMouseOver) {
     onItemMouseOver && setOnItemMouseOver(onItemMouseOver);
@@ -64,6 +67,10 @@ export const setStage = (config: PlanoramaConfig): Planorama => {
 
   if (onItemMouseOut) {
     onItemMouseOut && setOnItemMouseOut(onItemMouseOut);
+  }
+
+  if (onItemMouseClick) {
+    onItemMouseClick && setOnItemMouseClick(onItemMouseClick);
   }
 
   if (!stage) {
@@ -82,12 +89,6 @@ export const setStage = (config: PlanoramaConfig): Planorama => {
 
     // on mode change
     effect(() => {
-      // const mode = getModeValue();
-      // if (mode === "viewport") {
-      //   stage.draggable(true);
-      // } else {
-      //   stage.draggable(false);
-      // }
       setStageDraggableWithMode(stage, onViewModeChange);
     });
   }

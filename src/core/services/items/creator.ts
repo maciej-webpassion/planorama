@@ -5,6 +5,7 @@ import { Rect } from 'konva/lib/shapes/Rect';
 import { Text } from 'konva/lib/shapes/Text';
 import { Stage } from 'konva/lib/Stage';
 
+import { CREATOR_GROUP_NAME, CREATOR_ITEMS_GROUP_NAME } from '../../config/config.const';
 import { getCreatorCurrentItemConfig, getItemGap } from '../../store/item';
 import { getModeValue } from '../../store/stage';
 import { calculateDistance, calculateRotationAngle, nearestAngle } from '../calc';
@@ -52,13 +53,13 @@ export const setCreator = (layer: Layer, stage: Stage) => {
       x: lastPos.x,
       y: lastPos.y,
       rotation: 0,
-      name: 'planorama-creator-group',
+      name: CREATOR_GROUP_NAME,
     });
 
     itemsGroup = new Group({
       x: 0,
       y: 0,
-      name: 'planorama-creator-items-group',
+      name: CREATOR_ITEMS_GROUP_NAME,
       offsetY: CURRENT_ITEM.height / 2,
       offsetX: -5,
     });

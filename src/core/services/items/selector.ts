@@ -36,8 +36,7 @@ export const setSelector = (layer: Layer, itemsLayer: Layer, stage: Stage) => {
 
   stage.on('mousedown touchstart', (e) => {
     stage.container().focus();
-    const itemCount = stage.find(`.${ITEM_NAME}`).length;
-    console.log(itemCount);
+    debugCountItems(stage);
 
     if (tr.nodes().length && !TRANSFORMER_OBJECT_NAMES.includes(e.target.name())) {
       const targetParent = e?.target?.parent;
@@ -284,4 +283,9 @@ function deleteSelectedItems(tr: Transformer) {
     });
     resetGroupTransforms(selectionGroup[0], tr);
   }
+}
+
+function debugCountItems(stage: Stage) {
+  const itemCount = stage.find(`.${ITEM_NAME}`).length;
+  console.log('Total items on stage:', itemCount);
 }

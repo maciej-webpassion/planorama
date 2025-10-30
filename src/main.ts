@@ -16,6 +16,11 @@ export const TMP_GROUPS: ItemConfig[] = [
     height: 180,
     src: 'assets/spot-1.svg',
     scale: { x: 1.875, y: 1.875 },
+    label: {
+      fontSize: 20,
+      fontFamily: 'Helvetica',
+      fillColor: '#666',
+    },
   },
   {
     name: 'computer-item',
@@ -23,6 +28,12 @@ export const TMP_GROUPS: ItemConfig[] = [
     height: 80,
     src: 'assets/computer.svg',
     scale: { x: 0.1, y: 0.1 },
+    label: {
+      defaultText: 'PC',
+      fontSize: 16,
+      fontFamily: 'Helvetica',
+      fillColor: '#003306',
+    },
   },
 ];
 
@@ -46,6 +57,13 @@ function onItemMouseOut(item: any) {
   tooltip.classList.remove('visible');
 }
 
+function onItemMouseClick(item: any) {
+  console.log('Item mouse click:', item);
+  const dialogText = dialog.querySelector<HTMLParagraphElement>('.dialog-text')!;
+  dialogText.innerText = `You clicked on item Id: ${item.internalId} Type: ${item.type}`;
+  dialog.showModal();
+}
+
 let MODE = 'viewport';
 
 const {
@@ -66,6 +84,7 @@ const {
   onViewModeChange,
   onItemMouseOver,
   onItemMouseOut,
+  onItemMouseClick,
 });
 
 const modeSelector = document.querySelector<HTMLSelectElement>('#select-mode')!;
@@ -85,6 +104,8 @@ const parkingItemButton = document.querySelector<HTMLButtonElement>('#btn-creato
 
 const gapInput = document.querySelector<HTMLInputElement>('#input-gap')!;
 const tooltip = document.querySelector<HTMLDivElement>('#tooltip')!;
+
+const dialog = document.querySelector<HTMLDialogElement>('#item-dialog')!;
 
 gapInput.addEventListener('change', () => {
   const gap = gapInput.value ? parseInt(gapInput.value, 10) : 10;
