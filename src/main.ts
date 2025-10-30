@@ -78,6 +78,7 @@ const {
   setRotationAngle,
   discardSelection,
   deleteSelectedItems,
+  cloneSelectedItems,
 } = setStage({
   stageContainer,
   onViewportChange,
@@ -90,6 +91,7 @@ const {
 const modeSelector = document.querySelector<HTMLSelectElement>('#select-mode')!;
 const alignXButton = document.querySelector<HTMLButtonElement>('#btn-align-x')!;
 const alignYButton = document.querySelector<HTMLButtonElement>('#btn-align-y')!;
+const cloneButton = document.querySelector<HTMLButtonElement>('#btn-clone')!;
 
 const rotateButton = document.querySelector<HTMLButtonElement>('#btn-rotate')!;
 const angleInput = document.querySelector<HTMLInputElement>('#input-rotate')!;
@@ -147,6 +149,10 @@ alignYButton.addEventListener('click', () => {
 
 rotateButton.addEventListener('click', () => {
   setRotation();
+});
+
+cloneButton.addEventListener('click', () => {
+  cloneSelectedItems();
 });
 
 angleInput.addEventListener('change', () => {

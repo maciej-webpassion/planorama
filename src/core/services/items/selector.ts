@@ -8,6 +8,7 @@ import { Util } from 'konva/lib/Util';
 import {
   BACKGROUND_LAYER_NAME,
   ITEM_NAME,
+  ITEMS_LAYER_NAME,
   SELECTION_GROUP_NAME,
   STAGE_NAME,
   TRANSFORMER_NAME,
@@ -94,7 +95,7 @@ export const setSelector = (layer: Layer, itemsLayer: Layer, stage: Stage) => {
     const { intersected, notIntersected } = getSelected(stage, selectionRectangle);
 
     if (intersected.length > 0) {
-      moveSelectedItemsToTransformer(group, itemsLayer, tr, intersected, notIntersected);
+      moveSelectedItemsToTransformer(group, tr, intersected);
     }
   });
 
@@ -154,6 +155,11 @@ export const setSelector = (layer: Layer, itemsLayer: Layer, stage: Stage) => {
   on('select:action:deleteSelectedItems', () => {
     if (getModeValue() !== 'select') return;
     deleteSelectedItems(tr);
+  });
+
+  on('select:action:cloneSelectedItems', () => {
+    if (getModeValue() !== 'select') return;
+    cloneSelectedItems(group, itemsLayer, tr);
   });
 };
 
@@ -236,20 +242,10 @@ function moveItemsBackToLayer(group: Group, itemsLayer: Layer, tr: Transformer) 
   resetGroupTransforms(group, tr);
 }
 
-function moveSelectedItemsToTransformer(
-  group: Group,
-  itemsLayer: Layer,
-  tr: Transformer,
-  intersected: Group[],
-  notIntersected: Group[]
-) {
-  itemsLayer.removeChildren();
+function moveSelectedItemsToTransformer(group: Group, tr: Transformer, intersected: Group[]) {
   intersected.forEach((node) => {
+    node.remove();
     group.add(node);
-  });
-
-  notIntersected.forEach((node) => {
-    itemsLayer.add(node);
   });
 
   tr.nodes([group]);
@@ -285,7 +281,42 @@ function deleteSelectedItems(tr: Transformer) {
   }
 }
 
+function cloneSelectedItems(group: Group, itemsLayer: Layer, tr: Transformer) {
+  const selectionGroupItems = group.getChildren().filter((child) => child.hasName(ITEM_NAME)) as Group[];
+
+  if (selectionGroupItems.length > 0) {
+    const stage = tr.getStage()!;
+
+    const clones: Group[] = [];
+
+    selectionGroupItems.forEach((node) => {
+      const transform = node.getAbsoluteTransform(stage).decompose();
+
+      const clone = node.clone({
+        x: transform.x + 20,
+        y: transform.y + 20,
+        scaleX: 1,
+        scaleY: 1,
+      });
+
+      itemsLayer.add(clone);
+      clones.push(clone);
+    });
+    moveItemsBackToLayer(group, itemsLayer, tr);
+    resetGroupTransforms(group, tr);
+    moveSelectedItemsToTransformer(group, tr, clones);
+  }
+}
+
 function debugCountItems(stage: Stage) {
   const itemCount = stage.find(`.${ITEM_NAME}`).length;
   console.log('Total items on stage:', itemCount);
+
+  const itemLayer = stage.findOne(`.${ITEMS_LAYER_NAME}`) as Layer;
+  const itemLayerCount = itemLayer.find(`.${ITEM_NAME}`).length;
+  console.log('Items in items layer:', itemLayerCount);
+
+  const selectionGroup = stage.findOne(`.${SELECTION_GROUP_NAME}`) as Group;
+  const selectionGroupCount = selectionGroup.find(`.${ITEM_NAME}`).length;
+  console.log('Items in selection group:', selectionGroupCount);
 }

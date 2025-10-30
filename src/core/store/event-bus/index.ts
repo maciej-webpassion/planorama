@@ -6,7 +6,8 @@ type PlanoramaEvent =
   | 'select:action:spreadCircle'
   | 'select:action:rotate'
   | 'select:action:discardSelection'
-  | 'select:action:deleteSelectedItems';
+  | 'select:action:deleteSelectedItems'
+  | 'select:action:cloneSelectedItems';
 
 type EventMap = {
   [K in PlanoramaEvent]: any;

@@ -52,6 +52,7 @@ export interface Planorama {
   setRotationAngle: (angle: number) => void;
   discardSelection: () => void;
   deleteSelectedItems: () => void;
+  cloneSelectedItems: () => void;
 }
 
 export type { Vector2d } from 'konva/lib/types';
@@ -119,6 +120,7 @@ export const setStage = (config: PlanoramaConfig): Planorama => {
     setRotation: () => emit('select:action:rotate'),
     discardSelection: () => emit('select:action:discardSelection'),
     deleteSelectedItems: () => emit('select:action:deleteSelectedItems'),
+    cloneSelectedItems: () => emit('select:action:cloneSelectedItems'),
     setSpreadOpts,
     setCreatorCurrentItem,
     setGap: (gap: number) => {
