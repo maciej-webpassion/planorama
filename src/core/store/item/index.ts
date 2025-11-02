@@ -1,3 +1,5 @@
+import { Group } from 'konva/lib/Group';
+
 import { Signal, signal } from '@preact/signals-core';
 
 export const DEFAULT_ITEM_GAP = 10;
@@ -27,6 +29,7 @@ export const creatorItemGroups: Signal<ItemConfig[]> = signal([]);
 export const onItemMouseOver: Signal<(item: any) => void> = signal(() => {});
 export const onItemMouseOut: Signal<(item: any) => void> = signal(() => {});
 export const onItemMouseClick: Signal<(item: any) => void> = signal(() => {});
+export const onSelectItems: Signal<(items: Group[]) => void> = signal(() => {});
 
 export const setItemGap = (value: number) => {
   itemGap.value = value;
@@ -66,3 +69,8 @@ export const setOnItemMouseClick = (fn: (item: any) => void) => {
   onItemMouseClick.value = fn;
 };
 export const getOnItemMouseClick = (): ((item: any) => void) => onItemMouseClick.value;
+
+export const setOnSelectItems = (fn: (items: Group[]) => void) => {
+  onSelectItems.value = fn;
+};
+export const getOnSelectItems = (): ((items: Group[]) => void) => onSelectItems.value;

@@ -64,6 +64,10 @@ function onItemMouseClick(item: any) {
   dialog.showModal();
 }
 
+function onItemsSelected(items: any[]) {
+  console.log('Items selected:', items);
+}
+
 let MODE = 'viewport';
 
 const {
@@ -86,6 +90,7 @@ const {
   onItemMouseOver,
   onItemMouseOut,
   onItemMouseClick,
+  onItemsSelected,
 });
 
 const modeSelector = document.querySelector<HTMLSelectElement>('#select-mode')!;

@@ -16,6 +16,7 @@ import {
   TRANSFORMER_PADDING,
 } from '../../config/config.const';
 import { on } from '../../store/event-bus';
+import { getOnSelectItems } from '../../store/item';
 import { SpreadByOpts } from '../../store/select';
 import { getModeValue } from '../../store/stage';
 import { alignItemsX } from '../calc/select/align-x';
@@ -249,8 +250,7 @@ export function moveSelectedItemsToTransformer(group: Group, tr: Transformer, se
     group.add(node);
   });
 
-  tr.nodes([group]);
-  group.cache();
+  setSelection(tr, group);
 }
 
 function addItemToTransformer(
@@ -266,8 +266,7 @@ function addItemToTransformer(
   }
   selectionGroup.add(item);
 
-  tr.nodes([selectionGroup]);
-  selectionGroup.cache();
+  setSelection(tr, selectionGroup);
 }
 
 function deleteSelectedItems(tr: Transformer) {
@@ -286,25 +285,20 @@ function cloneSelectedItems(group: Group, itemsLayer: Layer, tr: Transformer) {
   const selectionGroupItems = group.getChildren().filter((child) => child.hasName(ITEM_NAME)) as Group[];
 
   if (selectionGroupItems.length > 0) {
-    const stage = tr.getStage()!;
-
     const clones: Group[] = [];
 
-    selectionGroupItems.forEach((node) => {
-      const transform = node.getAbsoluteTransform(stage).decompose();
-
-      const clone = node.clone({
-        x: transform.x + 20,
-        y: transform.y + 20,
-        scaleX: 1,
-        scaleY: 1,
-      });
-
-      itemsLayer.add(clone);
-      clones.push(clone);
-    });
     moveItemsBackToLayer(group, itemsLayer, tr);
     resetGroupTransforms(group, tr);
+
+    selectionGroupItems.forEach((node) => {
+      const clone = node.clone({
+        x: node.attrs.x + 20,
+        y: node.attrs.y + 20,
+      });
+
+      clones.push(clone);
+    });
+
     moveSelectedItemsToTransformer(group, tr, clones);
   }
 }
@@ -320,4 +314,22 @@ function debugCountItems(stage: Stage) {
   const selectionGroup = stage.findOne(`.${SELECTION_GROUP_NAME}`) as Group;
   const selectionGroupCount = selectionGroup.find(`.${ITEM_NAME}`).length;
   console.log('Items in selection group:', selectionGroupCount);
+}
+
+function debugSelectedItems(group: Group[]) {
+  const itemCount = group.length;
+  console.log('Total items in selection group:', itemCount);
+}
+
+function setSelection(tr: Transformer, selectionGroup: Group) {
+  const items = selectionGroup.getChildren().filter((child) => child.hasName(ITEM_NAME)) as Group[];
+  const fn = getOnSelectItems();
+  fn(items);
+
+  debugSelectedItems(items);
+
+  tr.nodes([selectionGroup]);
+  if (items.length > 100) {
+    selectionGroup.cache();
+  }
 }

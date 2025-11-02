@@ -16,6 +16,7 @@ import {
   setOnItemMouseClick,
   setOnItemMouseOut,
   setOnItemMouseOver,
+  setOnSelectItems,
 } from '../store/item';
 import { getSpreadByOpts, setSpreadByOpts, SpreadByOpts } from '../store/select';
 import {
@@ -38,6 +39,7 @@ export interface PlanoramaConfig {
   onItemMouseOver?: (item: any) => void;
   onItemMouseOut?: (item: any) => void;
   onItemMouseClick?: (item: any) => void;
+  onItemsSelected?: (items: any[]) => void;
 }
 
 export interface Planorama {
@@ -61,8 +63,15 @@ export type { Vector2d } from 'konva/lib/types';
 
 let stage: Stage;
 export const setStage = (config: PlanoramaConfig): Planorama => {
-  const { stageContainer, onViewportChange, onViewModeChange, onItemMouseOver, onItemMouseOut, onItemMouseClick } =
-    config;
+  const {
+    stageContainer,
+    onViewportChange,
+    onViewModeChange,
+    onItemMouseOver,
+    onItemMouseOut,
+    onItemMouseClick,
+    onItemsSelected,
+  } = config;
 
   if (onItemMouseOver) {
     onItemMouseOver && setOnItemMouseOver(onItemMouseOver);
@@ -74,6 +83,10 @@ export const setStage = (config: PlanoramaConfig): Planorama => {
 
   if (onItemMouseClick) {
     onItemMouseClick && setOnItemMouseClick(onItemMouseClick);
+  }
+
+  if (onItemsSelected) {
+    onItemsSelected && setOnSelectItems(onItemsSelected);
   }
 
   if (!stage) {
