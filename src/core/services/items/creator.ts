@@ -6,7 +6,7 @@ import { Text } from 'konva/lib/shapes/Text';
 import { Stage } from 'konva/lib/Stage';
 
 import { CREATOR_GROUP_NAME, CREATOR_ITEMS_GROUP_NAME } from '../../config/config.const';
-import { getCreatorCurrentItemConfig, getItemGap } from '../../store/item';
+import { getCreatorCurrentItemConfig, getItemGap, getItemRotationAngle } from '../../store/item';
 import { getModeValue } from '../../store/stage';
 import { calculateDistance, calculateRotationAngle, nearestAngle } from '../calc';
 import { Vector2d } from '../stage';
@@ -14,6 +14,7 @@ import { createItem } from './items';
 
 export const setCreator = (layer: Layer, stage: Stage) => {
   let GAP = getItemGap();
+  let ROTATION = getItemRotationAngle();
   let CURRENT_ITEM = getCreatorCurrentItemConfig();
 
   let isPaint = false;
@@ -31,6 +32,7 @@ export const setCreator = (layer: Layer, stage: Stage) => {
   stage.on('mousedown touchstart', function () {
     if (getModeValue() !== 'create') return;
     GAP = getItemGap();
+    ROTATION = getItemRotationAngle();
     CURRENT_ITEM = getCreatorCurrentItemConfig();
     if (!CURRENT_ITEM) return;
 
@@ -105,7 +107,7 @@ export const setCreator = (layer: Layer, stage: Stage) => {
       itemsCount = count;
       itemsGroup.destroyChildren();
       for (let i = 0; i < count; i++) {
-        itemsGroup.add(getItemRect(i * itemWidth, CURRENT_ITEM.width, CURRENT_ITEM.height));
+        itemsGroup.add(getItemRect(i * itemWidth, CURRENT_ITEM.width, CURRENT_ITEM.height, ROTATION));
       }
     }
 
@@ -182,7 +184,7 @@ function createHelperText(offsetY: number): Text {
  * @param height
  * @returns Rect
  */
-function getItemRect(x: number, width: number, height: number): Rect {
+function getItemRect(x: number, width: number, height: number, rotation: number): Rect {
   return new Rect({
     x,
     y: 0,
@@ -191,5 +193,6 @@ function getItemRect(x: number, width: number, height: number): Rect {
     cornerRadius: 8,
     stroke: '#7592b6',
     strokeWidth: 1,
+    rotation: rotation,
   });
 }

@@ -7,6 +7,8 @@ import { effect } from '@preact/signals-core';
 import { STAGE_NAME } from '../config/config.const';
 import { emit } from '../store/event-bus';
 import {
+  getItemGap,
+  getItemRotationAngle,
   ItemConfig,
   setCreatorCurrentItemConfig,
   setItemGap,
@@ -15,7 +17,7 @@ import {
   setOnItemMouseOut,
   setOnItemMouseOver,
 } from '../store/item';
-import { setSpreadByOpts, SpreadByOpts } from '../store/select';
+import { getSpreadByOpts, setSpreadByOpts, SpreadByOpts } from '../store/select';
 import {
   getModeValue,
   getPositionValue,
@@ -42,14 +44,14 @@ export interface Planorama {
   stage: Stage;
   setStageScale: (scale: Vector2d) => void;
   setStageMode: (mode: StageMode) => void;
-  setXAlignment: () => void;
-  setYAlignment: () => void;
-  spreadItemsByCircle: () => void;
-  setSpreadOpts: (opts: SpreadByOpts) => void;
+  setXAlignment: (gap?: number) => void;
+  setYAlignment: (gap?: number) => void;
+  spreadItemsByCircle: (spreadOpts?: SpreadByOpts) => void;
+  setSpreadByOpts: (opts: SpreadByOpts) => void;
   setCreatorCurrentItem: (config: ItemConfig) => void;
-  setGap: (gap: number) => void;
-  setRotation: () => void;
+  setRotation: (rotationAngle?: number) => void;
   setRotationAngle: (angle: number) => void;
+  setGap: (gap: number) => void;
   discardSelection: () => void;
   deleteSelectedItems: () => void;
   cloneSelectedItems: () => void;
@@ -102,10 +104,6 @@ export const setStage = (config: PlanoramaConfig): Planorama => {
     setModeValue(mode);
   }
 
-  function setSpreadOpts(opts: SpreadByOpts) {
-    setSpreadByOpts(opts);
-  }
-
   function setCreatorCurrentItem(config: ItemConfig) {
     setCreatorCurrentItemConfig(config);
   }
@@ -114,14 +112,15 @@ export const setStage = (config: PlanoramaConfig): Planorama => {
     stage,
     setStageScale,
     setStageMode,
-    setXAlignment: () => emit('select:action:alignX'),
-    setYAlignment: () => emit('select:action:alignY'),
-    spreadItemsByCircle: () => emit('select:action:spreadCircle'),
-    setRotation: () => emit('select:action:rotate'),
+    setXAlignment: (gap?: number) => emit('select:action:alignX', gap || getItemGap()),
+    setYAlignment: (gap?: number) => emit('select:action:alignY', gap || getItemGap()),
+    spreadItemsByCircle: (spreadOpts?: SpreadByOpts) =>
+      emit('select:action:spreadCircle', spreadOpts || getSpreadByOpts()),
+    setRotation: (rotationAngle?: number) => emit('select:action:rotate', rotationAngle || getItemRotationAngle()),
     discardSelection: () => emit('select:action:discardSelection'),
     deleteSelectedItems: () => emit('select:action:deleteSelectedItems'),
     cloneSelectedItems: () => emit('select:action:cloneSelectedItems'),
-    setSpreadOpts,
+    setSpreadByOpts: (opts: SpreadByOpts) => setSpreadByOpts(opts),
     setCreatorCurrentItem,
     setGap: (gap: number) => {
       setItemGap(gap);

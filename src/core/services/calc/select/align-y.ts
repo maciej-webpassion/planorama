@@ -5,7 +5,7 @@ import { Transformer } from 'konva/lib/shapes/Transformer';
 import { Stage } from 'konva/lib/Stage';
 import { orderBy } from 'lodash-es';
 
-import { getItemGap } from '../../../store/item';
+import { moveSelectedItemsToTransformer } from '../../items/selector';
 import { resetGroupTransforms } from './common';
 
 /**
@@ -15,7 +15,7 @@ import { resetGroupTransforms } from './common';
  * @param stage
  * @returns
  */
-export function alignItemsY(tr: Transformer, itemsLayer: Layer, stage: Stage) {
+export function alignItemsY(spreadGap: number, tr: Transformer, itemsLayer: Layer, stage: Stage) {
   console.log('alignItemsY');
 
   const nodes = tr.nodes();
@@ -27,8 +27,6 @@ export function alignItemsY(tr: Transformer, itemsLayer: Layer, stage: Stage) {
   const items = [...group.getChildren()];
 
   // spread items by Y axis
-  const SPREAD_GAP = getItemGap(); // amount to spread items by
-
   items.forEach((shape) => {
     const transform = shape.getAbsoluteTransform(stage).decompose();
     shape.moveTo(itemsLayer);
@@ -40,7 +38,7 @@ export function alignItemsY(tr: Transformer, itemsLayer: Layer, stage: Stage) {
     });
   });
 
-  const Y_STARTING_POINT = getYStartingPoint(items, stage, SPREAD_GAP);
+  const Y_STARTING_POINT = getYStartingPoint(items, stage, spreadGap);
   const X_STARTING_POINT = getXStartingPoint(items, stage);
 
   const sortedItems = orderBy(items, (shape) =>
@@ -64,10 +62,11 @@ export function alignItemsY(tr: Transformer, itemsLayer: Layer, stage: Stage) {
       y: yPos,
     });
 
-    return acc + box.height + SPREAD_GAP;
+    return acc + box.height + spreadGap;
   }, 0);
 
   resetGroupTransforms(group, tr);
+  moveSelectedItemsToTransformer(group, tr, sortedItems as Group[]);
 }
 
 /**

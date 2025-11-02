@@ -71,7 +71,7 @@ const {
   setXAlignment,
   setYAlignment,
   spreadItemsByCircle,
-  setSpreadOpts,
+  setSpreadByOpts,
   setCreatorCurrentItem,
   setGap,
   setRotation,
@@ -122,7 +122,7 @@ rotationMode.addEventListener('change', () => {
   }
 
   const rotationValue = rotationRadius.value ? parseInt(rotationRadius.value, 10) : 500;
-  setSpreadOpts({ withRotation: value as RotationMode, radius: rotationValue });
+  setSpreadByOpts({ withRotation: value as RotationMode, radius: rotationValue });
 });
 
 rotationRadius.addEventListener('change', () => {
@@ -131,8 +131,10 @@ rotationRadius.addEventListener('change', () => {
     value = null;
   }
 
+  console.log('on change rotation radius');
+
   const rotationValue = rotationRadius.value ? parseInt(rotationRadius.value, 10) : 500;
-  setSpreadOpts({ withRotation: value as RotationMode, radius: rotationValue });
+  setSpreadByOpts({ withRotation: value as RotationMode, radius: rotationValue });
 });
 
 modeSelector.addEventListener('change', () => {

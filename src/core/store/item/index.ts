@@ -1,7 +1,7 @@
 import { Signal, signal } from '@preact/signals-core';
 
-const DEFAULT_ITEM_GAP = 10;
-const DEFAULT_ITEM_ROTATION_ANGLE = 30;
+export const DEFAULT_ITEM_GAP = 10;
+const DEFAULT_ITEM_ROTATION_ANGLE = 0;
 
 export interface ItemLabelConfig {
   defaultText?: string;

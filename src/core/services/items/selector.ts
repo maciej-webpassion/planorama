@@ -16,6 +16,7 @@ import {
   TRANSFORMER_PADDING,
 } from '../../config/config.const';
 import { on } from '../../store/event-bus';
+import { SpreadByOpts } from '../../store/select';
 import { getModeValue } from '../../store/stage';
 import { alignItemsX } from '../calc/select/align-x';
 import { alignItemsY } from '../calc/select/align-y';
@@ -92,7 +93,7 @@ export const setSelector = (layer: Layer, itemsLayer: Layer, stage: Stage) => {
       selectionRectangle.visible(false);
     });
 
-    const { intersected, notIntersected } = getSelected(stage, selectionRectangle);
+    const { intersected } = getSelected(stage, selectionRectangle);
 
     if (intersected.length > 0) {
       moveSelectedItemsToTransformer(group, tr, intersected);
@@ -129,20 +130,20 @@ export const setSelector = (layer: Layer, itemsLayer: Layer, stage: Stage) => {
     }
   });
 
-  on('select:action:alignX', () => {
-    alignItemsX(tr, itemsLayer, stage);
+  on('select:action:alignX', (gap: number) => {
+    alignItemsX(gap, tr, itemsLayer, stage);
   });
 
-  on('select:action:alignY', () => {
-    alignItemsY(tr, itemsLayer, stage);
+  on('select:action:alignY', (gap: number) => {
+    alignItemsY(gap, tr, itemsLayer, stage);
   });
 
-  on('select:action:spreadCircle', () => {
-    spreadItemsByCircle(tr, itemsLayer, stage);
+  on('select:action:spreadCircle', (spreadOpts: SpreadByOpts) => {
+    spreadItemsByCircle(spreadOpts, tr, itemsLayer, stage);
   });
 
-  on('select:action:rotate', () => {
-    rotateItems(tr, itemsLayer, stage);
+  on('select:action:rotate', (rotateAngle: number) => {
+    rotateItems(rotateAngle, tr, itemsLayer, stage);
   });
 
   on('select:action:discardSelection', () => {
@@ -242,8 +243,8 @@ function moveItemsBackToLayer(group: Group, itemsLayer: Layer, tr: Transformer) 
   resetGroupTransforms(group, tr);
 }
 
-function moveSelectedItemsToTransformer(group: Group, tr: Transformer, intersected: Group[]) {
-  intersected.forEach((node) => {
+export function moveSelectedItemsToTransformer(group: Group, tr: Transformer, selected: Group[]) {
+  selected.forEach((node) => {
     node.remove();
     group.add(node);
   });

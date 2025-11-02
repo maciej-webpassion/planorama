@@ -7,7 +7,8 @@ import { Transformer } from 'konva/lib/shapes/Transformer';
 import { Stage } from 'konva/lib/Stage';
 import { orderBy } from 'lodash-es';
 
-import { getSpreadByOpts } from '../../../store/select';
+import { SpreadByOpts } from '../../../store/select';
+import { moveSelectedItemsToTransformer } from '../../items/selector';
 import { resetGroupTransforms } from './common';
 
 /**
@@ -16,7 +17,7 @@ import { resetGroupTransforms } from './common';
  * @param itemsLayer Layer where items are
  * @param stage Stage
  */
-export function spreadItemsByCircle(tr: Transformer, itemsLayer: Layer, stage: Stage) {
+export function spreadItemsByCircle(spreadOpts: SpreadByOpts, tr: Transformer, itemsLayer: Layer, stage: Stage) {
   const nodes = tr.nodes();
 
   if (nodes.length === 0) return;
@@ -24,8 +25,6 @@ export function spreadItemsByCircle(tr: Transformer, itemsLayer: Layer, stage: S
   const group: Group = nodes[0] as Group;
 
   const items = [...group.getChildren()];
-
-  const SPREAD_OPT = getSpreadByOpts();
 
   items.forEach((shape) => {
     const transform = shape.getAbsoluteTransform(stage).decompose();
@@ -40,7 +39,7 @@ export function spreadItemsByCircle(tr: Transformer, itemsLayer: Layer, stage: S
 
   const centerX = getXCenter(items, stage);
   const centerY = getYCenter(items, stage);
-  const radius = SPREAD_OPT.radius;
+  const radius = spreadOpts.radius;
 
   const angleStep = (2 * Math.PI) / items.length;
 
@@ -48,12 +47,12 @@ export function spreadItemsByCircle(tr: Transformer, itemsLayer: Layer, stage: S
     Math.min(shape.getClientRect({ relativeTo: stage }).x, shape.getAttr('x'))
   );
 
-  if (SPREAD_OPT.withRotation !== null) {
+  if (spreadOpts.withRotation !== null) {
     sortedItems.forEach((shape, index) => {
       // set rotation that item will be always look outside or inside
       let rotation = (index * (360 / items.length) + 90) % 360;
 
-      if (SPREAD_OPT.withRotation === 'inside') {
+      if (spreadOpts.withRotation === 'inside') {
         rotation = (rotation + 180) % 360;
       }
 
@@ -83,6 +82,7 @@ export function spreadItemsByCircle(tr: Transformer, itemsLayer: Layer, stage: S
   });
 
   resetGroupTransforms(group, tr);
+  moveSelectedItemsToTransformer(group, tr, sortedItems as Group[]);
 }
 
 /**
