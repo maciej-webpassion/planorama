@@ -55,6 +55,7 @@ function addDebugIndicators(bgLayer: Layer, stage: Stage) {
     x: 0,
     y: 0,
     rotation: 95,
+    name: 'debug-rect',
   });
 
   bgLayer.add(circle);

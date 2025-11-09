@@ -13,7 +13,6 @@ import {
   STAGE_NAME,
   TRANSFORMER_NAME,
   TRANSFORMER_OBJECT_NAMES,
-  TRANSFORMER_PADDING,
 } from '../../config/config.const';
 import { on } from '../../store/event-bus';
 import { getOnSelectItems } from '../../store/item';
@@ -211,12 +210,41 @@ function getHelperObjects() {
 
   const tr = new Transformer({
     rotateAnchorOffset: 60,
-    padding: TRANSFORMER_PADDING,
+    padding: 0, // TRANSFORMER_PADDING,
     resizeEnabled: false,
     useSingleNodeRotation: true,
     rotationSnaps: getRotationSnaps(10),
     shouldOverdrawWholeArea: true,
     name: TRANSFORMER_NAME,
+  });
+
+  // TODO: check how to get position of Transformer while scale is changing
+  // const trNode = tr.getClientRect(); doesn't work properly
+  // we can use tr.getAbsoluteTransform().getTranslation() but it gives position without padding
+  tr.on('transformstart', () => {
+    // console.log('transform start');
+  });
+
+  tr.on('dragstart', () => {
+    // console.log('transform drag start');
+  });
+
+  tr.on('dragmove', () => {
+    // console.log('transform drag move');
+  });
+
+  tr.on('dragend', () => {
+    // console.log('transform drag end');
+  });
+
+  tr.on('transform', (ev) => {
+    // console.log('transforming', ev);
+
+    console.log(tr.getAbsoluteTransform().decompose());
+  });
+
+  tr.on('transformend', () => {
+    // console.log('transform end');
   });
 
   return {
@@ -331,5 +359,13 @@ function setSelection(tr: Transformer, selectionGroup: Group) {
   tr.nodes([selectionGroup]);
   if (items.length > 100) {
     selectionGroup.cache();
+  }
+
+  if (items.length === 1) {
+    tr.useSingleNodeRotation(true);
+
+    tr.update();
+  } else {
+    tr.useSingleNodeRotation(false);
   }
 }

@@ -94,3 +94,44 @@ export function getRotatedRectCenter(
 
   return { cx, cy };
 }
+
+/**
+ * Get all 4 corners and center points of a rotated rectangle.
+ * @param x Top-left x
+ * @param y Top-left y
+ * @param width Rectangle width
+ * @param height Rectangle height
+ * @param angle Rotation angle (radians, use degToRad helper if needed)
+ */
+export function getRotatedRectPoints(x: number, y: number, width: number, height: number, angle: number) {
+  const cos = Math.cos(angle);
+  const sin = Math.sin(angle);
+
+  // Helper to rotate a point (px,py) around (x,y)
+  const rotate = (px: number, py: number) => {
+    const dx = px - x;
+    const dy = py - y;
+    return {
+      x: x + dx * cos - dy * sin,
+      y: y + dx * sin + dy * cos,
+    };
+  };
+
+  const topLeft = { x, y };
+  const topRight = rotate(x + width, y);
+  const bottomLeft = rotate(x, y + height);
+  const bottomRight = rotate(x + width, y + height);
+  const centerLeft = rotate(x, y + height / 2);
+  const centerRight = rotate(x + width, y + height / 2);
+  const centerTop = rotate(x + width / 2, y);
+  const centerBottom = rotate(x + width / 2, y + height);
+  const center = rotate(x + width / 2, y + height / 2);
+
+  return { topLeft, topRight, bottomLeft, bottomRight, centerLeft, centerRight, centerTop, centerBottom, center };
+}
+
+/** Convert degrees to radians
+ * @param deg Angle in degrees
+ * @returns Angle in radians
+ */
+export const degToRad = (deg: number) => (deg * Math.PI) / 180;

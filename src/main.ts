@@ -8,6 +8,7 @@ const stageContainer = document.querySelector<HTMLDivElement>('#planorama-stage'
 function onViewportChange(data: { scale: Vector2d; position: Vector2d }) {
   // console.log(data);
 }
+const tooltip = document.querySelector<HTMLDivElement>('#tooltip')!;
 
 export const TMP_GROUPS: ItemConfig[] = [
   {
@@ -68,6 +69,26 @@ function onItemsSelected(items: any[]) {
   console.log('Items selected:', items);
 }
 
+function onCreatorStart(data: any) {
+  console.log('Creator started:', data);
+  tooltip.classList.add('visible');
+}
+
+function onCreatorMove(data: any) {
+  // console.log('Creator moved:', data);
+  tooltip.style.left = data.centerRight.x + 'px';
+  tooltip.style.top = data.centerRight.y + 'px';
+  tooltip.innerText = `Items: (${data.count}), Rotation: ${data.rotation}°`;
+  tooltip.classList.add('visible');
+  tooltip.style.transform = `translate(0, -50%) rotate(${data.rotation}deg)`;
+  tooltip.style.transformOrigin = `center left`;
+}
+
+function onCreatorEnd(data: any) {
+  console.log('Creator ended:', data);
+  tooltip.classList.remove('visible');
+}
+
 let MODE = 'viewport';
 
 const {
@@ -91,6 +112,9 @@ const {
   onItemMouseOut,
   onItemMouseClick,
   onItemsSelected,
+  onCreatorStart,
+  onCreatorMove,
+  onCreatorEnd,
 });
 
 const modeSelector = document.querySelector<HTMLSelectElement>('#select-mode')!;
@@ -110,7 +134,6 @@ const computerItemButton = document.querySelector<HTMLButtonElement>('#btn-creat
 const parkingItemButton = document.querySelector<HTMLButtonElement>('#btn-creator-parking')!;
 
 const gapInput = document.querySelector<HTMLInputElement>('#input-gap')!;
-const tooltip = document.querySelector<HTMLDivElement>('#tooltip')!;
 
 const dialog = document.querySelector<HTMLDialogElement>('#item-dialog')!;
 

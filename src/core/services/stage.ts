@@ -5,6 +5,7 @@ import { Vector2d } from 'konva/lib/types';
 import { effect } from '@preact/signals-core';
 
 import { STAGE_NAME } from '../config/config.const';
+import { onCreatorStart, setOnCreatorEnd, setOnCreatorMove, setOnCreatorStart } from '../store/creator/index';
 import { emit } from '../store/event-bus';
 import {
   getItemGap,
@@ -40,6 +41,9 @@ export interface PlanoramaConfig {
   onItemMouseOut?: (item: any) => void;
   onItemMouseClick?: (item: any) => void;
   onItemsSelected?: (items: any[]) => void;
+  onCreatorStart?: (data: any) => void;
+  onCreatorMove?: (data: any) => void;
+  onCreatorEnd?: (data: any) => void;
 }
 
 export interface Planorama {
@@ -71,23 +75,18 @@ export const setStage = (config: PlanoramaConfig): Planorama => {
     onItemMouseOut,
     onItemMouseClick,
     onItemsSelected,
+    onCreatorStart,
+    onCreatorMove,
+    onCreatorEnd,
   } = config;
 
-  if (onItemMouseOver) {
-    onItemMouseOver && setOnItemMouseOver(onItemMouseOver);
-  }
-
-  if (onItemMouseOut) {
-    onItemMouseOut && setOnItemMouseOut(onItemMouseOut);
-  }
-
-  if (onItemMouseClick) {
-    onItemMouseClick && setOnItemMouseClick(onItemMouseClick);
-  }
-
-  if (onItemsSelected) {
-    onItemsSelected && setOnSelectItems(onItemsSelected);
-  }
+  onItemMouseOver && setOnItemMouseOver(onItemMouseOver);
+  onItemMouseOut && setOnItemMouseOut(onItemMouseOut);
+  onItemMouseClick && setOnItemMouseClick(onItemMouseClick);
+  onItemsSelected && setOnSelectItems(onItemsSelected);
+  onCreatorStart && setOnCreatorStart(onCreatorStart);
+  onCreatorMove && setOnCreatorMove(onCreatorMove);
+  onCreatorEnd && setOnCreatorEnd(onCreatorEnd);
 
   if (!stage) {
     stage = createStage(stageContainer);

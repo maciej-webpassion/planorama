@@ -2,13 +2,14 @@ import { Group } from 'konva/lib/Group';
 import { Layer } from 'konva/lib/Layer';
 import { Line } from 'konva/lib/shapes/Line';
 import { Rect } from 'konva/lib/shapes/Rect';
-import { Text } from 'konva/lib/shapes/Text';
 import { Stage } from 'konva/lib/Stage';
 
 import { CREATOR_GROUP_NAME, CREATOR_ITEMS_GROUP_NAME } from '../../config/config.const';
+import { getOnCreatorEnd, getOnCreatorMove, getOnCreatorStart } from '../../store/creator/index';
 import { getCreatorCurrentItemConfig, getItemGap, getItemRotationAngle } from '../../store/item';
 import { getModeValue } from '../../store/stage';
-import { calculateDistance, calculateRotationAngle, nearestAngle } from '../calc';
+import { calculateDistance, calculateRotationAngle, degToRad, getRotatedRectPoints, nearestAngle } from '../calc';
+import { stageToWindow } from '../calc/utils';
 import { Vector2d } from '../stage';
 import { createItem } from './items';
 
@@ -24,7 +25,6 @@ export const setCreator = (layer: Layer, stage: Stage) => {
   let itemsGroup: Group;
   let itemsCount = 0;
   let lastPos: Vector2d | null = null;
-  let text: Text;
   let itemWidth = 0;
 
   console.log('CURRENT_ITEM', CURRENT_ITEM);
@@ -48,8 +48,7 @@ export const setCreator = (layer: Layer, stage: Stage) => {
     if (!lastPos) return;
 
     lastLine = createHelperLine();
-    rect = createCreatorRect(CURRENT_ITEM.height + 10, CURRENT_ITEM.height / 2 + 5);
-    text = createHelperText(CURRENT_ITEM.height / 2 + 30);
+    rect = createCreatorRect(CURRENT_ITEM.height + 10, CURRENT_ITEM.height / 2 + GAP / 2);
 
     group = new Group({
       x: lastPos.x,
@@ -68,9 +67,11 @@ export const setCreator = (layer: Layer, stage: Stage) => {
 
     group.add(lastLine);
     group.add(rect);
-    group.add(text);
     group.add(itemsGroup);
     layer.add(group);
+
+    const onCreatorStart = getOnCreatorStart();
+    onCreatorStart && onCreatorStart(CURRENT_ITEM);
   });
 
   stage.on('mouseup touchend', function () {
@@ -82,6 +83,9 @@ export const setCreator = (layer: Layer, stage: Stage) => {
     isPaint = false;
     group.destroy();
     itemsGroup.destroy();
+
+    const onCreatorEnd = getOnCreatorEnd();
+    onCreatorEnd && onCreatorEnd(CURRENT_ITEM);
   });
 
   // and core function - drawing
@@ -114,9 +118,10 @@ export const setCreator = (layer: Layer, stage: Stage) => {
     lastLine.points([0, 0, width, 0]);
 
     rect.width(width);
-    text.position({ x: width, y: 0 });
-    text.text(String(count));
     group.rotation(rotation);
+
+    const onCreatorMove = getOnCreatorMove();
+    onCreatorMove && onCreatorMove({ ...getWindowPosition(stage, group, rotation), count, rotation });
   });
 };
 
@@ -138,6 +143,7 @@ function createCreatorRect(height: number, offsetY: number): Rect {
     strokeWidth: 2,
     opacity: 0.9,
     offsetY,
+    name: 'creator-rect',
   });
 }
 
@@ -154,26 +160,6 @@ function createHelperLine(): Line {
     lineCap: 'round',
     lineJoin: 'round',
     points: [0, 0],
-  });
-}
-
-/**
- * Creates a helper text for items count preview.
- * @param offsetY
- * @returns Text
- */
-function createHelperText(offsetY: number): Text {
-  return new Text({
-    x: 0,
-    y: 0,
-    text: '12',
-    fontSize: 30,
-    fontFamily: 'Arial',
-    fill: '#555',
-    width: 100,
-    padding: 0,
-    align: 'left',
-    offsetY,
   });
 }
 
@@ -195,4 +181,30 @@ function getItemRect(x: number, width: number, height: number, rotation: number)
     strokeWidth: 1,
     rotation: rotation,
   });
+}
+
+function getWindowPosition(stage: Stage, group: Group, rotation: number) {
+  const clonedGroup = group.clone();
+  const rect = clonedGroup.findOne<Rect>('.creator-rect');
+  if (!rect) {
+    throw new Error('Creator rect not found');
+  }
+  rect.offsetY(0);
+  rect.attrs.y = rect.attrs.y - rect.height() / 2;
+  const rectPos = rect.getAbsolutePosition(stage);
+
+  const { topLeft, topRight, bottomLeft, bottomRight, centerLeft, centerRight, centerTop, centerBottom, center } =
+    getRotatedRectPoints(rectPos.x, rectPos.y, rect.attrs.width, rect.attrs.height, degToRad(rotation));
+
+  return {
+    topLeft: stageToWindow(stage, topLeft),
+    bottomLeft: stageToWindow(stage, bottomLeft),
+    topRight: stageToWindow(stage, topRight),
+    bottomRight: stageToWindow(stage, bottomRight),
+    centerLeft: stageToWindow(stage, centerLeft),
+    centerRight: stageToWindow(stage, centerRight),
+    centerTop: stageToWindow(stage, centerTop),
+    centerBottom: stageToWindow(stage, centerBottom),
+    center: stageToWindow(stage, center),
+  };
 }

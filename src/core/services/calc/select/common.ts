@@ -12,4 +12,5 @@ export function resetGroupTransforms(group: Group, tr: Transformer) {
   group.clearCache();
   group.destroyChildren();
   tr.nodes([]);
+  console.log('reset group');
 }
