@@ -1,9 +1,12 @@
 import { Stage } from 'konva/lib/Stage';
+import { Easings } from 'konva/lib/Tween';
 import { Vector2d } from 'konva/lib/types';
 
 import { effect } from '@preact/signals-core';
 
+import { on } from '../store/event-bus';
 import { getPositionValue, getScaleValue, setScaleAndPosValue } from '../store/stage';
+import { getCenterOfBoundingBox } from './calc/utils';
 import { setStageDraggableWithMode } from './stage';
 
 let timeout: number;
@@ -29,6 +32,14 @@ export const setViewport = (stage: Stage, stageContainer: HTMLDivElement): void 
     timeout = setTimeout(() => {
       loopActive = false;
     }, 300);
+  });
+
+  on('viewport:action:centerOnItem', (id: string) => {
+    centerStageOnObjectById(id);
+  });
+
+  on('viewport:action:centerOnPos', (pos: Vector2d) => {
+    centerStageOnPos(pos);
   });
 };
 
@@ -201,4 +212,40 @@ function loop() {
   STAGE.position({ x: posX, y: posY });
 
   requestAnimationFrame(loop);
+}
+
+function centerStageOnObjectById(id: string) {
+  if (!STAGE) {
+    return;
+  }
+  const obj = STAGE.findOne(`#${id}`);
+
+  if (obj) {
+    const center = getCenterOfBoundingBox(obj.getClientRect({ relativeTo: STAGE }));
+    centerStageOnPos(center);
+  } else {
+    console.error('Object with id not found on stage:', id);
+  }
+}
+
+function centerStageOnPos(pos: Vector2d) {
+  if (!STAGE) {
+    return;
+  }
+
+  const viewport = {
+    width: STAGE.width(),
+    height: STAGE.height(),
+  };
+
+  // Convert desired scene point into new stage position
+  const newX = -pos.x * STAGE.scaleX() + viewport.width / 2;
+  const newY = -pos.y * STAGE.scaleY() + viewport.height / 2;
+
+  STAGE.to({
+    x: newX,
+    y: newY,
+    duration: 0.2,
+    easing: Easings.EaseInOut,
+  });
 }

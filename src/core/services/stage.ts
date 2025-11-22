@@ -8,27 +8,11 @@ import { STAGE_NAME } from '../config/config.const';
 import { onCreatorStart, setOnCreatorEnd, setOnCreatorMove, setOnCreatorStart } from '../store/creator/index';
 import { emit } from '../store/event-bus';
 import {
-  getItemGap,
-  getItemRotationAngle,
-  ItemConfig,
-  setCreatorCurrentItemConfig,
-  setItemGap,
-  setItemRotationAngle,
-  setOnItemMouseClick,
-  setOnItemMouseOut,
-  setOnItemMouseOver,
-  setOnSelectItems,
+    getItemGap, getItemRotationAngle, ItemConfig, setCreatorCurrentItemConfig, setItemGap, setItemRotationAngle, setOnItemMouseClick, setOnItemMouseOut, setOnItemMouseOver,
+    setOnSelectItems
 } from '../store/item';
 import { getSpreadByOpts, setSpreadByOpts, SpreadByOpts } from '../store/select';
-import {
-  getModeValue,
-  getPositionValue,
-  getScaleValue,
-  setModeValue,
-  setPositionValue,
-  setScaleValue,
-  StageMode,
-} from '../store/stage';
+import { getModeValue, getPositionValue, getScaleValue, setModeValue, setPositionValue, setScaleValue, StageMode } from '../store/stage';
 import { setBackground } from './background';
 import { setItemsLayer } from './items/items';
 import { setViewport } from './viewport';
@@ -49,6 +33,8 @@ export interface PlanoramaConfig {
 export interface Planorama {
   stage: Stage;
   setStageScale: (scale: Vector2d) => void;
+  setStagePosition: (position: Vector2d) => void;
+  centerStageOnObjectById: (id: string) => void;
   setStageMode: (mode: StageMode) => void;
   setXAlignment: (gap?: number) => void;
   setYAlignment: (gap?: number) => void;
@@ -124,6 +110,8 @@ export const setStage = (config: PlanoramaConfig): Planorama => {
     stage,
     setStageScale,
     setStageMode,
+    setStagePosition: (pos: Vector2d) => emit('viewport:action:centerOnPos', pos),
+    centerStageOnObjectById: (id: string) => emit('viewport:action:centerOnItem', id),
     setXAlignment: (gap?: number) => emit('select:action:alignX', gap || getItemGap()),
     setYAlignment: (gap?: number) => emit('select:action:alignY', gap || getItemGap()),
     spreadItemsByCircle: (spreadOpts?: SpreadByOpts) =>

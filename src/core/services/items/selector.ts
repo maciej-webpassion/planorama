@@ -6,13 +6,7 @@ import { Stage } from 'konva/lib/Stage';
 import { Util } from 'konva/lib/Util';
 
 import {
-  BACKGROUND_LAYER_NAME,
-  ITEM_NAME,
-  ITEMS_LAYER_NAME,
-  SELECTION_GROUP_NAME,
-  STAGE_NAME,
-  TRANSFORMER_NAME,
-  TRANSFORMER_OBJECT_NAMES,
+    BACKGROUND_LAYER_NAME, ITEM_NAME, ITEMS_LAYER_NAME, SELECTION_GROUP_NAME, STAGE_NAME, TRANSFORMER_NAME, TRANSFORMER_OBJECT_NAMES, TRANSFORMER_PADDING
 } from '../../config/config.const';
 import { on } from '../../store/event-bus';
 import { getOnSelectItems } from '../../store/item';
@@ -210,7 +204,7 @@ function getHelperObjects() {
 
   const tr = new Transformer({
     rotateAnchorOffset: 60,
-    padding: 0, // TRANSFORMER_PADDING,
+    padding: TRANSFORMER_PADDING,
     resizeEnabled: false,
     useSingleNodeRotation: true,
     rotationSnaps: getRotationSnaps(10),

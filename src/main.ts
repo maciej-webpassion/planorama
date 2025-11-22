@@ -61,7 +61,8 @@ function onItemMouseOut(item: any) {
 function onItemMouseClick(item: any) {
   console.log('Item mouse click:', item);
   const dialogText = dialog.querySelector<HTMLParagraphElement>('.dialog-text')!;
-  dialogText.innerText = `You clicked on item Id: ${item.internalId} Type: ${item.type}`;
+  dialogText.innerText = `You clicked on item Id: ${item.id} Type: ${item.type}`;
+  dialog.setAttribute('data-item-id', item.id);
   dialog.showModal();
 }
 
@@ -93,6 +94,7 @@ let MODE = 'viewport';
 
 const {
   setStageMode,
+  setStagePosition,
   setXAlignment,
   setYAlignment,
   spreadItemsByCircle,
@@ -104,6 +106,7 @@ const {
   discardSelection,
   deleteSelectedItems,
   cloneSelectedItems,
+  centerStageOnObjectById,
 } = setStage({
   stageContainer,
   onViewportChange,
@@ -136,6 +139,7 @@ const parkingItemButton = document.querySelector<HTMLButtonElement>('#btn-creato
 const gapInput = document.querySelector<HTMLInputElement>('#input-gap')!;
 
 const dialog = document.querySelector<HTMLDialogElement>('#item-dialog')!;
+const btnCenterItem = document.querySelector<HTMLButtonElement>('#btn-center-item')!;
 
 gapInput.addEventListener('change', () => {
   const gap = gapInput.value ? parseInt(gapInput.value, 10) : 10;
@@ -215,6 +219,13 @@ stageContainer.addEventListener('keydown', (e) => {
     deleteSelectedItems();
   }
   e.preventDefault();
+});
+
+btnCenterItem.addEventListener('click', () => {
+  const itemId = dialog.getAttribute('data-item-id');
+  if (itemId) {
+    centerStageOnObjectById(itemId);
+  }
 });
 
 stageContainer.tabIndex = 1;

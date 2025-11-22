@@ -3,12 +3,7 @@ import { Layer } from 'konva/lib/Layer';
 import { Stage } from 'konva/lib/Stage';
 
 import { ITEM_NAME, ITEMS_LAYER_NAME, TRANSFORM_LAYER_NAME } from '../../config/config.const';
-import {
-  getCreatorCurrentItemConfig,
-  getOnItemMouseClick,
-  getOnItemMouseOut,
-  getOnItemMouseOver,
-} from '../../store/item';
+import { getCreatorCurrentItemConfig, getOnItemMouseClick, getOnItemMouseOut, getOnItemMouseOver } from '../../store/item';
 import { getModeValue } from '../../store/stage';
 import { getCenterOfBoundingBox, stageToWindow } from '../calc/utils';
 import { setCreator } from './creator';
@@ -23,7 +18,7 @@ const handleMouseAction = (e: any, object: any, type: 'over' | 'out', fn: (data:
     fn({
       type: parent?.attrs.type,
       boundingBox: parent?.getClientRect({ relativeTo: stage }),
-      internalId: parent?._id,
+      id: parent?.attrs.id,
       pos: parent?.getRelativePointerPosition(),
       itemCenter: stageToWindow(stage, getCenterOfBoundingBox(parent?.getClientRect({ relativeTo: stage }))),
       scale: stage.attrs.scaleX,
@@ -36,12 +31,15 @@ const handleMouseClickAction = (e: any, object: any, fn: (data: any) => void) =>
   const stage = e.target.getStage();
   if (stage) {
     const parent = object.getParent();
+    console.log(parent);
+
     fn({
       type: parent?.attrs.type,
       boundingBox: parent?.getClientRect({ relativeTo: stage }),
-      internalId: parent?._id,
+      id: parent?.attrs.id,
       pos: parent?.getRelativePointerPosition(),
       itemCenter: stageToWindow(stage, getCenterOfBoundingBox(parent?.getClientRect({ relativeTo: stage }))),
+      itemCenterOnStage: getCenterOfBoundingBox(parent?.getClientRect({ relativeTo: stage })),
       scale: stage.attrs.scaleX,
       e,
     });
@@ -75,6 +73,7 @@ export const createItem = (x: number, y: number, rotation: number, stage: Stage)
     name: ITEM_NAME,
     perfectDrawEnabled: false,
     type: CURRENT_ITEM.name,
+    id: `item-` + crypto.randomUUID(),
   });
 
   const item = new Konva.Rect({
