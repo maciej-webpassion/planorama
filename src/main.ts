@@ -22,6 +22,11 @@ export const TMP_GROUPS: ItemConfig[] = [
       fontFamily: 'Helvetica',
       fillColor: '#666',
     },
+    background: {
+      backgroundColor: 'rgba(196, 183, 203, 0.5)',
+      strokeColor: 'rgba(196, 183, 203, 0.8)',
+      strokeWidth: 1.5,
+    },
   },
   {
     name: 'computer-item',
@@ -49,7 +54,7 @@ function onItemMouseOver(item: any) {
   if (item.itemCenter) {
     tooltip.style.left = item.itemCenter.x + 'px';
     tooltip.style.top = item.itemCenter.y + 'px';
-    tooltip.innerText = `Id: ${item.internalId} Item: ${item.type}`;
+    tooltip.innerText = `Id: ${item.id} Item: ${item.type}`;
   }
 }
 

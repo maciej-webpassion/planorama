@@ -5,6 +5,7 @@ import { Layer } from 'konva/lib/Layer';
 import { Shape, ShapeConfig } from 'konva/lib/Shape';
 import { Transformer } from 'konva/lib/shapes/Transformer';
 import { Stage } from 'konva/lib/Stage';
+import { Easings, Tween } from 'konva/lib/Tween';
 import { orderBy } from 'lodash-es';
 
 import { SpreadByOpts } from '../../../store/select';
@@ -75,14 +76,31 @@ export function spreadItemsByCircle(spreadOpts: SpreadByOpts, tr: Transformer, i
     const xDiff = cx - shape.x();
     const yDiff = cy - shape.y();
 
-    shape.setAttrs({
+    // shape.setAttrs({
+    //   x: xPos - xDiff,
+    //   y: yPos - yDiff,
+    // });
+
+    const isLast = index === sortedItems.length - 1;
+
+    new Tween({
       x: xPos - xDiff,
       y: yPos - yDiff,
-    });
+      node: shape,
+      duration: 0,
+      easing: Easings.EaseInOut,
+      onFinish: () => {
+        if (isLast) {
+          // after last item animation, update transformer
+          resetGroupTransforms(group, tr);
+          moveSelectedItemsToTransformer(group, tr, sortedItems as Group[]);
+        }
+      },
+    }).play();
   });
 
-  resetGroupTransforms(group, tr);
-  moveSelectedItemsToTransformer(group, tr, sortedItems as Group[]);
+  // resetGroupTransforms(group, tr);
+  // moveSelectedItemsToTransformer(group, tr, sortedItems as Group[]);
 }
 
 /**

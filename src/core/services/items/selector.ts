@@ -156,6 +156,10 @@ export const setSelector = (layer: Layer, itemsLayer: Layer, stage: Stage) => {
     if (getModeValue() !== 'select') return;
     cloneSelectedItems(group, itemsLayer, tr);
   });
+
+  on('select:action:selectById', (ids: string[] | string) => {
+    selectByIds(ids, stage, group, tr, itemsLayer);
+  });
 };
 
 function getSelected(stage: Stage, selectionRectangle: Rect): { intersected: Group[]; notIntersected: Group[] } {
@@ -207,7 +211,7 @@ function getHelperObjects() {
     padding: TRANSFORMER_PADDING,
     resizeEnabled: false,
     useSingleNodeRotation: true,
-    rotationSnaps: getRotationSnaps(10),
+    rotationSnaps: getRotationSnaps(1),
     shouldOverdrawWholeArea: true,
     name: TRANSFORMER_NAME,
   });
@@ -362,4 +366,15 @@ function setSelection(tr: Transformer, selectionGroup: Group) {
   } else {
     tr.useSingleNodeRotation(false);
   }
+}
+
+function selectByIds(ids: string[] | string, stage: Stage, group: Group, tr: Transformer, itemsLayer: Layer) {
+  const idsArray = Array.isArray(ids) ? ids : [ids];
+
+  idsArray.forEach((id) => {
+    const item = stage.findOne(`#${id}`) as Group;
+    if (item) {
+      addItemToTransformer(tr, group, item, itemsLayer, false);
+    }
+  });
 }

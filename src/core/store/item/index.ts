@@ -4,12 +4,29 @@ import { Signal, signal } from '@preact/signals-core';
 
 export const DEFAULT_ITEM_GAP = 10;
 const DEFAULT_ITEM_ROTATION_ANGLE = 0;
+export const DEFAULT_VERTICAL_ALIGNMENT = 50;
+export const DEFAULT_HORIZONTAL_ALIGNMENT = 50;
+export const DEFAULT_ITEM_LABEL_FONT_FAMILY = 'Arial';
+export const DEFAULT_ITEM_CORNER_RADIUS = 8;
 
 export interface ItemLabelConfig {
   defaultText?: string;
   fontSize: number;
   fontFamily: string;
-  fillColor: string; // color
+  // color
+  fillColor: string;
+  // percentage from top
+  verticalAlignment?: number;
+  // percentage from left
+  horizontalAlignment?: number;
+}
+
+export interface ItemBackgroundColorConfig {
+  // RGBA or hex color
+  backgroundColor: string;
+  // RGBA or hex color
+  strokeColor: string;
+  strokeWidth: number;
 }
 
 export interface ItemConfig {
@@ -19,6 +36,7 @@ export interface ItemConfig {
   src: string;
   scale: { x: number; y: number };
   label?: ItemLabelConfig;
+  background?: ItemBackgroundColorConfig;
 }
 
 export const itemGap: Signal<number> = signal(DEFAULT_ITEM_GAP);

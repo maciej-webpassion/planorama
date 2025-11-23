@@ -1,19 +1,26 @@
 import Konva from 'konva';
 import { Layer } from 'konva/lib/Layer';
+import { Text } from 'konva/lib/shapes/Text';
 import { Stage } from 'konva/lib/Stage';
 
 import { ITEM_NAME, ITEMS_LAYER_NAME, TRANSFORM_LAYER_NAME } from '../../config/config.const';
-import { getCreatorCurrentItemConfig, getOnItemMouseClick, getOnItemMouseOut, getOnItemMouseOver } from '../../store/item';
+import {
+    DEFAULT_HORIZONTAL_ALIGNMENT, DEFAULT_ITEM_CORNER_RADIUS, DEFAULT_ITEM_LABEL_FONT_FAMILY, DEFAULT_VERTICAL_ALIGNMENT, getCreatorCurrentItemConfig, getOnItemMouseClick,
+    getOnItemMouseOut, getOnItemMouseOver, ItemBackgroundColorConfig, ItemConfig
+} from '../../store/item';
 import { getModeValue } from '../../store/stage';
 import { getCenterOfBoundingBox, stageToWindow } from '../calc/utils';
 import { setCreator } from './creator';
 import { setSelector } from './selector';
 
 const handleMouseAction = (e: any, object: any, type: 'over' | 'out', fn: (data: any) => void) => {
+  console.log(type);
+
   const stage = e.target.getStage();
   if (stage) {
     stage.container().style.cursor = type === 'over' ? 'pointer' : 'default';
-    object.fill(type === 'over' ? '#3D63EB' : '');
+    object.fill(type === 'over' ? 'rgba(0,0,0, 0.1)' : 'transparent');
+
     const parent = object.getParent();
     fn({
       type: parent?.attrs.type,
@@ -81,14 +88,17 @@ export const createItem = (x: number, y: number, rotation: number, stage: Stage)
     y: 0,
     width: CURRENT_ITEM.width,
     height: CURRENT_ITEM.height,
-    cornerRadius: 8,
-    opacity: 0.1,
+    cornerRadius: DEFAULT_ITEM_CORNER_RADIUS,
+    opacity: 1,
+    fill: 'rgba(0,0,0,0)',
     perfectDrawEnabled: false,
+    zIndex: 5,
   });
 
   item.on('mouseover', function (e) {
     handleMouseAction(e, this, 'over', getOnItemMouseOver());
   });
+
   item.on('mouseout', function (e) {
     handleMouseAction(e, this, 'out', getOnItemMouseOut());
   });
@@ -105,27 +115,71 @@ export const createItem = (x: number, y: number, rotation: number, stage: Stage)
       listening: false,
       perfectDrawEnabled: false,
       scale: CURRENT_ITEM.scale,
+      zIndex: 3,
     });
+
+    if (CURRENT_ITEM.background) {
+      const background = createBackgroundRect(CURRENT_ITEM.width, CURRENT_ITEM.height, CURRENT_ITEM.background);
+      group.add(background);
+    }
+
     group.add(img);
+
+    if (CURRENT_ITEM.label) {
+      const label = createLabel(CURRENT_ITEM, String(group?._id || ''));
+      group.add(label);
+    }
+
+    group.add(item);
   });
-  group.add(item);
-
-  if (CURRENT_ITEM.label) {
-    const label = new Konva.Text({
-      x: CURRENT_ITEM.width / 2,
-      y: CURRENT_ITEM.height / 2,
-      text: CURRENT_ITEM.label?.defaultText || String(group?._id),
-      fontSize: CURRENT_ITEM.label.fontSize,
-      fontFamily: CURRENT_ITEM.label.fontFamily,
-      fill: CURRENT_ITEM.label.fillColor,
-      listening: false,
-      perfectDrawEnabled: false,
-    });
-
-    label.offsetX(label.width() / 2);
-    label.offsetY(label.height() / 2);
-    group.add(label);
-  }
 
   itemsLayer.add(group);
 };
+
+function createLabel(config: ItemConfig, groupId: string): Text {
+  if (!config.label) {
+    throw new Error('Label config is missing');
+  }
+
+  const label = new Konva.Text({
+    x: calculateLabelXPosition(config),
+    y: calculateLabelYPosition(config),
+    text: config.label?.defaultText || groupId,
+    fontSize: config.label.fontSize,
+    fontFamily: config.label.fontFamily || DEFAULT_ITEM_LABEL_FONT_FAMILY,
+    fill: config.label.fillColor,
+    listening: false,
+    perfectDrawEnabled: false,
+    zIndex: 4,
+  });
+
+  label.offsetX(label.width() / 2);
+  label.offsetY(label.height() / 2);
+
+  return label;
+}
+
+function calculateLabelYPosition(itemConfig: ItemConfig): number {
+  const verticalAlignment = itemConfig.label?.verticalAlignment ?? DEFAULT_VERTICAL_ALIGNMENT;
+  return (itemConfig.height * verticalAlignment) / 100;
+}
+
+function calculateLabelXPosition(itemConfig: ItemConfig): number {
+  const horizontalAlignment = itemConfig.label?.horizontalAlignment ?? DEFAULT_HORIZONTAL_ALIGNMENT;
+  return (itemConfig.width * horizontalAlignment) / 100;
+}
+
+function createBackgroundRect(width: number, height: number, background: ItemBackgroundColorConfig): Konva.Rect {
+  return new Konva.Rect({
+    x: 0,
+    y: 0,
+    width,
+    height,
+    fill: background.backgroundColor,
+    stroke: background.strokeColor,
+    strokeWidth: background.strokeWidth,
+    perfectDrawEnabled: false,
+    cornerRadius: DEFAULT_ITEM_CORNER_RADIUS,
+    zIndex: 1,
+  });
+}

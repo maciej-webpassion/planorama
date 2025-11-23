@@ -9,7 +9,8 @@ type PlanoramaEvent =
   | 'select:action:deleteSelectedItems'
   | 'select:action:cloneSelectedItems'
   | 'viewport:action:centerOnItem'
-  | 'viewport:action:centerOnPos';
+  | 'viewport:action:centerOnPos'
+  | 'select:action:selectById';
 
 type EventMap = {
   [K in PlanoramaEvent]: any;
