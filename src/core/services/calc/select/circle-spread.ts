@@ -5,12 +5,11 @@ import { Layer } from 'konva/lib/Layer';
 import { Shape, ShapeConfig } from 'konva/lib/Shape';
 import { Transformer } from 'konva/lib/shapes/Transformer';
 import { Stage } from 'konva/lib/Stage';
-import { Easings, Tween } from 'konva/lib/Tween';
-import { orderBy } from 'lodash-es';
 
+import { TRANSFORM_ANIMATION_SETTINGS } from '../../../config/config.const';
 import { SpreadByOpts } from '../../../store/select';
 import { moveSelectedItemsToTransformer } from '../../items/selector';
-import { resetGroupTransforms } from './common';
+import { resetGroupTransforms, setTransformTween } from './common';
 
 /**
  * Spread selected items by circle
@@ -19,6 +18,8 @@ import { resetGroupTransforms } from './common';
  * @param stage Stage
  */
 export function spreadItemsByCircle(spreadOpts: SpreadByOpts, tr: Transformer, itemsLayer: Layer, stage: Stage) {
+  const animSettings = TRANSFORM_ANIMATION_SETTINGS;
+
   const nodes = tr.nodes();
 
   if (nodes.length === 0) return;
@@ -33,8 +34,6 @@ export function spreadItemsByCircle(spreadOpts: SpreadByOpts, tr: Transformer, i
     // Apply attributes to count bounding box
     shape.setAttrs({
       ...transform,
-      scaleX: 1,
-      scaleY: 1,
     });
   });
 
@@ -44,9 +43,11 @@ export function spreadItemsByCircle(spreadOpts: SpreadByOpts, tr: Transformer, i
 
   const angleStep = (2 * Math.PI) / items.length;
 
-  const sortedItems = orderBy(items, (shape) =>
-    Math.min(shape.getClientRect({ relativeTo: stage }).x, shape.getAttr('x'))
-  );
+  const sortedItems = items;
+
+  // const clones = items.map((item) => item.clone().visible(false));
+  // clones.forEach((clone) => clone.destroy());
+  // console.log('clones', clones);
 
   if (spreadOpts.withRotation !== null) {
     sortedItems.forEach((shape, index) => {
@@ -63,7 +64,9 @@ export function spreadItemsByCircle(spreadOpts: SpreadByOpts, tr: Transformer, i
     });
   }
 
-  sortedItems.forEach((shape, index) => {
+  sortedItems.forEach((shape, index, array) => {
+    const isLast = index === array.length - 1;
+
     const angle = index * angleStep;
 
     const xPos = centerX + radius * Math.cos(angle);
@@ -76,31 +79,34 @@ export function spreadItemsByCircle(spreadOpts: SpreadByOpts, tr: Transformer, i
     const xDiff = cx - shape.x();
     const yDiff = cy - shape.y();
 
-    // shape.setAttrs({
-    //   x: xPos - xDiff,
-    //   y: yPos - yDiff,
-    // });
+    const x = xPos - xDiff;
+    const y = yPos - yDiff;
 
-    const isLast = index === sortedItems.length - 1;
-
-    new Tween({
-      x: xPos - xDiff,
-      y: yPos - yDiff,
-      node: shape,
-      duration: 0,
-      easing: Easings.EaseInOut,
-      onFinish: () => {
-        if (isLast) {
-          // after last item animation, update transformer
-          resetGroupTransforms(group, tr);
-          moveSelectedItemsToTransformer(group, tr, sortedItems as Group[]);
-        }
-      },
-    }).play();
+    if (animSettings.duration === 0) {
+      shape.setAttrs({
+        x,
+        y,
+      });
+    } else {
+      setTransformTween(
+        shape,
+        { x, y },
+        animSettings,
+        isLast
+          ? () => {
+              // after last item animation, update transformer
+              resetGroupTransforms(group, tr);
+              moveSelectedItemsToTransformer(group, tr, sortedItems as Group[]);
+            }
+          : () => {}
+      );
+    }
   });
 
-  // resetGroupTransforms(group, tr);
-  // moveSelectedItemsToTransformer(group, tr, sortedItems as Group[]);
+  if (animSettings.duration === 0) {
+    resetGroupTransforms(group, tr);
+    moveSelectedItemsToTransformer(group, tr, sortedItems as Group[]);
+  }
 }
 
 /**

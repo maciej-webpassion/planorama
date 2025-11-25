@@ -5,8 +5,9 @@ import { Transformer } from 'konva/lib/shapes/Transformer';
 import { Stage } from 'konva/lib/Stage';
 import { orderBy } from 'lodash-es';
 
+import { TRANSFORM_ANIMATION_SETTINGS } from '../../../config/config.const';
 import { moveSelectedItemsToTransformer } from '../../items/selector';
-import { resetGroupTransforms } from './common';
+import { resetGroupTransforms, setTransformTween } from './common';
 
 /**
  * Align selected items horizontally
@@ -16,6 +17,7 @@ import { resetGroupTransforms } from './common';
  * @returns
  */
 export function alignItemsX(spreadGap: number, tr: Transformer, itemsLayer: Layer, stage: Stage) {
+  const animSettings = TRANSFORM_ANIMATION_SETTINGS;
   console.log('alignItemsX');
   const nodes = tr.nodes();
 
@@ -44,7 +46,8 @@ export function alignItemsX(spreadGap: number, tr: Transformer, itemsLayer: Laye
     Math.min(shape.getClientRect({ relativeTo: stage }).x, shape.getAttr('x'))
   );
 
-  sortedItems.reduce((acc, shape) => {
+  sortedItems.reduce((acc, shape, index, array) => {
+    const isLast = index === array.length - 1;
     const box = shape.getClientRect({ relativeTo: stage });
 
     const cy = box.y + box.height / 2;
@@ -55,15 +58,33 @@ export function alignItemsX(spreadGap: number, tr: Transformer, itemsLayer: Laye
 
     const xDiff = cx - shape.x();
     const xPos = X_STARTING_POINT + acc + (box.width / 2 - xDiff);
-    shape.setAttrs({
-      x: xPos,
-      y: yPos,
-    });
+
+    if (animSettings.duration === 0) {
+      shape.setAttrs({
+        x: xPos,
+        y: yPos,
+      });
+    } else {
+      setTransformTween(
+        shape,
+        { x: xPos, y: yPos },
+        animSettings,
+        isLast
+          ? () => {
+              // after last item animation, update transformer
+              resetGroupTransforms(group, tr);
+              moveSelectedItemsToTransformer(group, tr, sortedItems as Group[]);
+            }
+          : () => {}
+      );
+    }
     return acc + box.width + spreadGap;
   }, 0);
 
-  resetGroupTransforms(group, tr);
-  moveSelectedItemsToTransformer(group, tr, sortedItems as Group[]);
+  if (animSettings.duration === 0) {
+    resetGroupTransforms(group, tr);
+    moveSelectedItemsToTransformer(group, tr, sortedItems as Group[]);
+  }
 }
 
 /**
