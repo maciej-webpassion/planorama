@@ -27,3 +27,5 @@ export const TRANSFORM_ANIMATION_SETTINGS: TransformAnimationSettings = {
   duration: 0.2,
   easing: Easings.EaseInOut,
 };
+
+export const DEFAULT_TRANSFORM_PERFORMANCE_ITEMS_LIMIT = 100;

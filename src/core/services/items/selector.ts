@@ -6,7 +6,8 @@ import { Stage } from 'konva/lib/Stage';
 import { Util } from 'konva/lib/Util';
 
 import {
-    BACKGROUND_LAYER_NAME, ITEM_NAME, ITEMS_LAYER_NAME, SELECTION_GROUP_NAME, STAGE_NAME, TRANSFORMER_NAME, TRANSFORMER_OBJECT_NAMES, TRANSFORMER_PADDING
+    BACKGROUND_LAYER_NAME, DEFAULT_TRANSFORM_PERFORMANCE_ITEMS_LIMIT, ITEM_NAME, ITEMS_LAYER_NAME, SELECTION_GROUP_NAME, STAGE_NAME, TRANSFORMER_NAME, TRANSFORMER_OBJECT_NAMES,
+    TRANSFORMER_PADDING
 } from '../../config/config.const';
 import { on } from '../../store/event-bus';
 import { getOnSelectItems } from '../../store/item';
@@ -355,7 +356,7 @@ function setSelection(tr: Transformer, selectionGroup: Group) {
   debugSelectedItems(items);
 
   tr.nodes([selectionGroup]);
-  if (items.length > 100) {
+  if (items.length > DEFAULT_TRANSFORM_PERFORMANCE_ITEMS_LIMIT) {
     selectionGroup.cache();
   }
 
