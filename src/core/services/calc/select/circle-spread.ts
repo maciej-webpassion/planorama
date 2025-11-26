@@ -90,7 +90,11 @@ export function spreadItemsByCircle(spreadOpts: SpreadByOpts, tr: Transformer, i
     const clone = clones[index];
     const x = clone.x();
     const y = clone.y();
-    const rotation = clone.rotation();
+    let rotation = clone.rotation();
+
+    if (rotation === normalizeAngle(shape.rotation())) {
+      rotation = shape.rotation();
+    }
 
     if (!isWithAnimation) {
       shape.setAttrs({
@@ -144,4 +148,13 @@ function getXCenter(items: (Group | Shape<ShapeConfig>)[], stage: Stage) {
       return acc + box.x + box.width / 2;
     }, 0) / items.length
   );
+}
+
+function normalize360(angle: number): number {
+  return ((angle % 360) + 360) % 360;
+}
+
+function normalizeAngle(angle: number): number {
+  const a = Math.round(angle);
+  return normalize360(a);
 }
