@@ -5,7 +5,7 @@ import { Transformer } from 'konva/lib/shapes/Transformer';
 import { Stage } from 'konva/lib/Stage';
 import { orderBy } from 'lodash-es';
 
-import { TRANSFORM_ANIMATION_SETTINGS } from '../../../config/config.const';
+import { DEFAULT_TRANSFORM_PERFORMANCE_ITEMS_LIMIT, TRANSFORM_ANIMATION_SETTINGS } from '../../../config/config.const';
 import { moveSelectedItemsToTransformer } from '../../items/selector';
 import { resetGroupTransforms, setTransformTween } from './common';
 
@@ -22,6 +22,7 @@ export function alignItemsX(spreadGap: number, tr: Transformer, itemsLayer: Laye
   const nodes = tr.nodes();
 
   if (nodes.length === 0) return;
+  const isWithAnimation = animSettings.duration > 0 || nodes.length <= DEFAULT_TRANSFORM_PERFORMANCE_ITEMS_LIMIT;
 
   const group: Group = nodes[0] as Group;
 
@@ -59,7 +60,7 @@ export function alignItemsX(spreadGap: number, tr: Transformer, itemsLayer: Laye
     const xDiff = cx - shape.x();
     const xPos = X_STARTING_POINT + acc + (box.width / 2 - xDiff);
 
-    if (animSettings.duration === 0) {
+    if (!isWithAnimation) {
       shape.setAttrs({
         x: xPos,
         y: yPos,
@@ -81,7 +82,7 @@ export function alignItemsX(spreadGap: number, tr: Transformer, itemsLayer: Laye
     return acc + box.width + spreadGap;
   }, 0);
 
-  if (animSettings.duration === 0) {
+  if (!isWithAnimation) {
     resetGroupTransforms(group, tr);
     moveSelectedItemsToTransformer(group, tr, sortedItems as Group[]);
   }

@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "nvm use v24.6.0 && vite",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },

@@ -6,7 +6,7 @@ import { Shape, ShapeConfig } from 'konva/lib/Shape';
 import { Transformer } from 'konva/lib/shapes/Transformer';
 import { Stage } from 'konva/lib/Stage';
 
-import { TRANSFORM_ANIMATION_SETTINGS } from '../../../config/config.const';
+import { DEFAULT_TRANSFORM_PERFORMANCE_ITEMS_LIMIT, TRANSFORM_ANIMATION_SETTINGS } from '../../../config/config.const';
 import { SpreadByOpts } from '../../../store/select';
 import { moveSelectedItemsToTransformer } from '../../items/selector';
 import { resetGroupTransforms, setTransformTween } from './common';
@@ -23,6 +23,7 @@ export function spreadItemsByCircle(spreadOpts: SpreadByOpts, tr: Transformer, i
   const nodes = tr.nodes();
 
   if (nodes.length === 0) return;
+  const isWithAnimation = animSettings.duration > 0 || nodes.length <= DEFAULT_TRANSFORM_PERFORMANCE_ITEMS_LIMIT;
 
   const group: Group = nodes[0] as Group;
 
@@ -43,14 +44,11 @@ export function spreadItemsByCircle(spreadOpts: SpreadByOpts, tr: Transformer, i
 
   const angleStep = (2 * Math.PI) / items.length;
 
-  const sortedItems = items;
-
-  // const clones = items.map((item) => item.clone().visible(false));
-  // clones.forEach((clone) => clone.destroy());
-  // console.log('clones', clones);
+  // all complicated calculations on invisible clones
+  const clones = items.map((item) => item.clone().visible(false));
 
   if (spreadOpts.withRotation !== null) {
-    sortedItems.forEach((shape, index) => {
+    clones.forEach((shape, index) => {
       // set rotation that item will be always look outside or inside
       let rotation = (index * (360 / items.length) + 90) % 360;
 
@@ -64,9 +62,7 @@ export function spreadItemsByCircle(spreadOpts: SpreadByOpts, tr: Transformer, i
     });
   }
 
-  sortedItems.forEach((shape, index, array) => {
-    const isLast = index === array.length - 1;
-
+  clones.forEach((shape, index) => {
     const angle = index * angleStep;
 
     const xPos = centerX + radius * Math.cos(angle);
@@ -82,31 +78,48 @@ export function spreadItemsByCircle(spreadOpts: SpreadByOpts, tr: Transformer, i
     const x = xPos - xDiff;
     const y = yPos - yDiff;
 
-    if (animSettings.duration === 0) {
+    shape.setAttrs({
+      x,
+      y,
+    });
+  });
+
+  items.forEach((shape, index, array) => {
+    const isLast = index === array.length - 1;
+
+    const clone = clones[index];
+    const x = clone.x();
+    const y = clone.y();
+    const rotation = clone.rotation();
+
+    if (!isWithAnimation) {
       shape.setAttrs({
         x,
         y,
+        rotation,
       });
     } else {
       setTransformTween(
         shape,
-        { x, y },
+        { x, y, rotation },
         animSettings,
         isLast
           ? () => {
               // after last item animation, update transformer
               resetGroupTransforms(group, tr);
-              moveSelectedItemsToTransformer(group, tr, sortedItems as Group[]);
+              moveSelectedItemsToTransformer(group, tr, items as Group[]);
             }
           : () => {}
       );
     }
   });
 
-  if (animSettings.duration === 0) {
+  if (!isWithAnimation) {
     resetGroupTransforms(group, tr);
-    moveSelectedItemsToTransformer(group, tr, sortedItems as Group[]);
+    moveSelectedItemsToTransformer(group, tr, items as Group[]);
   }
+
+  clones.forEach((clone) => clone.destroy());
 }
 
 /**
