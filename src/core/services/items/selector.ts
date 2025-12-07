@@ -12,7 +12,7 @@ import {
 import { on } from '../../store/event-bus';
 import { getOnSelectItems } from '../../store/item';
 import { SpreadByOpts } from '../../store/select';
-import { getOnTransformChange, getOnTransformStart, onTransformStart } from '../../store/select/index';
+import { getOnTransformChange, getOnTransformStart } from '../../store/select/index';
 import { getModeValue } from '../../store/stage';
 import { alignItemsX } from '../calc/select/align-x';
 import { alignItemsY } from '../calc/select/align-y';
@@ -231,31 +231,12 @@ function getHelperObjects() {
     name: TRANSFORMER_NAME,
   });
 
-  tr.on('transformstart', () => {
-    // console.log('transform start');
-  });
-
-  tr.on('dragstart', () => {
-    // console.log('transform drag start');
-  });
-
   tr.on('dragmove', () => {
-    // console.log('transform drag move');
     onTransformChange && onTransformChange(getTransformerState(tr));
   });
 
-  tr.on('dragend', () => {
-    // console.log('transform drag end');
-  });
-
-  tr.on('transform', (ev) => {
-    // console.log('transforming', ev);
-
+  tr.on('transform', () => {
     onTransformChange && onTransformChange(getTransformerState(tr));
-  });
-
-  tr.on('transformend', () => {
-    // console.log('transform end');
   });
 
   return {

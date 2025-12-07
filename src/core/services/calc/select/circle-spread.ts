@@ -150,10 +150,20 @@ function getXCenter(items: (Group | Shape<ShapeConfig>)[], stage: Stage) {
   );
 }
 
-function normalize360(angle: number): number {
+/**
+ * Normalize angle to 0-360 range
+ * @param angle
+ * @returns
+ */
+export function normalize360(angle: number): number {
   return ((angle % 360) + 360) % 360;
 }
 
+/**
+ * Normalize angle to 0-360 range
+ * @param angle
+ * @returns
+ */
 function normalizeAngle(angle: number): number {
   const a = Math.round(angle);
   return normalize360(a);
