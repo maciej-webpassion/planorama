@@ -4,7 +4,7 @@ import { Vector2d } from 'konva/lib/types';
 
 import { effect } from '@preact/signals-core';
 
-import { on } from '../store/event-bus';
+import { emit, on } from '../store/event-bus';
 import { getPositionValue, getScaleValue, setScaleAndPosValue } from '../store/stage';
 import { getCenterOfBoundingBox } from './calc/utils';
 import { setStageDraggableWithMode } from './stage';
@@ -16,7 +16,7 @@ const TOUCH_SCALE_ACCELERATION = 0;
 
 export const setViewport = (stage: Stage, stageContainer: HTMLDivElement): void => {
   STAGE = stage;
-  zoomStage(stage, 1.1);
+  zoomStage(stage, 1);
   subscribeSizeChange(stage, stageContainer);
 
   effect(() => {
@@ -207,11 +207,12 @@ function loop() {
 
   const posX = lerp(STAGE.x(), getPositionValue().x, fraction);
   const posY = lerp(STAGE.y(), getPositionValue().y, fraction);
-  STAGE.scale({ x: scaleX, y: scaleY });
 
+  STAGE.scale({ x: scaleX, y: scaleY });
   STAGE.position({ x: posX, y: posY });
 
   requestAnimationFrame(loop);
+  emit('viewport:changing');
 }
 
 function centerStageOnObjectById(id: string) {

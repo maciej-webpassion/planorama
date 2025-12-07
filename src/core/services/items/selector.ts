@@ -12,17 +12,28 @@ import {
 import { on } from '../../store/event-bus';
 import { getOnSelectItems } from '../../store/item';
 import { SpreadByOpts } from '../../store/select';
+import { getOnTransformChange, getOnTransformStart, onTransformStart } from '../../store/select/index';
 import { getModeValue } from '../../store/stage';
 import { alignItemsX } from '../calc/select/align-x';
 import { alignItemsY } from '../calc/select/align-y';
 import { spreadItemsByCircle } from '../calc/select/circle-spread';
-import { resetGroupTransforms } from '../calc/select/common';
+import { getTransformerState, resetGroupTransforms } from '../calc/select/common';
 import { rotateItems } from '../calc/select/rotate-items';
 
 const STAGE_OBJECT_NAMES = [BACKGROUND_LAYER_NAME, STAGE_NAME];
 
 export const setSelector = (layer: Layer, itemsLayer: Layer, stage: Stage) => {
-  const { group, selectionRectangle, tr } = getHelperObjects();
+  const { group, selectionRectangle, tr, onTransformChange } = getHelperObjects();
+
+  // EVENTS
+  on('viewport:changing', () => {
+    const selectionGroupItems = group.getChildren().filter((child) => child.hasName(ITEM_NAME)) as Group[];
+
+    if (selectionGroupItems.length > 0) {
+      const transformerPose = getTransformerState(tr);
+      onTransformChange && onTransformChange(transformerPose);
+    }
+  });
 
   layer.add(group);
   layer.add(tr);
@@ -193,6 +204,9 @@ function getRotationSnaps(jump: number) {
 }
 
 function getHelperObjects() {
+  // EVENTS
+  const onTransformChange = getOnTransformChange();
+
   const group = new Group({
     name: SELECTION_GROUP_NAME,
   });
@@ -212,14 +226,11 @@ function getHelperObjects() {
     padding: TRANSFORMER_PADDING,
     resizeEnabled: false,
     useSingleNodeRotation: true,
-    rotationSnaps: getRotationSnaps(1),
+    rotationSnaps: getRotationSnaps(10),
     shouldOverdrawWholeArea: true,
     name: TRANSFORMER_NAME,
   });
 
-  // TODO: check how to get position of Transformer while scale is changing
-  // const trNode = tr.getClientRect(); doesn't work properly
-  // we can use tr.getAbsoluteTransform().getTranslation() but it gives position without padding
   tr.on('transformstart', () => {
     // console.log('transform start');
   });
@@ -230,6 +241,7 @@ function getHelperObjects() {
 
   tr.on('dragmove', () => {
     // console.log('transform drag move');
+    onTransformChange && onTransformChange(getTransformerState(tr));
   });
 
   tr.on('dragend', () => {
@@ -239,7 +251,7 @@ function getHelperObjects() {
   tr.on('transform', (ev) => {
     // console.log('transforming', ev);
 
-    console.log(tr.getAbsoluteTransform().decompose());
+    onTransformChange && onTransformChange(getTransformerState(tr));
   });
 
   tr.on('transformend', () => {
@@ -250,6 +262,7 @@ function getHelperObjects() {
     group,
     selectionRectangle,
     tr,
+    onTransformChange,
   };
 }
 
@@ -349,6 +362,7 @@ function debugSelectedItems(group: Group[]) {
 }
 
 function setSelection(tr: Transformer, selectionGroup: Group) {
+  const onTransformStart = getOnTransformStart();
   const items = selectionGroup.getChildren().filter((child) => child.hasName(ITEM_NAME)) as Group[];
   const fn = getOnSelectItems();
   fn(items);
@@ -367,6 +381,8 @@ function setSelection(tr: Transformer, selectionGroup: Group) {
   } else {
     tr.useSingleNodeRotation(false);
   }
+
+  onTransformStart && onTransformStart(getTransformerState(tr));
 }
 
 function selectByIds(ids: string[] | string, stage: Stage, group: Group, tr: Transformer, itemsLayer: Layer) {

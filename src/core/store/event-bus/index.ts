@@ -10,7 +10,11 @@ type PlanoramaEvent =
   | 'select:action:cloneSelectedItems'
   | 'viewport:action:centerOnItem'
   | 'viewport:action:centerOnPos'
-  | 'select:action:selectById';
+  | 'select:action:selectById'
+  | 'select:action:transformChange'
+  | 'select:action:transformEnd'
+  | 'select:action:transformStart'
+  | 'viewport:changing';
 
 type EventMap = {
   [K in PlanoramaEvent]: any;

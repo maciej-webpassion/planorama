@@ -4,8 +4,12 @@ import { Transformer } from 'konva/lib/shapes/Transformer';
 import { Tween } from 'konva/lib/Tween';
 
 import { TransformAnimationSettings } from '../../../config/config.const';
+import { getOnTransformEnd } from '../../../store/select';
+import { degToRad, getRotatedRectPoints } from '../../calc';
+import { transformerToWindow } from '../utils';
 
 export function resetGroupTransforms(group: Group, tr: Transformer) {
+  const onTransformEnd = getOnTransformEnd();
   group.setAttrs({
     x: 0,
     y: 0,
@@ -16,7 +20,8 @@ export function resetGroupTransforms(group: Group, tr: Transformer) {
   group.clearCache();
   group.destroyChildren();
   tr.nodes([]);
-  console.log('reset group');
+
+  onTransformEnd && onTransformEnd(getTransformerState(tr));
 }
 
 export function setTransformTween(
@@ -32,4 +37,26 @@ export function setTransformTween(
     easing: animSettings.easing,
     onFinish: callbackFn,
   }).play();
+}
+
+export function getTransformerState(tr: Transformer) {
+  const stage = tr.getStage()!;
+  const canvasPos = tr.getAbsolutePosition(stage); // { x, y } in canvas coords
+
+  const windowPos = transformerToWindow(stage, canvasPos);
+
+  const rotation = tr.getAbsoluteRotation(); // degrees
+  const scale = tr.scaleX(); // uniform scale
+  console.log(scale);
+  const width = tr.width() * scale;
+  const height = tr.height() * scale;
+
+  console.log(width, height);
+
+  return {
+    canvasPos,
+    rotation,
+    scale: stage.scaleX(),
+    rectPoints: getRotatedRectPoints(windowPos.x, windowPos.y, width, height, degToRad(rotation)),
+  };
 }

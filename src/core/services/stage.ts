@@ -11,7 +11,7 @@ import {
     getItemGap, getItemRotationAngle, ItemConfig, setCreatorCurrentItemConfig, setItemGap, setItemRotationAngle, setOnItemMouseClick, setOnItemMouseOut, setOnItemMouseOver,
     setOnSelectItems
 } from '../store/item';
-import { getSpreadByOpts, setSpreadByOpts, SpreadByOpts } from '../store/select';
+import { getSpreadByOpts, setOnTransformChange, setOnTransformEnd, setOnTransformStart, setSpreadByOpts, SpreadByOpts } from '../store/select';
 import { getModeValue, getPositionValue, getScaleValue, setModeValue, setPositionValue, setScaleValue, StageMode } from '../store/stage';
 import { setBackground } from './background';
 import { setItemsLayer } from './items/items';
@@ -28,6 +28,9 @@ export interface PlanoramaConfig {
   onCreatorStart?: (data: any) => void;
   onCreatorMove?: (data: any) => void;
   onCreatorEnd?: (data: any) => void;
+  onTransformChange?: (data: any) => void;
+  onTransformEnd?: (data: any) => void;
+  onTransformStart?: (data: any) => void;
 }
 
 export interface Planorama {
@@ -64,6 +67,9 @@ export const setStage = (config: PlanoramaConfig): Planorama => {
     onCreatorStart,
     onCreatorMove,
     onCreatorEnd,
+    onTransformChange,
+    onTransformEnd,
+    onTransformStart,
   } = config;
 
   onItemMouseOver && setOnItemMouseOver(onItemMouseOver);
@@ -73,6 +79,9 @@ export const setStage = (config: PlanoramaConfig): Planorama => {
   onCreatorStart && setOnCreatorStart(onCreatorStart);
   onCreatorMove && setOnCreatorMove(onCreatorMove);
   onCreatorEnd && setOnCreatorEnd(onCreatorEnd);
+  onTransformChange && setOnTransformChange(onTransformChange);
+  onTransformEnd && setOnTransformEnd(onTransformEnd);
+  onTransformStart && setOnTransformStart(onTransformStart);
 
   if (!stage) {
     stage = createStage(stageContainer);

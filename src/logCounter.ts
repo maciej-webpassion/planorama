@@ -1,6 +1,6 @@
 import { effect } from '@preact/signals-core';
 
-import { counter } from './counter';
+import { counter } from './calc';
 
 export function logCounter() {
   effect(() => console.log(`count is ${counter.value}`));
@@ -11,5 +11,5 @@ export function resetCounter() {
 }
 
 export function setupResetCounter(element: HTMLButtonElement) {
-  element.addEventListener("click", () => resetCounter());
+  element.addEventListener('click', () => resetCounter());
 }

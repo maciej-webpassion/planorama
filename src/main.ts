@@ -1,5 +1,6 @@
 import './style.css';
 
+import { getTranslateForRotation } from './calc.ts';
 import { setStage, Vector2d } from './core/services/stage.ts';
 import { ItemConfig } from './core/store/item/index.ts';
 import { RotationMode } from './core/store/select/index.ts';
@@ -95,6 +96,28 @@ function onCreatorEnd(data: any) {
   tooltip.classList.remove('visible');
 }
 
+function onTransformChange(data: any) {
+  console.log('Transform changed:', data);
+  transformerOpts.style.left = data.rectPoints.topRight.x + 'px';
+  transformerOpts.style.top = data.rectPoints.topRight.y + 'px';
+  transformerOpts.innerText = `${data.rotation.toFixed(2)}°`;
+  transformerOpts.style.transform = getTranslateForRotation(data.rotation);
+}
+
+function onTransformEnd(data: any) {
+  console.log('Transform ended:', data);
+  transformerOpts.classList.remove('visible');
+}
+
+function onTransformStart(data: any) {
+  console.log('Transform started:', data);
+  transformerOpts.classList.add('visible');
+  transformerOpts.style.left = data.rectPoints.topRight.x + 'px';
+  transformerOpts.style.top = data.rectPoints.topRight.y + 'px';
+  transformerOpts.innerText = `${data.rotation.toFixed(2)}°`;
+  transformerOpts.style.transform = getTranslateForRotation(data.rotation);
+}
+
 let MODE = 'viewport';
 
 const {
@@ -123,6 +146,9 @@ const {
   onCreatorStart,
   onCreatorMove,
   onCreatorEnd,
+  onTransformChange,
+  onTransformEnd,
+  onTransformStart,
 });
 
 const modeSelector = document.querySelector<HTMLSelectElement>('#select-mode')!;
@@ -145,6 +171,7 @@ const gapInput = document.querySelector<HTMLInputElement>('#input-gap')!;
 
 const dialog = document.querySelector<HTMLDialogElement>('#item-dialog')!;
 const btnCenterItem = document.querySelector<HTMLButtonElement>('#btn-center-item')!;
+const transformerOpts = document.querySelector<HTMLDivElement>('#transformer-opts')!;
 
 gapInput.addEventListener('change', () => {
   const gap = gapInput.value ? parseInt(gapInput.value, 10) : 10;
@@ -231,6 +258,11 @@ btnCenterItem.addEventListener('click', () => {
   if (itemId) {
     centerStageOnObjectById(itemId);
   }
+});
+
+transformerOpts.addEventListener('click', (ev) => {
+  ev.stopPropagation();
+  console.log('opts clicked');
 });
 
 stageContainer.tabIndex = 1;
