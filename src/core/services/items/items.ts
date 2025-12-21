@@ -30,75 +30,11 @@ import {
   PlanoramaItem,
 } from '../../store/item';
 import { getModeValue } from '../../store/stage';
-import { getCenterOfBoundingBox, stageToWindow } from '../calc/utils';
+import { exportAllItems, extractItemData } from '../calc/utils/items';
 import { setCreator } from './creator';
 import { setSelector } from './selector';
 
 type MouseEventCallbackFn = (data: PlanoramaItem) => void;
-
-const extractItemData = (item: Rect): PlanoramaItem => {
-  const stage = item.getStage();
-  if (!stage) {
-    throw new Error('Stage not found for the item');
-  }
-
-  const parent = item.getParent() as Group;
-
-  return {
-    id: parent?.attrs.id,
-    type: parent?.attrs.type,
-    boundingBox: parent?.getClientRect({ relativeTo: stage }),
-    pos: parent?.getRelativePointerPosition()!,
-    itemCenter: stageToWindow(stage, getCenterOfBoundingBox(parent?.getClientRect({ relativeTo: stage }))),
-    scale: stage.attrs.scaleX,
-    transform: parent?.getTransform().decompose(),
-    itemProps: extractItemProps(parent),
-  };
-};
-
-/**
- * Extract item properties from a Konva Group
- * @param parent The parent Group containing the item
- * @returns ItemUpdatePayload with current item properties
- */
-const extractItemProps = (parent: Group): Omit<ItemUpdatePayload, 'id'> => {
-  const backgroundRect = parent.findOne(`.${ITEM_BACKGROUND_NAME}`) as Rect | undefined;
-
-  const labelText = parent.findOne(`.${ITEM_LABEL_NAME}`) as Text | undefined;
-
-  const itemRect = parent.findOne(`.${ITEM_ACTIONS_RECT_NAME}`) as Rect | undefined;
-  const width = itemRect?.width() || 0;
-  const height = itemRect?.height() || 0;
-
-  const props: Omit<ItemUpdatePayload, 'id'> = {};
-
-  // Extract background properties
-  if (backgroundRect) {
-    props.background = {
-      backgroundColor: String(backgroundRect.fill()),
-      strokeColor: String(backgroundRect.stroke()),
-      strokeWidth: backgroundRect.strokeWidth(),
-    };
-  }
-
-  // Extract label properties
-  if (labelText) {
-    // Calculate alignment percentages
-    const horizontalAlignment = width > 0 ? (labelText.x() / width) * 100 : DEFAULT_HORIZONTAL_ALIGNMENT;
-    const verticalAlignment = height > 0 ? (labelText.y() / height) * 100 : DEFAULT_VERTICAL_ALIGNMENT;
-
-    props.label = {
-      text: labelText.text(),
-      fontSize: labelText.fontSize(),
-      fontFamily: labelText.fontFamily(),
-      fillColor: String(labelText.fill()),
-      verticalAlignment,
-      horizontalAlignment,
-    };
-  }
-
-  return props;
-};
 
 const handleMouseAction = (e: any, object: Rect, type: 'over' | 'out', fn: MouseEventCallbackFn) => {
   const stage = e.target.getStage();
@@ -132,6 +68,11 @@ export const setItemsLayer = (stage: Stage) => {
   on('item:action:updateById', (payload: ItemUpdatePayload) => {
     if (!payload.id) return;
     updateItemById(payload.id, payload, stage);
+  });
+
+  on('item:action:exportAll', (callback: (items: PlanoramaItem[]) => void) => {
+    const items = exportAllItems(stage);
+    callback(items);
   });
 };
 

@@ -13,6 +13,7 @@ import {
   getItemRotationAngle,
   ItemConfig,
   ItemUpdatePayload,
+  PlanoramaItem,
   setCreatorCurrentItemConfig,
   setItemColumns,
   setItemGap,
@@ -80,6 +81,7 @@ export interface Planorama {
   cloneSelectedItems: () => void;
   updateItemById: (itemId: string, updates: ItemUpdatePayload) => void;
   selectItemsById: (ids: string[] | string) => void;
+  exportAllItems: (callback: (items: PlanoramaItem[]) => void) => void;
 }
 
 export type { Vector2d } from 'konva/lib/types';
@@ -162,6 +164,7 @@ export const setStage = (config: PlanoramaConfig): Planorama => {
     updateItemById: (itemId: string, updates: ItemUpdatePayload) =>
       emit('item:action:updateById', { ...updates, id: itemId }),
     selectItemsById: (ids: string[] | string) => emit('select:action:selectById', ids),
+    exportAllItems: (callback: (items: PlanoramaItem[]) => void) => emit('item:action:exportAll', callback),
     deleteSelectedItems: () => emit('select:action:deleteSelectedItems'),
     cloneSelectedItems: () => emit('select:action:cloneSelectedItems'),
     setSpreadByOpts: (opts: SpreadByOpts) => setSpreadByOpts(opts),

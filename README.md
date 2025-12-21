@@ -27,6 +27,7 @@ A TypeScript library for creating and managing 2D plans like parkings, gardens, 
     - [discardSelection](#discardselection)
     - [selectItemsById](#selectitemsbyid)
     - [updateItemById](#updateitembyid)
+    - [exportAllItems](#exportallitems)
   - [Configuration](#configuration)
     - [setGap](#setgap)
     - [setColumns](#setcolumns)
@@ -499,6 +500,67 @@ planorama.updateItemById('item-abc123', {
 ```
 
 **See also:** [UPDATE_ITEM_EXAMPLE.md](src/docs/UPDATE_ITEM_EXAMPLE.md) for detailed documentation
+
+---
+
+#### `exportAllItems`
+
+```typescript
+exportAllItems(callback: (items: PlanoramaItem[]) => void): void
+```
+
+Exports all items from the stage as an array of [PlanoramaItem](#planoramaitem) objects. This is useful for saving, analyzing, or processing all items at once.
+
+**Parameters:**
+
+- `callback` (function): Callback function that receives the array of items
+
+**Example:**
+
+```typescript
+// Export all items and log them
+planorama.exportAllItems((items) => {
+  console.log('Total items:', items.length);
+  console.log('Items data:', items);
+});
+
+// Save items to JSON
+planorama.exportAllItems((items) => {
+  const json = JSON.stringify(items, null, 2);
+  localStorage.setItem('planorama-items', json);
+  console.log('Items saved');
+});
+
+// Get all item IDs
+planorama.exportAllItems((items) => {
+  const ids = items.map((item) => item.id);
+  console.log('Item IDs:', ids);
+});
+
+// Filter items by type
+planorama.exportAllItems((items) => {
+  const parkingSpots = items.filter((item) => item.type === 'parking-spot');
+  const computers = items.filter((item) => item.type === 'computer-item');
+
+  console.log(`Parking spots: ${parkingSpots.length}`);
+  console.log(`Computers: ${computers.length}`);
+});
+
+// Export items with specific properties
+planorama.exportAllItems((items) => {
+  const exportData = items.map((item) => ({
+    id: item.id,
+    type: item.type,
+    position: { x: item.transform.x, y: item.transform.y },
+    rotation: item.transform.rotation,
+    label: item.itemProps.label?.text,
+  }));
+
+  downloadJSON(exportData, 'planorama-export.json');
+});
+```
+
+**See also:** [PlanoramaItem](#planoramaitem) type definition
 
 ---
 
@@ -1143,6 +1205,7 @@ interface Planorama {
   cloneSelectedItems: () => void;
   updateItemById: (itemId: string, updates: ItemUpdatePayload) => void;
   selectItemsById: (ids: string[] | string) => void;
+  exportAllItems: (callback: (items: PlanoramaItem[]) => void) => void;
 }
 ```
 
@@ -1271,6 +1334,55 @@ planorama.updateItemById('item-abc123', {
     fontSize: 22,
     fillColor: '#000',
   },
+});
+```
+
+### Exporting Items
+
+```typescript
+// Export all items to console
+planorama.exportAllItems((items) => {
+  console.log('Total items:', items.length);
+  items.forEach((item) => {
+    console.log(`${item.type} (${item.id}):`, item.transform);
+  });
+});
+
+// Save items to local storage
+planorama.exportAllItems((items) => {
+  const json = JSON.stringify(items, null, 2);
+  localStorage.setItem('my-planorama', json);
+});
+
+// Download items as JSON file
+planorama.exportAllItems((items) => {
+  const exportData = items.map((item) => ({
+    id: item.id,
+    type: item.type,
+    position: { x: item.transform.x, y: item.transform.y },
+    rotation: item.transform.rotation,
+    label: item.itemProps.label?.text,
+  }));
+
+  const blob = new Blob([JSON.stringify(exportData, null, 2)], {
+    type: 'application/json',
+  });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'planorama-export.json';
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+// Generate report by item type
+planorama.exportAllItems((items) => {
+  const report = items.reduce((acc, item) => {
+    acc[item.type] = (acc[item.type] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
+  console.log('Items by type:', report);
 });
 ```
 
