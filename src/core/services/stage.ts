@@ -8,11 +8,37 @@ import { STAGE_NAME } from '../config/config.const';
 import { setOnCreatorEnd, setOnCreatorMove, setOnCreatorStart } from '../store/creator/index';
 import { emit } from '../store/event-bus';
 import {
-    getItemGap, getItemRotationAngle, ItemConfig, ItemUpdatePayload, setCreatorCurrentItemConfig, setItemGap, setItemRotationAngle, setOnItemMouseClick, setOnItemMouseOut, setOnItemMouseOver,
-    setOnSelectItems
+  getItemColumns,
+  getItemGap,
+  getItemRotationAngle,
+  ItemConfig,
+  ItemUpdatePayload,
+  setCreatorCurrentItemConfig,
+  setItemColumns,
+  setItemGap,
+  setItemRotationAngle,
+  setOnItemMouseClick,
+  setOnItemMouseOut,
+  setOnItemMouseOver,
+  setOnSelectItems,
 } from '../store/item';
-import { getSpreadByOpts, setOnTransformChange, setOnTransformEnd, setOnTransformStart, setSpreadByOpts, SpreadByOpts } from '../store/select';
-import { getModeValue, getPositionValue, getScaleValue, setModeValue, setPositionValue, setScaleValue, StageMode } from '../store/stage';
+import {
+  getSpreadByOpts,
+  setOnTransformChange,
+  setOnTransformEnd,
+  setOnTransformStart,
+  setSpreadByOpts,
+  SpreadByOpts,
+} from '../store/select';
+import {
+  getModeValue,
+  getPositionValue,
+  getScaleValue,
+  setModeValue,
+  setPositionValue,
+  setScaleValue,
+  StageMode,
+} from '../store/stage';
 import { setBackground } from './background';
 import { setItemsLayer } from './items/items';
 import { setViewport } from './viewport';
@@ -41,12 +67,14 @@ export interface Planorama {
   setStageMode: (mode: StageMode) => void;
   setXAlignment: (gap?: number) => void;
   setYAlignment: (gap?: number) => void;
+  setAlignmentInCols: (cols?: number, gap?: number) => void;
   spreadItemsByCircle: (spreadOpts?: SpreadByOpts) => void;
   setSpreadByOpts: (opts: SpreadByOpts) => void;
   setCreatorCurrentItem: (config: ItemConfig) => void;
   setRotation: (rotationAngle?: number) => void;
   setRotationAngle: (angle: number) => void;
   setGap: (gap: number) => void;
+  setColumns: (cols: number) => void;
   discardSelection: () => void;
   deleteSelectedItems: () => void;
   cloneSelectedItems: () => void;
@@ -125,11 +153,13 @@ export const setStage = (config: PlanoramaConfig): Planorama => {
     centerStageOnObjectById: (id: string) => emit('viewport:action:centerOnItem', id),
     setXAlignment: (gap?: number) => emit('select:action:alignX', gap || getItemGap()),
     setYAlignment: (gap?: number) => emit('select:action:alignY', gap || getItemGap()),
+    setAlignmentInCols: (cols?: number, gap?: number) =>
+      emit('select:action:alignInCols', { cols: cols || getItemColumns(), gap: gap || getItemGap() }),
     spreadItemsByCircle: (spreadOpts?: SpreadByOpts) =>
       emit('select:action:spreadCircle', spreadOpts || getSpreadByOpts()),
     setRotation: (rotationAngle?: number) => emit('select:action:rotate', rotationAngle || getItemRotationAngle()),
     discardSelection: () => emit('select:action:discardSelection'),
-    updateItemById: (itemId: string, updates: ItemUpdatePayload) => 
+    updateItemById: (itemId: string, updates: ItemUpdatePayload) =>
       emit('item:action:updateById', { ...updates, id: itemId }),
     selectItemsById: (ids: string[] | string) => emit('select:action:selectById', ids),
     deleteSelectedItems: () => emit('select:action:deleteSelectedItems'),
@@ -138,6 +168,9 @@ export const setStage = (config: PlanoramaConfig): Planorama => {
     setCreatorCurrentItem,
     setGap: (gap: number) => {
       setItemGap(gap);
+    },
+    setColumns: (cols: number) => {
+      setItemColumns(cols);
     },
     setRotationAngle: (angle: number) => {
       setItemRotationAngle(angle);

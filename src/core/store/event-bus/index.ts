@@ -3,6 +3,7 @@ import { effect, signal } from '@preact/signals-core';
 type PlanoramaEvent =
   | 'select:action:alignX'
   | 'select:action:alignY'
+  | 'select:action:alignInCols'
   | 'select:action:spreadCircle'
   | 'select:action:rotate'
   | 'select:action:discardSelection'

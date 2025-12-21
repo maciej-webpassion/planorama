@@ -145,10 +145,12 @@ const {
   // setStagePosition,
   setXAlignment,
   setYAlignment,
+  setAlignmentInCols,
   spreadItemsByCircle,
   setSpreadByOpts,
   setCreatorCurrentItem,
   setGap,
+  setColumns,
   setRotation,
   setRotationAngle,
   discardSelection,
@@ -175,6 +177,7 @@ const {
 const modeSelector = document.querySelector<HTMLSelectElement>('#select-mode')!;
 const alignXButton = document.querySelector<HTMLButtonElement>('#btn-align-x')!;
 const alignYButton = document.querySelector<HTMLButtonElement>('#btn-align-y')!;
+const alignColsButton = document.querySelector<HTMLButtonElement>('#btn-align-cols')!;
 const cloneButton = document.querySelector<HTMLButtonElement>('#btn-clone')!;
 
 const rotateButton = document.querySelector<HTMLButtonElement>('#btn-rotate')!;
@@ -189,6 +192,7 @@ const computerItemButton = document.querySelector<HTMLButtonElement>('#btn-creat
 const parkingItemButton = document.querySelector<HTMLButtonElement>('#btn-creator-parking')!;
 
 const gapInput = document.querySelector<HTMLInputElement>('#input-gap')!;
+const columnsInput = document.querySelector<HTMLInputElement>('#input-cols')!;
 
 const dialog = document.querySelector<HTMLDialogElement>('#item-dialog')!;
 const btnCenterItem = document.querySelector<HTMLButtonElement>('#btn-center-item')!;
@@ -210,6 +214,12 @@ gapInput.addEventListener('change', () => {
   const gap = gapInput.value ? parseInt(gapInput.value, 10) : 10;
   console.log('Setting gap to:', gap);
   setGap(gap);
+});
+
+columnsInput.addEventListener('change', () => {
+  const cols = columnsInput.value ? parseInt(columnsInput.value, 10) : 3;
+  console.log('Setting columns to:', cols);
+  setColumns(cols);
 });
 
 rotationMode.addEventListener('change', () => {
@@ -244,6 +254,10 @@ alignXButton.addEventListener('click', () => {
 
 alignYButton.addEventListener('click', () => {
   setYAlignment();
+});
+
+alignColsButton.addEventListener('click', () => {
+  setAlignmentInCols();
 });
 
 rotateButton.addEventListener('click', () => {

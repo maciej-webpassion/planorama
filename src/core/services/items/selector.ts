@@ -6,14 +6,22 @@ import { Stage } from 'konva/lib/Stage';
 import { Util } from 'konva/lib/Util';
 
 import {
-    BACKGROUND_LAYER_NAME, DEFAULT_TRANSFORM_PERFORMANCE_ITEMS_LIMIT, ITEM_NAME, ITEMS_LAYER_NAME, SELECTION_GROUP_NAME, STAGE_NAME, TRANSFORMER_NAME, TRANSFORMER_OBJECT_NAMES,
-    TRANSFORMER_PADDING
+  BACKGROUND_LAYER_NAME,
+  DEFAULT_TRANSFORM_PERFORMANCE_ITEMS_LIMIT,
+  ITEM_NAME,
+  ITEMS_LAYER_NAME,
+  SELECTION_GROUP_NAME,
+  STAGE_NAME,
+  TRANSFORMER_NAME,
+  TRANSFORMER_OBJECT_NAMES,
+  TRANSFORMER_PADDING,
 } from '../../config/config.const';
 import { on } from '../../store/event-bus';
 import { getOnSelectItems } from '../../store/item';
 import { SpreadByOpts } from '../../store/select';
 import { getOnTransformChange, getOnTransformStart } from '../../store/select/index';
 import { getModeValue } from '../../store/stage';
+import { alignItemsInCols } from '../calc/select/align-cols-rows';
 import { alignItemsX } from '../calc/select/align-x';
 import { alignItemsY } from '../calc/select/align-y';
 import { spreadItemsByCircle } from '../calc/select/circle-spread';
@@ -144,8 +152,12 @@ export const setSelector = (layer: Layer, itemsLayer: Layer, stage: Stage) => {
     alignItemsY(gap, tr, itemsLayer, stage);
   });
 
-  on('select:action:spreadCircle', (spreadOpts: SpreadByOpts) => {
-    spreadItemsByCircle(spreadOpts, tr, itemsLayer, stage);
+  on('select:action:alignInCols', (payload: { cols: number; gap: number }) => {
+    alignItemsInCols(payload.cols, payload.gap, tr, itemsLayer, stage);
+  });
+
+  on('select:action:spreadCircle', (spreadPayload: SpreadByOpts) => {
+    spreadItemsByCircle(spreadPayload, tr, itemsLayer, stage);
   });
 
   on('select:action:rotate', (rotateAngle: number) => {

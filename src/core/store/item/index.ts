@@ -4,6 +4,7 @@ import { IRect, Vector2d } from 'konva/lib/types';
 import { Signal, signal } from '@preact/signals-core';
 
 export const DEFAULT_ITEM_GAP = 10;
+export const DEFAULT_ITEM_COLUMNS = 3;
 const DEFAULT_ITEM_ROTATION_ANGLE = 0;
 export const DEFAULT_VERTICAL_ALIGNMENT = 50;
 export const DEFAULT_HORIZONTAL_ALIGNMENT = 50;
@@ -59,6 +60,7 @@ export interface ItemConfig {
 }
 
 export const itemGap: Signal<number> = signal(DEFAULT_ITEM_GAP);
+export const itemColumns: Signal<number> = signal(DEFAULT_ITEM_COLUMNS);
 export const itemRotationAngle: Signal<number> = signal(DEFAULT_ITEM_ROTATION_ANGLE);
 
 export const creatorCurrentItemConfig: Signal<ItemConfig | null> = signal(null);
@@ -72,6 +74,11 @@ export const setItemGap = (value: number) => {
   itemGap.value = value;
 };
 export const getItemGap = (): number => itemGap.value;
+
+export const setItemColumns = (value: number) => {
+  itemColumns.value = value;
+};
+export const getItemColumns = (): number => itemColumns.value;
 
 export const setItemRotationAngle = (angle: number) => {
   itemRotationAngle.value = angle;
