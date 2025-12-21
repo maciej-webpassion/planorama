@@ -5,10 +5,10 @@ import { Vector2d } from 'konva/lib/types';
 import { effect } from '@preact/signals-core';
 
 import { STAGE_NAME } from '../config/config.const';
-import { onCreatorStart, setOnCreatorEnd, setOnCreatorMove, setOnCreatorStart } from '../store/creator/index';
+import { setOnCreatorEnd, setOnCreatorMove, setOnCreatorStart } from '../store/creator/index';
 import { emit } from '../store/event-bus';
 import {
-    getItemGap, getItemRotationAngle, ItemConfig, setCreatorCurrentItemConfig, setItemGap, setItemRotationAngle, setOnItemMouseClick, setOnItemMouseOut, setOnItemMouseOver,
+    getItemGap, getItemRotationAngle, ItemConfig, ItemUpdatePayload, setCreatorCurrentItemConfig, setItemGap, setItemRotationAngle, setOnItemMouseClick, setOnItemMouseOut, setOnItemMouseOver,
     setOnSelectItems
 } from '../store/item';
 import { getSpreadByOpts, setOnTransformChange, setOnTransformEnd, setOnTransformStart, setSpreadByOpts, SpreadByOpts } from '../store/select';
@@ -50,6 +50,8 @@ export interface Planorama {
   discardSelection: () => void;
   deleteSelectedItems: () => void;
   cloneSelectedItems: () => void;
+  updateItemById: (itemId: string, updates: ItemUpdatePayload) => void;
+  selectItemsById: (ids: string[] | string) => void;
 }
 
 export type { Vector2d } from 'konva/lib/types';
@@ -127,6 +129,9 @@ export const setStage = (config: PlanoramaConfig): Planorama => {
       emit('select:action:spreadCircle', spreadOpts || getSpreadByOpts()),
     setRotation: (rotationAngle?: number) => emit('select:action:rotate', rotationAngle || getItemRotationAngle()),
     discardSelection: () => emit('select:action:discardSelection'),
+    updateItemById: (itemId: string, updates: ItemUpdatePayload) => 
+      emit('item:action:updateById', { ...updates, id: itemId }),
+    selectItemsById: (ids: string[] | string) => emit('select:action:selectById', ids),
     deleteSelectedItems: () => emit('select:action:deleteSelectedItems'),
     cloneSelectedItems: () => emit('select:action:cloneSelectedItems'),
     setSpreadByOpts: (opts: SpreadByOpts) => setSpreadByOpts(opts),

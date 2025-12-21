@@ -138,3 +138,74 @@ h1 {
 #transformer-opts.visible {
   display: flex;
 }
+
+#item-dialog {
+  max-width: 500px;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+#item-dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+#item-edit-form {
+  margin-top: 20px;
+}
+
+#item-edit-form fieldset {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  padding: 15px;
+}
+
+#item-edit-form legend {
+  padding: 0 10px;
+  font-weight: bold;
+}
+
+#item-edit-form h4 {
+  margin: 10px 0 8px 0;
+  color: #646cff;
+}
+
+#item-edit-form label {
+  display: inline-block;
+  width: 180px;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+#item-edit-form input {
+  padding: 6px 10px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+  font-size: 14px;
+  width: calc(100% - 190px);
+}
+
+#item-edit-form input:focus {
+  outline: none;
+  border-color: #646cff;
+}
+
+#btn-apply-changes {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background-color: #646cff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+#btn-apply-changes:hover {
+  background-color: #535bf2;
+}
+
+#item-dialog button[type='button'] {
+  margin-right: 10px;
+}

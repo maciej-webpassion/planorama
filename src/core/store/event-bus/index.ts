@@ -14,7 +14,8 @@ type PlanoramaEvent =
   | 'select:action:transformChange'
   | 'select:action:transformEnd'
   | 'select:action:transformStart'
-  | 'viewport:changing';
+  | 'viewport:changing'
+  | 'item:action:updateById';
 
 type EventMap = {
   [K in PlanoramaEvent]: any;

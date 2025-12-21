@@ -29,6 +29,23 @@ export interface ItemBackgroundColorConfig {
   strokeWidth: number;
 }
 
+export interface ItemUpdatePayload {
+  id?: string;
+  background?: {
+    backgroundColor?: string;
+    strokeColor?: string;
+    strokeWidth?: number;
+  };
+  label?: {
+    text?: string;
+    fontSize?: number;
+    fontFamily?: string;
+    fillColor?: string;
+    verticalAlignment?: number;
+    horizontalAlignment?: number;
+  };
+}
+
 export interface ItemConfig {
   name: string;
   width: number;

@@ -3,15 +3,63 @@ import { Layer } from 'konva/lib/Layer';
 import { Text } from 'konva/lib/shapes/Text';
 import { Stage } from 'konva/lib/Stage';
 
-import { ITEM_NAME, ITEMS_LAYER_NAME, TRANSFORM_LAYER_NAME } from '../../config/config.const';
+import { ITEM_ACTIONS_RECT_NAME, ITEM_BACKGROUND_NAME, ITEM_LABEL_NAME, ITEM_NAME, ITEMS_LAYER_NAME, TRANSFORM_LAYER_NAME } from '../../config/config.const';
+import { on } from '../../store/event-bus';
 import {
     DEFAULT_HORIZONTAL_ALIGNMENT, DEFAULT_ITEM_CORNER_RADIUS, DEFAULT_ITEM_LABEL_FONT_FAMILY, DEFAULT_VERTICAL_ALIGNMENT, getCreatorCurrentItemConfig, getOnItemMouseClick,
-    getOnItemMouseOut, getOnItemMouseOver, ItemBackgroundColorConfig, ItemConfig
+    getOnItemMouseOut, getOnItemMouseOver, ItemBackgroundColorConfig, ItemConfig, ItemUpdatePayload
 } from '../../store/item';
 import { getModeValue } from '../../store/stage';
 import { getCenterOfBoundingBox, stageToWindow } from '../calc/utils';
 import { setCreator } from './creator';
 import { setSelector } from './selector';
+
+/**
+ * Extract item properties from a Konva Group
+ * @param parent The parent Group containing the item
+ * @returns ItemUpdatePayload with current item properties
+ */
+const extractItemProps = (parent: Konva.Group): Omit<ItemUpdatePayload, 'id'> => {
+  const backgroundRect = parent.findOne(`.${ITEM_BACKGROUND_NAME}`) as Konva.Rect | undefined;
+
+  const labelText = parent.findOne(`.${ITEM_LABEL_NAME}`) as Text | undefined;
+
+  const itemRect = parent.findOne(`.${ITEM_ACTIONS_RECT_NAME}`) as Konva.Rect | undefined;
+  const width = itemRect?.width() || 0;
+  const height = itemRect?.height() || 0;
+
+  const props: Omit<ItemUpdatePayload, 'id'> = {};
+
+  // Extract background properties
+  if (backgroundRect) {
+    props.background = {
+      backgroundColor: String(backgroundRect.fill()),
+      strokeColor: String(backgroundRect.stroke()),
+      strokeWidth: backgroundRect.strokeWidth(),
+    };
+  }
+
+  // Extract label properties
+  if (labelText) {
+    const labelX = labelText.x();
+    const labelY = labelText.y();
+
+    // Calculate alignment percentages
+    const horizontalAlignment = width > 0 ? (labelX / width) * 100 : DEFAULT_HORIZONTAL_ALIGNMENT;
+    const verticalAlignment = height > 0 ? (labelY / height) * 100 : DEFAULT_VERTICAL_ALIGNMENT;
+
+    props.label = {
+      text: labelText.text(),
+      fontSize: labelText.fontSize(),
+      fontFamily: labelText.fontFamily(),
+      fillColor: String(labelText.fill()),
+      verticalAlignment,
+      horizontalAlignment,
+    };
+  }
+
+  return props;
+};
 
 const handleMouseAction = (e: any, object: any, type: 'over' | 'out', fn: (data: any) => void) => {
   console.log(type);
@@ -30,6 +78,7 @@ const handleMouseAction = (e: any, object: any, type: 'over' | 'out', fn: (data:
       itemCenter: stageToWindow(stage, getCenterOfBoundingBox(parent?.getClientRect({ relativeTo: stage }))),
       scale: stage.attrs.scaleX,
       e,
+      itemProps: extractItemProps(parent),
     });
   }
 };
@@ -38,7 +87,6 @@ const handleMouseClickAction = (e: any, object: any, fn: (data: any) => void) =>
   const stage = e.target.getStage();
   if (stage) {
     const parent = object.getParent();
-    console.log(parent);
 
     fn({
       type: parent?.attrs.type,
@@ -49,6 +97,7 @@ const handleMouseClickAction = (e: any, object: any, fn: (data: any) => void) =>
       itemCenterOnStage: getCenterOfBoundingBox(parent?.getClientRect({ relativeTo: stage })),
       scale: stage.attrs.scaleX,
       e,
+      itemProps: extractItemProps(parent),
     });
   }
 };
@@ -64,6 +113,12 @@ export const setItemsLayer = (stage: Stage) => {
   stage.add(transformLayer);
   setCreator(itemsLayer, stage);
   setSelector(transformLayer, itemsLayer, stage);
+
+  // EVENTS
+  on('item:action:updateById', (payload: ItemUpdatePayload) => {
+    if (!payload.id) return;
+    updateItemById(payload.id, payload, stage);
+  });
 };
 
 export const createItem = (x: number, y: number, rotation: number, stage: Stage) => {
@@ -92,7 +147,7 @@ export const createItem = (x: number, y: number, rotation: number, stage: Stage)
     opacity: 1,
     fill: 'rgba(0,0,0,0)',
     perfectDrawEnabled: false,
-    zIndex: 5,
+    name: ITEM_ACTIONS_RECT_NAME,
   });
 
   item.on('mouseover', function (e) {
@@ -115,7 +170,6 @@ export const createItem = (x: number, y: number, rotation: number, stage: Stage)
       listening: false,
       perfectDrawEnabled: false,
       scale: CURRENT_ITEM.scale,
-      zIndex: 3,
     });
 
     if (CURRENT_ITEM.background) {
@@ -142,15 +196,15 @@ function createLabel(config: ItemConfig, groupId: string): Text {
   }
 
   const label = new Konva.Text({
-    x: calculateLabelXPosition(config),
-    y: calculateLabelYPosition(config),
+    x: calculateLabelXPosition(config.label.horizontalAlignment, config.width),
+    y: calculateLabelYPosition(config.label.verticalAlignment, config.height),
     text: config.label?.defaultText || groupId,
     fontSize: config.label.fontSize,
     fontFamily: config.label.fontFamily || DEFAULT_ITEM_LABEL_FONT_FAMILY,
     fill: config.label.fillColor,
     listening: false,
     perfectDrawEnabled: false,
-    zIndex: 4,
+    name: ITEM_LABEL_NAME,
   });
 
   label.offsetX(label.width() / 2);
@@ -159,14 +213,17 @@ function createLabel(config: ItemConfig, groupId: string): Text {
   return label;
 }
 
-function calculateLabelYPosition(itemConfig: ItemConfig): number {
-  const verticalAlignment = itemConfig.label?.verticalAlignment ?? DEFAULT_VERTICAL_ALIGNMENT;
-  return (itemConfig.height * verticalAlignment) / 100;
+function calculateLabelYPosition(verticalAlignment: number | undefined, height: number): number {
+  const v = verticalAlignment || DEFAULT_VERTICAL_ALIGNMENT;
+  console.log(v);
+  console.log(height);
+
+  return (height * v) / 100;
 }
 
-function calculateLabelXPosition(itemConfig: ItemConfig): number {
-  const horizontalAlignment = itemConfig.label?.horizontalAlignment ?? DEFAULT_HORIZONTAL_ALIGNMENT;
-  return (itemConfig.width * horizontalAlignment) / 100;
+function calculateLabelXPosition(horizontalAlignment: number | undefined, width: number): number {
+  const h = horizontalAlignment || DEFAULT_HORIZONTAL_ALIGNMENT;
+  return (width * h) / 100;
 }
 
 function createBackgroundRect(width: number, height: number, background: ItemBackgroundColorConfig): Konva.Rect {
@@ -180,6 +237,83 @@ function createBackgroundRect(width: number, height: number, background: ItemBac
     strokeWidth: background.strokeWidth,
     perfectDrawEnabled: false,
     cornerRadius: DEFAULT_ITEM_CORNER_RADIUS,
-    zIndex: 1,
+    name: ITEM_BACKGROUND_NAME,
   });
+}
+
+/**
+ * Update an existing item by ID
+ * @param itemId Item ID to update
+ * @param updates Object containing properties to update
+ * @param stage Stage instance
+ */
+export function updateItemById(itemId: string, updates: ItemUpdatePayload, stage: Stage): void {
+  const item = stage.findOne(`#${itemId}`) as Konva.Group;
+
+  if (!item) {
+    console.warn(`Item with id "${itemId}" not found`);
+    return;
+  }
+
+  const itemRect = item.findOne(`.${ITEM_ACTIONS_RECT_NAME}`) as Konva.Rect | undefined;
+  const width = itemRect?.width() || 0;
+  const height = itemRect?.height() || 0;
+
+  console.log(item);
+
+  // Update background
+  if (updates.background) {
+    const backgroundRect = item.findOne(`.${ITEM_BACKGROUND_NAME}`) as Konva.Rect;
+
+    if (backgroundRect) {
+      if (updates.background.backgroundColor !== undefined) {
+        backgroundRect.fill(updates.background.backgroundColor);
+      }
+      if (updates.background.strokeColor !== undefined) {
+        backgroundRect.stroke(updates.background.strokeColor);
+      }
+      if (updates.background.strokeWidth !== undefined) {
+        backgroundRect.strokeWidth(updates.background.strokeWidth);
+      }
+    }
+  }
+
+  // Update label
+  if (updates.label) {
+    const labelText = item.findOne(`.${ITEM_LABEL_NAME}`) as Text;
+
+    if (labelText) {
+      if (updates.label.text !== undefined) {
+        labelText.text(updates.label.text);
+      }
+      if (updates.label.fontSize !== undefined) {
+        labelText.fontSize(updates.label.fontSize);
+      }
+      if (updates.label.fontFamily !== undefined) {
+        labelText.fontFamily(updates.label.fontFamily);
+      }
+      if (updates.label.fillColor !== undefined) {
+        labelText.fill(updates.label.fillColor);
+      }
+
+      // Update label position if alignment changes
+      if (updates.label.horizontalAlignment !== undefined || updates.label.verticalAlignment !== undefined) {
+        const newX = calculateLabelXPosition(updates.label.horizontalAlignment, width);
+        const newY = calculateLabelYPosition(updates.label.verticalAlignment, height);
+
+        console.log(width);
+        console.log(height);
+        console.log(newX);
+        console.log(newY);
+
+        labelText.x(newX);
+        labelText.y(newY);
+        labelText.offsetX(labelText.width() / 2);
+        labelText.offsetY(labelText.height() / 2);
+      }
+    }
+  }
+
+  // Redraw the layer
+  item.getLayer()?.batchDraw();
 }

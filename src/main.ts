@@ -7,7 +7,7 @@ import { RotationMode } from './core/store/select/index.ts';
 
 const stageContainer = document.querySelector<HTMLDivElement>('#planorama-stage')!;
 function onViewportChange(data: { scale: Vector2d; position: Vector2d }) {
-  // console.log(data);
+  console.log(data);
 }
 const tooltip = document.querySelector<HTMLDivElement>('#tooltip')!;
 
@@ -44,9 +44,11 @@ export const TMP_GROUPS: ItemConfig[] = [
   },
 ];
 
+// var MODE = 'viewport';
+
 function onViewModeChange(mode: string) {
   console.log('View mode changed to:', mode);
-  MODE = mode;
+  // MODE = mode;
 }
 
 function onItemMouseOver(item: any) {
@@ -63,12 +65,32 @@ function onItemMouseOut(item: any) {
   console.log('Item mouse out:', item);
   tooltip.classList.remove('visible');
 }
-
 function onItemMouseClick(item: any) {
   console.log('Item mouse click:', item);
   const dialogText = dialog.querySelector<HTMLParagraphElement>('.dialog-text')!;
   dialogText.innerText = `You clicked on item Id: ${item.id} Type: ${item.type}`;
   dialog.setAttribute('data-item-id', item.id);
+
+  // Get item config defaults
+  // const itemConfig = TMP_GROUPS.find((g) => g.name === item.type);
+
+  // Create ItemUpdatePayload with defaults from config
+  const itemProps = item.itemProps;
+
+  // Populate form inputs from itemProps
+  inputBgColor.value = itemProps.background?.backgroundColor ?? '';
+  inputStrokeColor.value = itemProps.background?.strokeColor ?? '';
+  inputStrokeWidth.value = itemProps.background?.strokeWidth != null ? String(itemProps.background.strokeWidth) : '';
+
+  inputLabelText.value = itemProps.label?.text ?? '';
+  inputLabelFontSize.value = itemProps.label?.fontSize != null ? String(itemProps.label.fontSize) : '';
+  inputLabelFontFamily.value = itemProps.label?.fontFamily ?? '';
+  inputLabelColor.value = itemProps.label?.fillColor ?? '';
+  inputLabelVerticalAlign.value =
+    itemProps.label?.verticalAlignment != null ? String(itemProps.label.verticalAlignment) : '';
+  inputLabelHorizontalAlign.value =
+    itemProps.label?.horizontalAlignment != null ? String(itemProps.label.horizontalAlignment) : '';
+
   dialog.showModal();
 }
 
@@ -118,11 +140,9 @@ function onTransformStart(data: any) {
   transformerOpts.style.transform = getTranslateForRotation(data.rotation);
 }
 
-let MODE = 'viewport';
-
 const {
   setStageMode,
-  setStagePosition,
+  // setStagePosition,
   setXAlignment,
   setYAlignment,
   spreadItemsByCircle,
@@ -135,6 +155,7 @@ const {
   deleteSelectedItems,
   cloneSelectedItems,
   centerStageOnObjectById,
+  updateItemById,
 } = setStage({
   stageContainer,
   onViewportChange,
@@ -172,6 +193,18 @@ const gapInput = document.querySelector<HTMLInputElement>('#input-gap')!;
 const dialog = document.querySelector<HTMLDialogElement>('#item-dialog')!;
 const btnCenterItem = document.querySelector<HTMLButtonElement>('#btn-center-item')!;
 const transformerOpts = document.querySelector<HTMLDivElement>('#transformer-opts')!;
+
+// Item edit form elements
+const inputBgColor = document.querySelector<HTMLInputElement>('#input-bg-color')!;
+const inputStrokeColor = document.querySelector<HTMLInputElement>('#input-stroke-color')!;
+const inputStrokeWidth = document.querySelector<HTMLInputElement>('#input-stroke-width')!;
+const inputLabelText = document.querySelector<HTMLInputElement>('#input-label-text')!;
+const inputLabelFontSize = document.querySelector<HTMLInputElement>('#input-label-font-size')!;
+const inputLabelFontFamily = document.querySelector<HTMLInputElement>('#input-label-font-family')!;
+const inputLabelColor = document.querySelector<HTMLInputElement>('#input-label-color')!;
+const inputLabelVerticalAlign = document.querySelector<HTMLInputElement>('#input-label-vertical')!;
+const inputLabelHorizontalAlign = document.querySelector<HTMLInputElement>('#input-label-horizontal')!;
+const btnApplyChanges = document.querySelector<HTMLButtonElement>('#btn-apply-changes')!;
 
 gapInput.addEventListener('change', () => {
   const gap = gapInput.value ? parseInt(gapInput.value, 10) : 10;
@@ -258,6 +291,27 @@ btnCenterItem.addEventListener('click', () => {
   if (itemId) {
     centerStageOnObjectById(itemId);
   }
+});
+
+btnApplyChanges.addEventListener('click', () => {
+  const itemId = dialog.getAttribute('data-item-id');
+  if (!itemId) return;
+
+  updateItemById(itemId, {
+    background: {
+      backgroundColor: inputBgColor.value,
+      strokeColor: inputStrokeColor.value,
+      strokeWidth: parseFloat(inputStrokeWidth.value),
+    },
+    label: {
+      text: inputLabelText.value,
+      fontSize: parseInt(inputLabelFontSize.value, 10),
+      fontFamily: inputLabelFontFamily.value,
+      fillColor: inputLabelColor.value,
+      verticalAlignment: parseInt(inputLabelVerticalAlign.value, 10),
+      horizontalAlignment: parseInt(inputLabelHorizontalAlign.value, 10),
+    },
+  });
 });
 
 transformerOpts.addEventListener('click', (ev) => {

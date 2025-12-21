@@ -1,6 +1,10 @@
 import { Easings } from 'konva/lib/Tween';
 
 export const ITEM_NAME = 'planorama-item';
+export const ITEM_BACKGROUND_NAME = 'planorama-item-background';
+export const ITEM_LABEL_NAME = 'planorama-item-label';
+export const ITEM_ACTIONS_RECT_NAME = 'planorama-item-actions-rect';
+
 export const ITEMS_LAYER_NAME = 'planorama-items-layer';
 export const TRANSFORM_LAYER_NAME = 'planorama-transform-layer';
 export const STAGE_NAME = 'planorama-stage';
