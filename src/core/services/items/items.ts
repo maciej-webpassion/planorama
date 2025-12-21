@@ -1,30 +1,72 @@
 import Konva from 'konva';
+import { Group } from 'konva/lib/Group';
 import { Layer } from 'konva/lib/Layer';
+import { Image } from 'konva/lib/shapes/Image';
+import { Rect } from 'konva/lib/shapes/Rect';
 import { Text } from 'konva/lib/shapes/Text';
 import { Stage } from 'konva/lib/Stage';
 
-import { ITEM_ACTIONS_RECT_NAME, ITEM_BACKGROUND_NAME, ITEM_LABEL_NAME, ITEM_NAME, ITEMS_LAYER_NAME, TRANSFORM_LAYER_NAME } from '../../config/config.const';
+import {
+  ITEM_ACTIONS_RECT_NAME,
+  ITEM_BACKGROUND_NAME,
+  ITEM_LABEL_NAME,
+  ITEM_NAME,
+  ITEMS_LAYER_NAME,
+  TRANSFORM_LAYER_NAME,
+} from '../../config/config.const';
 import { on } from '../../store/event-bus';
 import {
-    DEFAULT_HORIZONTAL_ALIGNMENT, DEFAULT_ITEM_CORNER_RADIUS, DEFAULT_ITEM_LABEL_FONT_FAMILY, DEFAULT_VERTICAL_ALIGNMENT, getCreatorCurrentItemConfig, getOnItemMouseClick,
-    getOnItemMouseOut, getOnItemMouseOver, ItemBackgroundColorConfig, ItemConfig, ItemUpdatePayload
+  DEFAULT_HORIZONTAL_ALIGNMENT,
+  DEFAULT_ITEM_CORNER_RADIUS,
+  DEFAULT_ITEM_LABEL_FONT_FAMILY,
+  DEFAULT_VERTICAL_ALIGNMENT,
+  getCreatorCurrentItemConfig,
+  getOnItemMouseClick,
+  getOnItemMouseOut,
+  getOnItemMouseOver,
+  ItemBackgroundColorConfig,
+  ItemConfig,
+  ItemUpdatePayload,
+  PlanoramaItem,
 } from '../../store/item';
 import { getModeValue } from '../../store/stage';
 import { getCenterOfBoundingBox, stageToWindow } from '../calc/utils';
 import { setCreator } from './creator';
 import { setSelector } from './selector';
 
+type MouseEventCallbackFn = (data: PlanoramaItem) => void;
+
+const extractItemData = (item: Rect): PlanoramaItem => {
+  const stage = item.getStage();
+  if (!stage) {
+    throw new Error('Stage not found for the item');
+  }
+
+  const parent = item.getParent() as Group;
+
+  return {
+    id: parent?.attrs.id,
+    type: parent?.attrs.type,
+    boundingBox: parent?.getClientRect({ relativeTo: stage }),
+    pos: parent?.getRelativePointerPosition()!,
+    itemCenter: stageToWindow(stage, getCenterOfBoundingBox(parent?.getClientRect({ relativeTo: stage }))),
+    scale: stage.attrs.scaleX,
+    transform: parent?.getTransform().decompose(),
+    itemProps: extractItemProps(parent),
+  };
+};
+
 /**
  * Extract item properties from a Konva Group
  * @param parent The parent Group containing the item
  * @returns ItemUpdatePayload with current item properties
  */
-const extractItemProps = (parent: Konva.Group): Omit<ItemUpdatePayload, 'id'> => {
-  const backgroundRect = parent.findOne(`.${ITEM_BACKGROUND_NAME}`) as Konva.Rect | undefined;
+const extractItemProps = (parent: Group): Omit<ItemUpdatePayload, 'id'> => {
+  const backgroundRect = parent.findOne(`.${ITEM_BACKGROUND_NAME}`) as Rect | undefined;
 
   const labelText = parent.findOne(`.${ITEM_LABEL_NAME}`) as Text | undefined;
 
-  const itemRect = parent.findOne(`.${ITEM_ACTIONS_RECT_NAME}`) as Konva.Rect | undefined;
+  const itemRect = parent.findOne(`.${ITEM_ACTIONS_RECT_NAME}`) as Rect | undefined;
   const width = itemRect?.width() || 0;
   const height = itemRect?.height() || 0;
 
@@ -41,12 +83,9 @@ const extractItemProps = (parent: Konva.Group): Omit<ItemUpdatePayload, 'id'> =>
 
   // Extract label properties
   if (labelText) {
-    const labelX = labelText.x();
-    const labelY = labelText.y();
-
     // Calculate alignment percentages
-    const horizontalAlignment = width > 0 ? (labelX / width) * 100 : DEFAULT_HORIZONTAL_ALIGNMENT;
-    const verticalAlignment = height > 0 ? (labelY / height) * 100 : DEFAULT_VERTICAL_ALIGNMENT;
+    const horizontalAlignment = width > 0 ? (labelText.x() / width) * 100 : DEFAULT_HORIZONTAL_ALIGNMENT;
+    const verticalAlignment = height > 0 ? (labelText.y() / height) * 100 : DEFAULT_VERTICAL_ALIGNMENT;
 
     props.label = {
       text: labelText.text(),
@@ -61,44 +100,19 @@ const extractItemProps = (parent: Konva.Group): Omit<ItemUpdatePayload, 'id'> =>
   return props;
 };
 
-const handleMouseAction = (e: any, object: any, type: 'over' | 'out', fn: (data: any) => void) => {
-  console.log(type);
-
+const handleMouseAction = (e: any, object: Rect, type: 'over' | 'out', fn: MouseEventCallbackFn) => {
   const stage = e.target.getStage();
   if (stage) {
     stage.container().style.cursor = type === 'over' ? 'pointer' : 'default';
     object.fill(type === 'over' ? 'rgba(0,0,0, 0.1)' : 'transparent');
-
-    const parent = object.getParent();
-    fn({
-      type: parent?.attrs.type,
-      boundingBox: parent?.getClientRect({ relativeTo: stage }),
-      id: parent?.attrs.id,
-      pos: parent?.getRelativePointerPosition(),
-      itemCenter: stageToWindow(stage, getCenterOfBoundingBox(parent?.getClientRect({ relativeTo: stage }))),
-      scale: stage.attrs.scaleX,
-      e,
-      itemProps: extractItemProps(parent),
-    });
+    fn(extractItemData(object));
   }
 };
 
-const handleMouseClickAction = (e: any, object: any, fn: (data: any) => void) => {
+const handleMouseClickAction = (e: any, object: Rect, fn: MouseEventCallbackFn) => {
   const stage = e.target.getStage();
   if (stage) {
-    const parent = object.getParent();
-
-    fn({
-      type: parent?.attrs.type,
-      boundingBox: parent?.getClientRect({ relativeTo: stage }),
-      id: parent?.attrs.id,
-      pos: parent?.getRelativePointerPosition(),
-      itemCenter: stageToWindow(stage, getCenterOfBoundingBox(parent?.getClientRect({ relativeTo: stage }))),
-      itemCenterOnStage: getCenterOfBoundingBox(parent?.getClientRect({ relativeTo: stage })),
-      scale: stage.attrs.scaleX,
-      e,
-      itemProps: extractItemProps(parent),
-    });
+    fn(extractItemData(object));
   }
 };
 
@@ -127,7 +141,7 @@ export const createItem = (x: number, y: number, rotation: number, stage: Stage)
 
   if (!CURRENT_ITEM) return;
 
-  const group = new Konva.Group({
+  const group = new Group({
     x,
     y,
     rotation,
@@ -138,7 +152,7 @@ export const createItem = (x: number, y: number, rotation: number, stage: Stage)
     id: `item-` + crypto.randomUUID(),
   });
 
-  const item = new Konva.Rect({
+  const item = new Rect({
     x: 0,
     y: 0,
     width: CURRENT_ITEM.width,
@@ -163,7 +177,7 @@ export const createItem = (x: number, y: number, rotation: number, stage: Stage)
     handleMouseClickAction(e, this, getOnItemMouseClick());
   });
 
-  Konva.Image.fromURL(CURRENT_ITEM.src, function (img) {
+  Image.fromURL(CURRENT_ITEM.src, function (img) {
     img.setAttrs({
       x: 0,
       y: 0,
@@ -226,8 +240,8 @@ function calculateLabelXPosition(horizontalAlignment: number | undefined, width:
   return (width * h) / 100;
 }
 
-function createBackgroundRect(width: number, height: number, background: ItemBackgroundColorConfig): Konva.Rect {
-  return new Konva.Rect({
+function createBackgroundRect(width: number, height: number, background: ItemBackgroundColorConfig): Rect {
+  return new Rect({
     x: 0,
     y: 0,
     width,
@@ -248,14 +262,14 @@ function createBackgroundRect(width: number, height: number, background: ItemBac
  * @param stage Stage instance
  */
 export function updateItemById(itemId: string, updates: ItemUpdatePayload, stage: Stage): void {
-  const item = stage.findOne(`#${itemId}`) as Konva.Group;
+  const item = stage.findOne(`#${itemId}`) as Group;
 
   if (!item) {
     console.warn(`Item with id "${itemId}" not found`);
     return;
   }
 
-  const itemRect = item.findOne(`.${ITEM_ACTIONS_RECT_NAME}`) as Konva.Rect | undefined;
+  const itemRect = item.findOne(`.${ITEM_ACTIONS_RECT_NAME}`) as Rect | undefined;
   const width = itemRect?.width() || 0;
   const height = itemRect?.height() || 0;
 
@@ -263,7 +277,7 @@ export function updateItemById(itemId: string, updates: ItemUpdatePayload, stage
 
   // Update background
   if (updates.background) {
-    const backgroundRect = item.findOne(`.${ITEM_BACKGROUND_NAME}`) as Konva.Rect;
+    const backgroundRect = item.findOne(`.${ITEM_BACKGROUND_NAME}`) as Rect;
 
     if (backgroundRect) {
       if (updates.background.backgroundColor !== undefined) {

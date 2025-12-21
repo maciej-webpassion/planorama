@@ -1,4 +1,5 @@
 import { Group } from 'konva/lib/Group';
+import { IRect, Vector2d } from 'konva/lib/types';
 
 import { Signal, signal } from '@preact/signals-core';
 
@@ -9,7 +10,19 @@ export const DEFAULT_HORIZONTAL_ALIGNMENT = 50;
 export const DEFAULT_ITEM_LABEL_FONT_FAMILY = 'Arial';
 export const DEFAULT_ITEM_CORNER_RADIUS = 8;
 
+export interface PlanoramaItem {
+  id: string;
+  type: string;
+  itemProps: ItemUpdatePayload;
+  boundingBox: IRect;
+  pos: Vector2d;
+  scale: number;
+  itemCenter: Vector2d;
+  transform: { x: number; y: number; rotation: number };
+}
+
 export interface ItemLabelConfig {
+  text?: string;
   defaultText?: string;
   fontSize: number;
   fontFamily: string;
@@ -31,19 +44,8 @@ export interface ItemBackgroundColorConfig {
 
 export interface ItemUpdatePayload {
   id?: string;
-  background?: {
-    backgroundColor?: string;
-    strokeColor?: string;
-    strokeWidth?: number;
-  };
-  label?: {
-    text?: string;
-    fontSize?: number;
-    fontFamily?: string;
-    fillColor?: string;
-    verticalAlignment?: number;
-    horizontalAlignment?: number;
-  };
+  background?: Partial<ItemBackgroundColorConfig>;
+  label?: Partial<ItemLabelConfig>;
 }
 
 export interface ItemConfig {
