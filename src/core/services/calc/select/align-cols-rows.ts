@@ -69,7 +69,7 @@ export function alignItemsInCols(cols: number, spreadGap: number, tr: Transforme
   }
 
   // Calculate starting points
-  const totalWidth = colWidths.reduce((sum, width) => sum + width, 0) + spreadGap * itemsPerRow;
+  const totalWidth = colWidths.reduce((sum, width) => sum + width, 0) + spreadGap * (itemsPerRow - 1);
   const X_STARTING_POINT = getXStartingPoint(sortedItems, stage) - totalWidth / 2;
   const Y_STARTING_POINT = getYStartingPoint(sortedItems, stage, spreadGap, cols);
 
