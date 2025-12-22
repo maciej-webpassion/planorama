@@ -33,32 +33,21 @@ export const setBackground = (stage: Stage) => {
 };
 
 function addDebugIndicators(bgLayer: Layer, stage: Stage) {
-  // center indicator
-  const circle = new Konva.Circle({
-    radius: 10,
-    fill: 'red',
-    x: stage.width() / 2,
-    y: stage.height() / 2,
+  // add gentle cross in center of viewport
+  const lineH = new Konva.Line({
+    points: [0, stage.height() / 2, stage.width(), stage.height() / 2],
+    stroke: 'red',
+    strokeWidth: 1,
+    dash: [4, 4],
   });
 
-  const circle1 = new Konva.Circle({
-    radius: 10,
-    fill: 'blue',
-    x: 0,
-    y: 0,
+  const lineV = new Konva.Line({
+    points: [stage.width() / 2, 0, stage.width() / 2, stage.height()],
+    stroke: 'red',
+    strokeWidth: 1,
+    dash: [4, 4],
   });
 
-  const rect1 = new Konva.Rect({
-    width: 200,
-    height: 200,
-    fill: 'blue',
-    x: 0,
-    y: 0,
-    rotation: 95,
-    name: 'debug-rect',
-  });
-
-  bgLayer.add(circle);
-  bgLayer.add(circle1);
-  bgLayer.add(rect1);
+  bgLayer.add(lineH);
+  bgLayer.add(lineV);
 }

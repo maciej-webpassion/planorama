@@ -185,9 +185,6 @@ function createLabel(config: ItemConfig, groupId: string): Text {
 
 function calculateLabelYPosition(verticalAlignment: number | undefined, height: number): number {
   const v = verticalAlignment || DEFAULT_VERTICAL_ALIGNMENT;
-  console.log(v);
-  console.log(height);
-
   return (height * v) / 100;
 }
 
