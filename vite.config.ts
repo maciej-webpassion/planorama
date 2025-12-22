@@ -1,6 +1,8 @@
 import { resolve } from 'path';
 import { defineConfig } from 'vite';
 
+import tailwindcss from '@tailwindcss/vite';
+
 export default defineConfig({
   root: 'src/demo',
   publicDir: resolve(__dirname, 'public'),
@@ -11,4 +13,5 @@ export default defineConfig({
   server: {
     port: 5173,
   },
+  plugins: [tailwindcss()],
 });
