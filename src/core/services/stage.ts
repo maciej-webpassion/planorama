@@ -15,6 +15,7 @@ import {
   ItemUpdatePayload,
   PlanoramaItem,
   setCreatorCurrentItemConfig,
+  setCreatorItems,
   setItemColumns,
   setItemGap,
   setItemRotationAngle,
@@ -46,6 +47,7 @@ import { setViewport } from './viewport';
 
 export interface PlanoramaConfig {
   stageContainer: HTMLDivElement;
+  itemsConfig: ItemConfig[];
   onViewportChange?: (data: { scale: Vector2d; position: Vector2d }) => void;
   onViewModeChange?: (mode: StageMode) => void;
   onItemMouseOver?: (item: any) => void;
@@ -82,6 +84,7 @@ export interface Planorama {
   updateItemById: (itemId: string, updates: ItemUpdatePayload) => void;
   selectItemsById: (ids: string[] | string) => void;
   exportAllItems: (callback: (items: PlanoramaItem[]) => void) => void;
+  importItems: (items: PlanoramaItem[]) => void;
 }
 
 export type { Vector2d } from 'konva/lib/types';
@@ -90,6 +93,7 @@ let stage: Stage;
 export const setStage = (config: PlanoramaConfig): Planorama => {
   const {
     stageContainer,
+    itemsConfig,
     onViewportChange,
     onViewModeChange,
     onItemMouseOver,
@@ -115,6 +119,8 @@ export const setStage = (config: PlanoramaConfig): Planorama => {
   onTransformEnd && setOnTransformEnd(onTransformEnd);
   onTransformStart && setOnTransformStart(onTransformStart);
 
+  setCreatorItems(itemsConfig);
+
   if (!stage) {
     stage = createStage(stageContainer);
 
@@ -135,22 +141,10 @@ export const setStage = (config: PlanoramaConfig): Planorama => {
     });
   }
 
-  function setStageScale(scale: Vector2d) {
-    setScaleValue(scale);
-  }
-
-  function setStageMode(mode: StageMode) {
-    setModeValue(mode);
-  }
-
-  function setCreatorCurrentItem(config: ItemConfig) {
-    setCreatorCurrentItemConfig(config);
-  }
-
   return {
     stage,
-    setStageScale,
-    setStageMode,
+    setStageScale: (scale: Vector2d) => setScaleValue(scale),
+    setStageMode: (mode: StageMode) => setModeValue(mode),
     setStagePosition: (pos: Vector2d) => emit('viewport:action:centerOnPos', pos),
     centerStageOnObjectById: (id: string) => emit('viewport:action:centerOnItem', id),
     setXAlignment: (gap?: number) => emit('select:action:alignX', gap || getItemGap()),
@@ -165,10 +159,11 @@ export const setStage = (config: PlanoramaConfig): Planorama => {
       emit('item:action:updateById', { ...updates, id: itemId }),
     selectItemsById: (ids: string[] | string) => emit('select:action:selectById', ids),
     exportAllItems: (callback: (items: PlanoramaItem[]) => void) => emit('item:action:exportAll', callback),
+    importItems: (items: PlanoramaItem[]) => emit('item:action:importAll', items),
     deleteSelectedItems: () => emit('select:action:deleteSelectedItems'),
     cloneSelectedItems: () => emit('select:action:cloneSelectedItems'),
     setSpreadByOpts: (opts: SpreadByOpts) => setSpreadByOpts(opts),
-    setCreatorCurrentItem,
+    setCreatorCurrentItem: (config: ItemConfig) => setCreatorCurrentItemConfig(config),
     setGap: (gap: number) => {
       setItemGap(gap);
     },

@@ -20,7 +20,7 @@ import {
   DEFAULT_ITEM_CORNER_RADIUS,
   DEFAULT_ITEM_LABEL_FONT_FAMILY,
   DEFAULT_VERTICAL_ALIGNMENT,
-  getCreatorCurrentItemConfig,
+  getCreatorItems,
   getOnItemMouseClick,
   getOnItemMouseOut,
   getOnItemMouseOver,
@@ -35,8 +35,9 @@ import { setCreator } from './creator';
 import { setSelector } from './selector';
 
 type MouseEventCallbackFn = (data: PlanoramaItem) => void;
+type MouseOverActionType = 'over' | 'out';
 
-const handleMouseAction = (e: any, object: Rect, type: 'over' | 'out', fn: MouseEventCallbackFn) => {
+const handleMouseAction = (e: any, object: Rect, type: MouseOverActionType, fn: MouseEventCallbackFn) => {
   const stage = e.target.getStage();
   if (stage) {
     stage.container().style.cursor = type === 'over' ? 'pointer' : 'default';
@@ -74,13 +75,26 @@ export const setItemsLayer = (stage: Stage) => {
     const items = exportAllItems(stage);
     callback(items);
   });
+
+  on('item:action:importAll', (items: PlanoramaItem[]) => {
+    importItems(items, stage);
+  });
 };
 
-export const createItem = (x: number, y: number, rotation: number, stage: Stage) => {
+export const createItem = (
+  x: number,
+  y: number,
+  rotation: number,
+  itemConfig: ItemConfig,
+  stage: Stage,
+  id = ''
+): string | undefined => {
   const itemsLayer = stage.findOne(`.${ITEMS_LAYER_NAME}`) as Layer;
-  const CURRENT_ITEM = getCreatorCurrentItemConfig();
+  const CURRENT_ITEM = itemConfig;
 
   if (!CURRENT_ITEM) return;
+
+  const itemId = id || `item-` + crypto.randomUUID();
 
   const group = new Group({
     x,
@@ -90,7 +104,7 @@ export const createItem = (x: number, y: number, rotation: number, stage: Stage)
     name: ITEM_NAME,
     perfectDrawEnabled: false,
     type: CURRENT_ITEM.name,
-    id: `item-` + crypto.randomUUID(),
+    id: itemId,
   });
 
   const item = new Rect({
@@ -143,6 +157,7 @@ export const createItem = (x: number, y: number, rotation: number, stage: Stage)
   });
 
   itemsLayer.add(group);
+  return itemId;
 };
 
 function createLabel(config: ItemConfig, groupId: string): Text {
@@ -271,4 +286,52 @@ export function updateItemById(itemId: string, updates: ItemUpdatePayload, stage
 
   // Redraw the layer
   item.getLayer()?.batchDraw();
+}
+
+/**
+ * Import items into the stage
+ * @param items Array of PlanoramaItem objects to import
+ * @param stage Stage instance
+ */
+export function importItems(items: PlanoramaItem[], stage: Stage): void {
+  const itemsLayer = stage.findOne(`.${ITEMS_LAYER_NAME}`) as Layer;
+  const itemsConfig = getCreatorItems();
+
+  if (!itemsLayer) {
+    console.warn('Items layer not found');
+    return;
+  }
+
+  items.forEach((item) => {
+    // Check if item already exists by ID
+    const existingItem = stage.findOne(`#${item.id}`) as Group | undefined;
+
+    if (existingItem) {
+      // Item exists, update it with itemProps
+      console.log(`Item ${item.id} already exists, updating...`);
+      updateItemById(item.id, item.itemProps, stage);
+    } else {
+      const itemConfig = itemsConfig.find((config) => config.name === item.type);
+
+      if (!itemConfig) {
+        console.warn(`Item config for type "${item.type}" not found, skipping item ${item.id}`);
+        return;
+      }
+
+      // Item doesn't exist, create it
+      console.log(`Creating new item ${item.id}...`);
+      createItem(item.transform.x, item.transform.y, item.transform.rotation, itemConfig, stage, item.id);
+
+      // After creating, update with itemProps if they exist
+      if (item.itemProps && (item.itemProps.background || item.itemProps.label)) {
+        // Wait for next tick to ensure item is fully created
+        setTimeout(() => {
+          updateItemById(item.id, item.itemProps, stage);
+        }, 0);
+      }
+    }
+  });
+
+  // Redraw the layer
+  itemsLayer.batchDraw();
 }

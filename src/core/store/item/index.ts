@@ -64,7 +64,7 @@ export const itemColumns: Signal<number> = signal(DEFAULT_ITEM_COLUMNS);
 export const itemRotationAngle: Signal<number> = signal(DEFAULT_ITEM_ROTATION_ANGLE);
 
 export const creatorCurrentItemConfig: Signal<ItemConfig | null> = signal(null);
-export const creatorItemGroups: Signal<ItemConfig[]> = signal([]);
+export const creatorItems: Signal<ItemConfig[]> = signal([]);
 export const onItemMouseOver: Signal<(item: any) => void> = signal(() => {});
 export const onItemMouseOut: Signal<(item: any) => void> = signal(() => {});
 export const onItemMouseClick: Signal<(item: any) => void> = signal(() => {});
@@ -94,10 +94,10 @@ export const setCreatorCurrentItemConfig = (config: ItemConfig | null) => {
 };
 export const getCreatorCurrentItemConfig = (): ItemConfig | null => creatorCurrentItemConfig.value;
 
-export const setCreatorItemGroups = (groups: ItemConfig[]) => {
-  creatorItemGroups.value = groups;
+export const setCreatorItems = (items: ItemConfig[]) => {
+  creatorItems.value = items;
 };
-export const getCreatorItemGroups = (): ItemConfig[] => creatorItemGroups.value;
+export const getCreatorItems = (): ItemConfig[] => creatorItems.value;
 
 export const setOnItemMouseOver = (fn: (item: any) => void) => {
   onItemMouseOver.value = fn;

@@ -1,6 +1,7 @@
 import './style.css';
 
 import { getTranslateForRotation } from './calc.ts';
+import { exportAllItems } from './core/services/calc/utils/items.ts';
 import { setStage, Vector2d } from './core/services/stage.ts';
 import { ItemConfig } from './core/store/item/index.ts';
 import { RotationMode } from './core/store/select/index.ts';
@@ -141,6 +142,7 @@ function onTransformStart(data: any) {
 }
 
 const {
+  stage,
   setStageMode,
   // setStagePosition,
   setXAlignment,
@@ -158,8 +160,10 @@ const {
   cloneSelectedItems,
   centerStageOnObjectById,
   updateItemById,
+  importItems,
 } = setStage({
   stageContainer,
+  itemsConfig: TMP_GROUPS,
   onViewportChange,
   onViewModeChange,
   onItemMouseOver,
@@ -173,6 +177,28 @@ const {
   onTransformEnd,
   onTransformStart,
 });
+
+/**
+ * Load saved items from localStorage
+ */
+function loadSavedItems() {
+  const savedData = localStorage.getItem('planorama-items');
+  if (savedData) {
+    try {
+      const items = JSON.parse(savedData);
+      console.log('Items loaded from localStorage:', items);
+      importItems(items);
+      return items.length;
+    } catch (error) {
+      console.error('Error loading items:', error);
+      return null;
+    }
+  }
+  return 0;
+}
+
+// Load saved items on initialization
+loadSavedItems();
 
 const modeSelector = document.querySelector<HTMLSelectElement>('#select-mode')!;
 const alignXButton = document.querySelector<HTMLButtonElement>('#btn-align-x')!;
@@ -190,6 +216,9 @@ const rotationRadius = document.querySelector<HTMLInputElement>('#input-radius')
 
 const computerItemButton = document.querySelector<HTMLButtonElement>('#btn-creator-computer')!;
 const parkingItemButton = document.querySelector<HTMLButtonElement>('#btn-creator-parking')!;
+
+const saveButton = document.querySelector<HTMLButtonElement>('#btn-save')!;
+const loadButton = document.querySelector<HTMLButtonElement>('#btn-load')!;
 
 const gapInput = document.querySelector<HTMLInputElement>('#input-gap')!;
 const columnsInput = document.querySelector<HTMLInputElement>('#input-cols')!;
@@ -287,6 +316,24 @@ parkingItemButton.addEventListener('click', () => {
   setStageMode('create');
   modeSelector.value = 'create';
   setCreatorCurrentItem(TMP_GROUPS[0]);
+});
+
+saveButton.addEventListener('click', () => {
+  const items = exportAllItems(stage);
+  localStorage.setItem('planorama-items', JSON.stringify(items));
+  console.log('Items saved to localStorage:', items);
+  alert(`Saved ${items.length} items to localStorage`);
+});
+
+loadButton.addEventListener('click', () => {
+  const count = loadSavedItems();
+  if (count === null) {
+    alert('Error loading items from localStorage');
+  } else if (count === 0) {
+    alert('No saved data found in localStorage');
+  } else {
+    alert(`Successfully loaded ${count} items from localStorage`);
+  }
 });
 
 stageContainer.addEventListener('keydown', (e) => {

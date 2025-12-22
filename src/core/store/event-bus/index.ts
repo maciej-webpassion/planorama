@@ -17,7 +17,8 @@ type PlanoramaEvent =
   | 'select:action:transformStart'
   | 'viewport:changing'
   | 'item:action:updateById'
-  | 'item:action:exportAll';
+  | 'item:action:exportAll'
+  | 'item:action:importAll';
 
 type EventMap = {
   [K in PlanoramaEvent]: any;
