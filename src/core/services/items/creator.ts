@@ -6,6 +6,7 @@ import { Stage } from 'konva/lib/Stage';
 
 import { CREATOR_GROUP_NAME, CREATOR_ITEMS_GROUP_NAME } from '../../config/config.const';
 import { getOnCreatorEnd, getOnCreatorMove, getOnCreatorStart } from '../../store/creator/index';
+import { getDebug } from '../../store/debug';
 import { getCreatorCurrentItemConfig, getItemGap, getItemRotationAngle } from '../../store/item';
 import { getModeValue } from '../../store/stage';
 import { calculateDistance, calculateRotationAngle, degToRad, getRotatedRectPoints, nearestAngle } from '../calc';
@@ -27,7 +28,7 @@ export const setCreator = (layer: Layer, stage: Stage) => {
   let lastPos: Vector2d | null = null;
   let itemWidth = 0;
 
-  console.log('CURRENT_ITEM', CURRENT_ITEM);
+  if (getDebug()) console.log('CURRENT_ITEM', CURRENT_ITEM);
 
   stage.on('mousedown touchstart', function () {
     if (getModeValue() !== 'create') return;

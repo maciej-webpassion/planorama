@@ -4,6 +4,7 @@ import { Transformer } from 'konva/lib/shapes/Transformer';
 import { Tween } from 'konva/lib/Tween';
 
 import { TransformAnimationSettings } from '../../../config/config.const';
+import { getDebug } from '../../../store/debug';
 import { getOnTransformEnd } from '../../../store/select';
 import { degToRad, getRotatedRectPoints } from '../../calc';
 import { transformerToWindow } from '../utils';
@@ -47,11 +48,11 @@ export function getTransformerState(tr: Transformer) {
 
   const rotation = tr.getAbsoluteRotation(); // degrees
   const scale = tr.scaleX(); // uniform scale
-  console.log(scale);
+  if (getDebug()) console.log(scale);
   const width = tr.width() * scale;
   const height = tr.height() * scale;
 
-  console.log(width, height);
+  if (getDebug()) console.log(width, height);
 
   return {
     canvasPos,

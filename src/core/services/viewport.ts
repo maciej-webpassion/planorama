@@ -4,6 +4,7 @@ import { Vector2d } from 'konva/lib/types';
 
 import { effect } from '@preact/signals-core';
 
+import { getDebug } from '../store/debug';
 import { emit, on } from '../store/event-bus';
 import { getPositionValue, getScaleValue, setScaleAndPosValue } from '../store/stage';
 import { getCenterOfBoundingBox } from './calc/utils';
@@ -154,7 +155,7 @@ function zoomStage(stage: Stage, scaleBy: number) {
       const newCenter = getCenter(p1, p2);
       const dist = getDistance(p1, p2);
 
-      console.log(dist);
+      if (getDebug()) console.log(dist);
 
       if (!lastDist) {
         lastDist = dist;
@@ -225,7 +226,7 @@ function centerStageOnObjectById(id: string) {
     const center = getCenterOfBoundingBox(obj.getClientRect({ relativeTo: STAGE }));
     centerStageOnPos(center);
   } else {
-    console.error('Object with id not found on stage:', id);
+    if (getDebug()) console.error('Object with id not found on stage:', id);
   }
 }
 

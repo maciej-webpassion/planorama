@@ -16,6 +16,7 @@ import {
   TRANSFORMER_OBJECT_NAMES,
   TRANSFORMER_PADDING,
 } from '../../config/config.const';
+import { getDebug } from '../../store/debug';
 import { on } from '../../store/event-bus';
 import { getOnSelectItems } from '../../store/item';
 import { SpreadByOpts } from '../../store/select';
@@ -337,6 +338,8 @@ function cloneSelectedItems(group: Group, itemsLayer: Layer, tr: Transformer) {
 }
 
 function debugCountItems(stage: Stage) {
+  if (!getDebug()) return;
+
   const itemCount = stage.find(`.${ITEM_NAME}`).length;
   console.log('Total items on stage:', itemCount);
 
@@ -350,6 +353,8 @@ function debugCountItems(stage: Stage) {
 }
 
 function debugSelectedItems(group: Group[]) {
+  if (!getDebug()) return;
+
   const itemCount = group.length;
   console.log('Total items in selection group:', itemCount);
 }

@@ -6,6 +6,7 @@ import { effect } from '@preact/signals-core';
 
 import { STAGE_NAME } from '../config/config.const';
 import { setOnCreatorEnd, setOnCreatorMove, setOnCreatorStart } from '../store/creator/index';
+import { setDebug } from '../store/debug';
 import { emit } from '../store/event-bus';
 import {
   getItemColumns,
@@ -48,6 +49,7 @@ import { setViewport } from './viewport';
 export interface PlanoramaConfig {
   stageContainer: HTMLDivElement;
   itemsConfig: ItemConfig[];
+  debug?: boolean;
   onViewportChange?: (data: { scale: Vector2d; position: Vector2d }) => void;
   onViewModeChange?: (mode: StageMode) => void;
   onItemMouseOver?: (item: any) => void;
@@ -94,6 +96,7 @@ export const setStage = (config: PlanoramaConfig): Planorama => {
   const {
     stageContainer,
     itemsConfig,
+    debug = false,
     onViewportChange,
     onViewModeChange,
     onItemMouseOver,
@@ -119,6 +122,7 @@ export const setStage = (config: PlanoramaConfig): Planorama => {
   onTransformEnd && setOnTransformEnd(onTransformEnd);
   onTransformStart && setOnTransformStart(onTransformStart);
 
+  setDebug(debug);
   setCreatorItems(itemsConfig);
 
   if (!stage) {

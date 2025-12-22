@@ -18,7 +18,7 @@ import { resetGroupTransforms, setTransformTween } from './common';
  */
 export function alignItemsX(spreadGap: number, tr: Transformer, itemsLayer: Layer, stage: Stage) {
   const animSettings = TRANSFORM_ANIMATION_SETTINGS;
-  console.log('alignItemsX');
+  if (getDebug()) console.log('alignItemsX');
   const nodes = tr.nodes();
 
   if (nodes.length === 0) return;

@@ -176,6 +176,7 @@ const {
   onTransformChange,
   onTransformEnd,
   onTransformStart,
+  debug: true,
 });
 
 /**

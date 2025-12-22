@@ -14,6 +14,7 @@ import {
   ITEMS_LAYER_NAME,
   TRANSFORM_LAYER_NAME,
 } from '../../config/config.const';
+import { getDebug } from '../../store/debug';
 import { on } from '../../store/event-bus';
 import {
   DEFAULT_HORIZONTAL_ALIGNMENT,
@@ -218,7 +219,7 @@ export function updateItemById(itemId: string, updates: ItemUpdatePayload, stage
   const item = stage.findOne(`#${itemId}`) as Group;
 
   if (!item) {
-    console.warn(`Item with id "${itemId}" not found`);
+    if (getDebug()) console.warn(`Item with id "${itemId}" not found`);
     return;
   }
 
@@ -226,7 +227,7 @@ export function updateItemById(itemId: string, updates: ItemUpdatePayload, stage
   const width = itemRect?.width() || 0;
   const height = itemRect?.height() || 0;
 
-  console.log(item);
+  if (getDebug()) console.log(item);
 
   // Update background
   if (updates.background) {
@@ -268,10 +269,12 @@ export function updateItemById(itemId: string, updates: ItemUpdatePayload, stage
         const newX = calculateLabelXPosition(updates.label.horizontalAlignment, width);
         const newY = calculateLabelYPosition(updates.label.verticalAlignment, height);
 
-        console.log(width);
-        console.log(height);
-        console.log(newX);
-        console.log(newY);
+        if (getDebug()) {
+          console.log(width);
+          console.log(height);
+          console.log(newX);
+          console.log(newY);
+        }
 
         labelText.x(newX);
         labelText.y(newY);
@@ -295,7 +298,7 @@ export function importItems(items: PlanoramaItem[], stage: Stage): void {
   const itemsConfig = getCreatorItems();
 
   if (!itemsLayer) {
-    console.warn('Items layer not found');
+    if (getDebug()) console.warn('Items layer not found');
     return;
   }
 
@@ -305,18 +308,18 @@ export function importItems(items: PlanoramaItem[], stage: Stage): void {
 
     if (existingItem) {
       // Item exists, update it with itemProps
-      console.log(`Item ${item.id} already exists, updating...`);
+      if (getDebug()) console.log(`Item ${item.id} already exists, updating...`);
       updateItemById(item.id, item.itemProps, stage);
     } else {
       const itemConfig = itemsConfig.find((config) => config.name === item.type);
 
       if (!itemConfig) {
-        console.warn(`Item config for type "${item.type}" not found, skipping item ${item.id}`);
+        if (getDebug()) console.warn(`Item config for type "${item.type}" not found, skipping item ${item.id}`);
         return;
       }
 
       // Item doesn't exist, create it
-      console.log(`Creating new item ${item.id}...`);
+      if (getDebug()) console.log(`Creating new item ${item.id}...`);
       createItem(item.transform.x, item.transform.y, item.transform.rotation, itemConfig, stage, item.id);
 
       // After creating, update with itemProps if they exist

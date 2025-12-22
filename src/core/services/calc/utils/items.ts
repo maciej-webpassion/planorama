@@ -11,6 +11,7 @@ import {
   ITEM_NAME,
   ITEMS_LAYER_NAME,
 } from '../../../config/config.const';
+import { getDebug } from '../../../store/debug';
 import {
   DEFAULT_HORIZONTAL_ALIGNMENT,
   DEFAULT_VERTICAL_ALIGNMENT,
@@ -28,7 +29,7 @@ export const exportAllItems = (stage: Stage): PlanoramaItem[] => {
   const itemsLayer = stage.findOne(`.${ITEMS_LAYER_NAME}`) as Layer;
 
   if (!itemsLayer) {
-    console.warn('Items layer not found');
+    if (getDebug()) console.warn('Items layer not found');
     return [];
   }
 
@@ -46,7 +47,7 @@ export const exportAllItems = (stage: Stage): PlanoramaItem[] => {
         const itemData = extractItemData(actionsRect);
         items.push(itemData);
       } catch (error) {
-        console.warn(`Failed to extract data for item ${group.attrs.id}:`, error);
+        if (getDebug()) console.warn(`Failed to extract data for item ${group.attrs.id}:`, error);
       }
     }
   });

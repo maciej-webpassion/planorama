@@ -3,6 +3,7 @@ import { Layer } from 'konva/lib/Layer';
 import { Stage } from 'konva/lib/Stage';
 
 import { BACKGROUND_LAYER_NAME } from '../config/config.const';
+import { getDebug } from '../store/debug';
 
 const BG_SCALE = 1.9;
 
@@ -33,7 +34,7 @@ export const setBackground = (stage: Stage) => {
 };
 
 function addDebugIndicators(bgLayer: Layer, stage: Stage) {
-  // add gentle cross in center of viewport
+  if (!getDebug()) return;
   const lineH = new Konva.Line({
     points: [0, stage.height() / 2, stage.width(), stage.height() / 2],
     stroke: 'red',
