@@ -2,11 +2,13 @@ import { Vector2d } from 'konva/lib/types';
 
 import { batch, Signal, signal } from '@preact/signals-core';
 
-export type StageMode = "select" | "create" | "viewport";
+import type { StageMode } from '../../../lib/types';
+
+export type { StageMode };
 
 export const stageScale: Signal<Vector2d> = signal({ x: 1, y: 1 });
 export const stagePosition: Signal<Vector2d> = signal({ x: 1, y: 1 });
-export const mode: Signal<StageMode> = signal("viewport");
+export const mode: Signal<StageMode> = signal('viewport');
 
 export const setScaleAndPosValue = (pos: Vector2d, scale: Vector2d) => {
   batch(() => {

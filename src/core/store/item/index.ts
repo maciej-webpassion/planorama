@@ -1,7 +1,16 @@
 import { Group } from 'konva/lib/Group';
-import { IRect, Vector2d } from 'konva/lib/types';
 
 import { Signal, signal } from '@preact/signals-core';
+
+import type {
+  ItemBackgroundColorConfig,
+  ItemConfig,
+  ItemLabelConfig,
+  ItemUpdatePayload,
+  PlanoramaItem,
+} from '../../../lib/types';
+
+export type { ItemBackgroundColorConfig, ItemConfig, ItemLabelConfig, ItemUpdatePayload, PlanoramaItem };
 
 export const DEFAULT_ITEM_GAP = 10;
 export const DEFAULT_ITEM_COLUMNS = 3;
@@ -10,54 +19,6 @@ export const DEFAULT_VERTICAL_ALIGNMENT = 50;
 export const DEFAULT_HORIZONTAL_ALIGNMENT = 50;
 export const DEFAULT_ITEM_LABEL_FONT_FAMILY = 'Arial';
 export const DEFAULT_ITEM_CORNER_RADIUS = 8;
-
-export interface PlanoramaItem {
-  id: string;
-  type: string;
-  itemProps: ItemUpdatePayload;
-  boundingBox: IRect;
-  pos: Vector2d;
-  scale: number;
-  itemCenter: Vector2d;
-  transform: { x: number; y: number; rotation: number };
-}
-
-export interface ItemLabelConfig {
-  text?: string;
-  defaultText?: string;
-  fontSize: number;
-  fontFamily: string;
-  // color
-  fillColor: string;
-  // percentage from top
-  verticalAlignment?: number;
-  // percentage from left
-  horizontalAlignment?: number;
-}
-
-export interface ItemBackgroundColorConfig {
-  // RGBA or hex color
-  backgroundColor: string;
-  // RGBA or hex color
-  strokeColor: string;
-  strokeWidth: number;
-}
-
-export interface ItemUpdatePayload {
-  id?: string;
-  background?: Partial<ItemBackgroundColorConfig>;
-  label?: Partial<ItemLabelConfig>;
-}
-
-export interface ItemConfig {
-  name: string;
-  width: number;
-  height: number;
-  src: string;
-  scale: { x: number; y: number };
-  label?: ItemLabelConfig;
-  background?: ItemBackgroundColorConfig;
-}
 
 export const itemGap: Signal<number> = signal(DEFAULT_ITEM_GAP);
 export const itemColumns: Signal<number> = signal(DEFAULT_ITEM_COLUMNS);

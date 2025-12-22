@@ -2,10 +2,10 @@ import './style.css';
 
 import { getTranslateForRotation } from './calc.ts';
 import { exportAllItems } from './core/services/calc/utils/items.ts';
-import { setStage, Vector2d } from './core/services/stage.ts';
-import { ItemConfig } from './core/store/item/index.ts';
 import { RotationMode } from './core/store/select/index.ts';
+import { setStage } from './lib/index.ts';
 
+import type { Vector2d, ItemConfig } from './lib/index.ts';
 const stageContainer = document.querySelector<HTMLDivElement>('#planorama-stage')!;
 function onViewportChange(data: { scale: Vector2d; position: Vector2d }) {
   console.log(data);

@@ -1,11 +1,8 @@
 import { Signal, signal } from '@preact/signals-core';
 
-export type RotationMode = 'outside' | 'inside' | null;
+import type { RotationMode, SpreadByOpts } from '../../../lib/types';
 
-export interface SpreadByOpts {
-  withRotation: RotationMode;
-  radius: number;
-}
+export type { RotationMode, SpreadByOpts };
 
 export const spreadByOpts: Signal<SpreadByOpts> = signal({
   withRotation: null,

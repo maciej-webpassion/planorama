@@ -3,6 +3,7 @@ import { Layer } from 'konva/lib/Layer';
 import { Line } from 'konva/lib/shapes/Line';
 import { Rect } from 'konva/lib/shapes/Rect';
 import { Stage } from 'konva/lib/Stage';
+import { Vector2d } from 'konva/lib/types';
 
 import { CREATOR_GROUP_NAME, CREATOR_ITEMS_GROUP_NAME } from '../../config/config.const';
 import { getOnCreatorEnd, getOnCreatorMove, getOnCreatorStart } from '../../store/creator/index';
@@ -11,7 +12,6 @@ import { getCreatorCurrentItemConfig, getItemGap, getItemRotationAngle } from '.
 import { getModeValue } from '../../store/stage';
 import { calculateDistance, calculateRotationAngle, degToRad, getRotatedRectPoints, nearestAngle } from '../calc';
 import { stageToWindow } from '../calc/utils';
-import { Vector2d } from '../stage';
 import { createItem } from './items';
 
 export const setCreator = (layer: Layer, stage: Stage) => {

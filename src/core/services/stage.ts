@@ -46,51 +46,7 @@ import { setBackground } from './background';
 import { setItemsLayer } from './items/items';
 import { setViewport } from './viewport';
 
-export interface PlanoramaConfig {
-  stageContainer: HTMLDivElement;
-  itemsConfig: ItemConfig[];
-  debug?: boolean;
-  onViewportChange?: (data: { scale: Vector2d; position: Vector2d }) => void;
-  onViewModeChange?: (mode: StageMode) => void;
-  onItemMouseOver?: (item: any) => void;
-  onItemMouseOut?: (item: any) => void;
-  onItemMouseClick?: (item: any) => void;
-  onItemsSelected?: (items: any[]) => void;
-  onCreatorStart?: (data: any) => void;
-  onCreatorMove?: (data: any) => void;
-  onCreatorEnd?: (data: any) => void;
-  onTransformChange?: (data: any) => void;
-  onTransformEnd?: (data: any) => void;
-  onTransformStart?: (data: any) => void;
-}
-
-export interface Planorama {
-  stage: Stage;
-  setStageScale: (scale: Vector2d) => void;
-  setStagePosition: (position: Vector2d) => void;
-  centerStageOnObjectById: (id: string) => void;
-  setStageMode: (mode: StageMode) => void;
-  setXAlignment: (gap?: number) => void;
-  setYAlignment: (gap?: number) => void;
-  setAlignmentInCols: (cols?: number, gap?: number) => void;
-  spreadItemsByCircle: (spreadOpts?: SpreadByOpts) => void;
-  setSpreadByOpts: (opts: SpreadByOpts) => void;
-  setCreatorCurrentItem: (config: ItemConfig) => void;
-  setRotation: (rotationAngle?: number) => void;
-  setRotationAngle: (angle: number) => void;
-  setGap: (gap: number) => void;
-  setColumns: (cols: number) => void;
-  discardSelection: () => void;
-  deleteSelectedItems: () => void;
-  cloneSelectedItems: () => void;
-  updateItemById: (itemId: string, updates: ItemUpdatePayload) => void;
-  selectItemsById: (ids: string[] | string) => void;
-  exportAllItems: (callback: (items: PlanoramaItem[]) => void) => void;
-  importItems: (items: PlanoramaItem[]) => void;
-}
-
-export type { Vector2d } from 'konva/lib/types';
-
+import type { Planorama, PlanoramaConfig } from '../../lib/types';
 let stage: Stage;
 export const setStage = (config: PlanoramaConfig): Planorama => {
   const {

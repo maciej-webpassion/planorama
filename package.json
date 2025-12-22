@@ -2,10 +2,41 @@
   "name": "planorama",
   "private": true,
   "version": "0.0.1",
+  "description": "2D planning library for creating interactive layouts like parkings, gardens, and playgrounds using Konva.js",
   "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "konva",
+    "canvas",
+    "2d",
+    "planning",
+    "layout",
+    "interactive",
+    "parking",
+    "garden",
+    "playground"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "build:lib": "tsc --project tsconfig.lib.json",
     "preview": "vite preview"
   },
   "devDependencies": {

@@ -1,7 +1,5 @@
 import { Stage } from 'konva/lib/Stage';
-import { IRect } from 'konva/lib/types';
-
-import { Vector2d } from '../../stage';
+import { IRect, Vector2d } from 'konva/lib/types';
 
 /**
  * Converts a point from stage coordinates to window coordinates.
