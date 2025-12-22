@@ -67,8 +67,19 @@ import { setStage } from 'planorama';
 
 const container = document.querySelector('#planorama-stage')!;
 
-const planorama = setStage({
+const itemsConfig = [
+  {
+    name: 'parking-spot',
+    width: 90,
+    height: 180,
+    src: 'assets/spot.svg',
+    scale: { x: 1, y: 1 },
+  },
+];
+
+const { setStageMode, setCreatorCurrentItem } = setStage({
   stageContainer: container,
+  itemsConfig,
   onViewportChange: (data) => {
     console.log('Viewport changed:', data);
   },
@@ -78,16 +89,10 @@ const planorama = setStage({
 });
 
 // Set mode to create items
-planorama.setStageMode('create');
+setStageMode('create');
 
 // Configure an item to create
-planorama.setCreatorCurrentItem({
-  name: 'parking-spot',
-  width: 90,
-  height: 180,
-  src: 'assets/spot.svg',
-  scale: { x: 1, y: 1 },
-});
+setCreatorCurrentItem(itemsConfig[0]);
 ```
 
 ---
@@ -109,11 +114,26 @@ Initializes and returns the Planorama instance with all API methods.
 **Example:**
 
 ```typescript
+const itemsConfig = [
+  {
+    name: 'parking-spot',
+    width: 90,
+    height: 180,
+    src: 'assets/spot.svg',
+    scale: { x: 1, y: 1 },
+  },
+];
+
 const planorama = setStage({
   stageContainer: document.querySelector('#planorama-stage')!,
+  itemsConfig,
+  debug: false, // Optional: Enable debug logging
   onViewportChange: (data) => console.log('Viewport:', data),
   onItemMouseClick: (item) => console.log('Clicked:', item),
 });
+
+// Or destructure methods you need
+const { setStageMode, setCreatorCurrentItem } = planorama;
 ```
 
 ---
@@ -135,11 +155,13 @@ Sets the zoom level of the stage.
 **Example:**
 
 ```typescript
+const { setStageScale } = planorama;
+
 // Zoom to 150%
-planorama.setStageScale({ x: 1.5, y: 1.5 });
+setStageScale({ x: 1.5, y: 1.5 });
 
 // Zoom out to 50%
-planorama.setStageScale({ x: 0.5, y: 0.5 });
+setStageScale({ x: 0.5, y: 0.5 });
 ```
 
 ---
@@ -159,7 +181,9 @@ Centers the stage on a specific position.
 **Example:**
 
 ```typescript
-planorama.setStagePosition({ x: 500, y: 300 });
+const { setStagePosition } = planorama;
+
+setStagePosition({ x: 500, y: 300 });
 ```
 
 ---
@@ -179,7 +203,9 @@ Centers the viewport on a specific item.
 **Example:**
 
 ```typescript
-planorama.centerStageOnObjectById('item-parking-spot-1');
+const { centerStageOnObjectById } = planorama;
+
+centerStageOnObjectById('item-parking-spot-1');
 ```
 
 ---
@@ -202,14 +228,16 @@ Changes the interaction mode of the stage.
 **Example:**
 
 ```typescript
+const { setStageMode } = planorama;
+
 // Switch to selection mode
-planorama.setStageMode('select');
+setStageMode('select');
 
 // Switch to creation mode
-planorama.setStageMode('create');
+setStageMode('create');
 
 // Switch to viewport navigation mode
-planorama.setStageMode('viewport');
+setStageMode('viewport');
 ```
 
 ---
@@ -231,11 +259,13 @@ Aligns selected items horizontally with equal spacing.
 **Example:**
 
 ```typescript
+const { setXAlignment } = planorama;
+
 // Align with default gap
-planorama.setXAlignment();
+setXAlignment();
 
 // Align with custom 20px gap
-planorama.setXAlignment(20);
+setXAlignment(20);
 ```
 
 ---
@@ -255,11 +285,13 @@ Aligns selected items vertically with equal spacing.
 **Example:**
 
 ```typescript
+const { setYAlignment } = planorama;
+
 // Align with default gap
-planorama.setYAlignment();
+setYAlignment();
 
 // Align with custom 15px gap
-planorama.setYAlignment(15);
+setYAlignment(15);
 ```
 
 ---
@@ -280,14 +312,16 @@ Aligns selected items in a grid layout with specified columns and spacing.
 **Example:**
 
 ```typescript
+const { setAlignmentInCols } = planorama;
+
 // Align in 3 columns with default gap
-planorama.setAlignmentInCols();
+setAlignmentInCols();
 
 // Align in 4 columns with 10px gap
-planorama.setAlignmentInCols(4, 10);
+setAlignmentInCols(4, 10);
 
 // Align in 5 columns with default gap
-planorama.setAlignmentInCols(5);
+setAlignmentInCols(5);
 ```
 
 ---
@@ -307,17 +341,19 @@ Arranges selected items in a circular pattern.
 **Example:**
 
 ```typescript
+const { spreadItemsByCircle } = planorama;
+
 // Spread with default options
-planorama.spreadItemsByCircle();
+spreadItemsByCircle();
 
 // Spread in a circle with 300px radius and outward rotation
-planorama.spreadItemsByCircle({
+spreadItemsByCircle({
   radius: 300,
   withRotation: 'outside',
 });
 
 // Spread in a circle without rotation
-planorama.spreadItemsByCircle({
+spreadItemsByCircle({
   radius: 500,
   withRotation: null,
 });
@@ -342,7 +378,9 @@ Sets the item template for creation mode. After setting, items can be created by
 **Example:**
 
 ```typescript
-planorama.setCreatorCurrentItem({
+const { setCreatorCurrentItem, setStageMode } = planorama;
+
+setCreatorCurrentItem({
   name: 'parking-spot',
   width: 90,
   height: 180,
@@ -361,7 +399,7 @@ planorama.setCreatorCurrentItem({
 });
 
 // Switch to create mode to start placing items
-planorama.setStageMode('create');
+setStageMode('create');
 ```
 
 ---
@@ -383,14 +421,16 @@ Rotates selected items by the specified angle.
 **Example:**
 
 ```typescript
+const { setRotation } = planorama;
+
 // Rotate by stored angle
-planorama.setRotation();
+setRotation();
 
 // Rotate by 45 degrees
-planorama.setRotation(45);
+setRotation(45);
 
 // Rotate by -90 degrees (counter-clockwise)
-planorama.setRotation(-90);
+setRotation(-90);
 ```
 
 ---
@@ -406,8 +446,10 @@ Duplicates all currently selected items. The cloned items appear slightly offset
 **Example:**
 
 ```typescript
+const { cloneSelectedItems } = planorama;
+
 // Select items first, then clone them
-planorama.cloneSelectedItems();
+cloneSelectedItems();
 ```
 
 ---
@@ -423,8 +465,10 @@ Removes all currently selected items from the stage.
 **Example:**
 
 ```typescript
+const { deleteSelectedItems } = planorama;
+
 // Select items first, then delete them
-planorama.deleteSelectedItems();
+deleteSelectedItems();
 ```
 
 ---
@@ -440,7 +484,9 @@ Clears the current selection without modifying any items.
 **Example:**
 
 ```typescript
-planorama.discardSelection();
+const { discardSelection } = planorama;
+
+discardSelection();
 ```
 
 ---
@@ -460,11 +506,13 @@ Programmatically selects items by their IDs.
 **Example:**
 
 ```typescript
+const { selectItemsById } = planorama;
+
 // Select a single item
-planorama.selectItemsById('item-abc123');
+selectItemsById('item-abc123');
 
 // Select multiple items
-planorama.selectItemsById(['item-abc123', 'item-def456', 'item-ghi789']);
+selectItemsById(['item-abc123', 'item-def456', 'item-ghi789']);
 ```
 
 ---
@@ -485,7 +533,9 @@ Updates properties of an existing item by its ID.
 **Example:**
 
 ```typescript
-planorama.updateItemById('item-abc123', {
+const { updateItemById } = planorama;
+
+updateItemById('item-abc123', {
   background: {
     backgroundColor: 'rgba(255, 0, 0, 0.5)',
     strokeColor: 'rgba(255, 0, 0, 0.8)',
@@ -518,27 +568,29 @@ Exports all items from the stage as an array of [PlanoramaItem](#planoramaitem) 
 **Example:**
 
 ```typescript
+const { exportAllItems } = planorama;
+
 // Export all items and log them
-planorama.exportAllItems((items) => {
+exportAllItems((items) => {
   console.log('Total items:', items.length);
   console.log('Items data:', items);
 });
 
 // Save items to JSON
-planorama.exportAllItems((items) => {
+exportAllItems((items) => {
   const json = JSON.stringify(items, null, 2);
   localStorage.setItem('planorama-items', json);
   console.log('Items saved');
 });
 
 // Get all item IDs
-planorama.exportAllItems((items) => {
+exportAllItems((items) => {
   const ids = items.map((item) => item.id);
   console.log('Item IDs:', ids);
 });
 
 // Filter items by type
-planorama.exportAllItems((items) => {
+exportAllItems((items) => {
   const parkingSpots = items.filter((item) => item.type === 'parking-spot');
   const computers = items.filter((item) => item.type === 'computer-item');
 
@@ -547,7 +599,7 @@ planorama.exportAllItems((items) => {
 });
 
 // Export items with specific properties
-planorama.exportAllItems((items) => {
+exportAllItems((items) => {
   const exportData = items.map((item) => ({
     id: item.id,
     type: item.type,
@@ -561,6 +613,57 @@ planorama.exportAllItems((items) => {
 ```
 
 **See also:** [PlanoramaItem](#planoramaitem) type definition
+
+---
+
+#### `importItems`
+
+```typescript
+importItems(items: PlanoramaItem[]): void
+```
+
+Imports items into the stage. This method checks if items already exist by ID and either updates them or creates new ones. Useful for loading saved data or restoring a previous state.
+
+**Parameters:**
+
+- `items` ([PlanoramaItem](#planoramaitem)[]): Array of items to import
+
+**Example:**
+
+```typescript
+const { importItems } = planorama;
+
+// Load items from localStorage
+const savedData = localStorage.getItem('planorama-items');
+if (savedData) {
+  const items = JSON.parse(savedData);
+  importItems(items);
+}
+
+// Import items from an API
+fetch('/api/planorama-data')
+  .then((res) => res.json())
+  .then((items) => importItems(items));
+
+// Restore a specific state
+const savedState = [
+  {
+    id: 'item-1',
+    type: 'parking-spot',
+    transform: { x: 100, y: 200, rotation: 0 },
+    itemProps: {
+      label: { text: 'A-1' },
+    },
+  },
+];
+importItems(savedState);
+```
+
+**Notes:**
+
+- If an item with the same ID already exists, it will be updated with the provided properties
+- If an item doesn't exist, it will be created at the specified position and rotation
+- The item type must match one of the `itemsConfig` entries provided during initialization
 
 ---
 
@@ -581,7 +684,9 @@ Sets the default gap (spacing) between items for alignment operations.
 **Example:**
 
 ```typescript
-planorama.setGap(15);
+const { setGap } = planorama;
+
+setGap(15);
 ```
 
 ---
@@ -601,7 +706,9 @@ Sets the default number of columns for grid alignment operations.
 **Example:**
 
 ```typescript
-planorama.setColumns(4);
+const { setColumns } = planorama;
+
+setColumns(4);
 ```
 
 ---
@@ -621,11 +728,13 @@ Sets the default rotation angle for rotation operations.
 **Example:**
 
 ```typescript
+const { setRotationAngle } = planorama;
+
 // Set default rotation to 90 degrees
-planorama.setRotationAngle(90);
+setRotationAngle(90);
 
 // Set default rotation to 45 degrees
-planorama.setRotationAngle(45);
+setRotationAngle(45);
 ```
 
 ---
@@ -645,7 +754,9 @@ Sets the default options for circular spread operations.
 **Example:**
 
 ```typescript
-planorama.setSpreadByOpts({
+const { setSpreadByOpts } = planorama;
+
+setSpreadByOpts({
   radius: 400,
   withRotation: 'outside',
 });
@@ -782,15 +893,16 @@ Called when an item is clicked.
 **Example:**
 
 ```typescript
-const planorama = setStage({
+const { centerStageOnObjectById } = setStage({
   stageContainer: container,
+  itemsConfig,
   onItemMouseClick: (item) => {
     console.log('Clicked item:', item.id);
     // Show item properties dialog
     showDialog(item);
 
     // Center on this item
-    planorama.centerStageOnObjectById(item.id);
+    centerStageOnObjectById(item.id);
   },
 });
 ```
@@ -1162,6 +1274,8 @@ Configuration object for initializing Planorama.
 ```typescript
 interface PlanoramaConfig {
   stageContainer: HTMLDivElement;
+  itemsConfig: ItemConfig[]; // Required: Array of item configurations
+  debug?: boolean; // Optional: Enable debug logging (default: false)
   onViewportChange?: (data: { scale: Vector2d; position: Vector2d }) => void;
   onViewModeChange?: (mode: StageMode) => void;
   onItemMouseOver?: (item: PlanoramaItem) => void;
@@ -1206,6 +1320,7 @@ interface Planorama {
   updateItemById: (itemId: string, updates: ItemUpdatePayload) => void;
   selectItemsById: (ids: string[] | string) => void;
   exportAllItems: (callback: (items: PlanoramaItem[]) => void) => void;
+  importItems: (items: PlanoramaItem[]) => void;
 }
 ```
 
@@ -1220,8 +1335,27 @@ import { setStage } from 'planorama';
 
 const container = document.querySelector('#planorama-stage')!;
 
-const planorama = setStage({
+const itemsConfig = [
+  {
+    name: 'parking-spot',
+    width: 90,
+    height: 180,
+    src: 'assets/parking.svg',
+    scale: { x: 1.875, y: 1.875 },
+  },
+  {
+    name: 'computer-item',
+    width: 80,
+    height: 80,
+    src: 'assets/computer.svg',
+    scale: { x: 0.1, y: 0.1 },
+  },
+];
+
+const { setGap, setColumns, setRotationAngle } = setStage({
   stageContainer: container,
+  itemsConfig,
+  debug: false,
 
   onViewportChange: (data) => {
     console.log('Viewport changed:', data.scale, data.position);
@@ -1248,14 +1382,16 @@ const planorama = setStage({
 });
 
 // Set up initial configuration
-planorama.setGap(10);
-planorama.setColumns(3);
-planorama.setRotationAngle(90);
+setGap(10);
+setColumns(3);
+setRotationAngle(90);
 ```
 
 ### Creating Items
 
 ```typescript
+const { setStageMode, setCreatorCurrentItem } = planorama;
+
 // Define item template
 const parkingSpot = {
   name: 'parking-spot',
@@ -1276,8 +1412,8 @@ const parkingSpot = {
 };
 
 // Switch to create mode
-planorama.setStageMode('create');
-planorama.setCreatorCurrentItem(parkingSpot);
+setStageMode('create');
+setCreatorCurrentItem(parkingSpot);
 
 // Now click on the stage to create items
 ```
@@ -1285,22 +1421,30 @@ planorama.setCreatorCurrentItem(parkingSpot);
 ### Aligning Items
 
 ```typescript
+const {
+  setStageMode,
+  setXAlignment,
+  setYAlignment,
+  setAlignmentInCols,
+  spreadItemsByCircle,
+} = planorama;
+
 // Switch to select mode
-planorama.setStageMode('select');
+setStageMode('select');
 
 // Select items by dragging or clicking
 
 // Align horizontally with 15px gap
-planorama.setXAlignment(15);
+setXAlignment(15);
 
 // Align vertically with 20px gap
-planorama.setYAlignment(20);
+setYAlignment(20);
 
 // Align in 4 columns with 10px gap
-planorama.setAlignmentInCols(4, 10);
+setAlignmentInCols(4, 10);
 
 // Spread in a circle
-planorama.spreadItemsByCircle({
+spreadItemsByCircle({
   radius: 500,
   withRotation: 'outside',
 });
@@ -1309,21 +1453,25 @@ planorama.spreadItemsByCircle({
 ### Rotating Items
 
 ```typescript
+const { setRotationAngle, setRotation } = planorama;
+
 // Set default rotation
-planorama.setRotationAngle(45);
+setRotationAngle(45);
 
 // Rotate selected items by default angle
-planorama.setRotation();
+setRotation();
 
 // Or rotate by specific angle
-planorama.setRotation(90);
+setRotation(90);
 ```
 
 ### Updating Items
 
 ```typescript
+const { updateItemById } = planorama;
+
 // Update item by ID
-planorama.updateItemById('item-abc123', {
+updateItemById('item-abc123', {
   background: {
     backgroundColor: '#ffff00',
     strokeColor: '#ff0000',
@@ -1340,8 +1488,10 @@ planorama.updateItemById('item-abc123', {
 ### Exporting Items
 
 ```typescript
+const { exportAllItems } = planorama;
+
 // Export all items to console
-planorama.exportAllItems((items) => {
+exportAllItems((items) => {
   console.log('Total items:', items.length);
   items.forEach((item) => {
     console.log(`${item.type} (${item.id}):`, item.transform);
@@ -1349,13 +1499,13 @@ planorama.exportAllItems((items) => {
 });
 
 // Save items to local storage
-planorama.exportAllItems((items) => {
+exportAllItems((items) => {
   const json = JSON.stringify(items, null, 2);
   localStorage.setItem('my-planorama', json);
 });
 
 // Download items as JSON file
-planorama.exportAllItems((items) => {
+exportAllItems((items) => {
   const exportData = items.map((item) => ({
     id: item.id,
     type: item.type,
@@ -1376,7 +1526,7 @@ planorama.exportAllItems((items) => {
 });
 
 // Generate report by item type
-planorama.exportAllItems((items) => {
+exportAllItems((items) => {
   const report = items.reduce((acc, item) => {
     acc[item.type] = (acc[item.type] || 0) + 1;
     return acc;
@@ -1389,18 +1539,20 @@ planorama.exportAllItems((items) => {
 ### Keyboard Shortcuts
 
 ```typescript
+const { discardSelection, deleteSelectedItems, cloneSelectedItems } = planorama;
+
 container.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
-    planorama.discardSelection();
+    discardSelection();
   }
 
   if (e.key === 'Delete' || e.key === 'Backspace') {
-    planorama.deleteSelectedItems();
+    deleteSelectedItems();
   }
 
   if (e.ctrlKey && e.key === 'd') {
     e.preventDefault();
-    planorama.cloneSelectedItems();
+    cloneSelectedItems();
   }
 });
 ```
