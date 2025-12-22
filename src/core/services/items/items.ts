@@ -269,13 +269,6 @@ export function updateItemById(itemId: string, updates: ItemUpdatePayload, stage
         const newX = calculateLabelXPosition(updates.label.horizontalAlignment, width);
         const newY = calculateLabelYPosition(updates.label.verticalAlignment, height);
 
-        if (getDebug()) {
-          console.log(width);
-          console.log(height);
-          console.log(newX);
-          console.log(newY);
-        }
-
         labelText.x(newX);
         labelText.y(newY);
         labelText.offsetX(labelText.width() / 2);

@@ -328,6 +328,7 @@ function cloneSelectedItems(group: Group, itemsLayer: Layer, tr: Transformer) {
       const clone = node.clone({
         x: node.attrs.x + 20,
         y: node.attrs.y + 20,
+        id: `item-` + crypto.randomUUID(),
       });
 
       clones.push(clone);
