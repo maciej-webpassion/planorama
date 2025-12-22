@@ -1,4 +1,4 @@
-import { Vector2d } from './lib';
+import { Vector2d } from '../lib';
 
 // Keyframe offsets for 0°, 90°, 180°, 270°
 const rotationOffsets: Record<number, Vector2d> = {

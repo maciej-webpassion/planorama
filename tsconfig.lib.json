@@ -1,0 +1,35 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    /* Emit settings for library build */
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+
+    /* Module settings for NPM package */
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "allowImportingTsExtensions": false,
+
+    /* Enable emit */
+    "noEmit": false,
+    "emitDeclarationOnly": false,
+
+    /* Preserve module structure */
+    "preserveConstEnums": true,
+    "removeComments": false
+  },
+  "include": [
+    "src/lib/**/*",
+    "src/core/**/*"
+  ],
+  "exclude": [
+    "src/vite-env.d.ts",
+    "src/ui/**/*",
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "**/demo/**/*"
+  ]
+}
