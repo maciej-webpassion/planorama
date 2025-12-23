@@ -2,6 +2,21 @@
 
 A TypeScript library for creating and managing 2D plans like parkings, gardens, playgrounds, and more using Konva.js and reactive state management.
 
+## What is Planorama?
+
+Planorama is a powerful yet simple library that lets you create interactive 2D plans for any layout - parking lots, office spaces, gardens, playgrounds, seating arrangements, and more. Built on top of Konva.js with reactive state management, it handles all the complexity of canvas rendering, item manipulation, and user interactions.
+
+### Getting Started is Simple
+
+Creating your first 2D plan requires just a few steps:
+
+1. **Define a background** - Load your floor plan, map, or any SVG/image as the base layer
+2. **Define items** - Create reusable item types (parking spots, desks, trees, equipment, etc.)
+3. **Build your UI** - Use React, Vue, Svelte, or vanilla JavaScript to create controls
+4. **Start creating** - Let users place, move, rotate, and arrange items on the canvas
+
+That's it! Planorama handles viewport navigation, item selection, transformations, and all the canvas complexity for you.
+
 ## Table of Contents
 
 - [Installation](#installation)
