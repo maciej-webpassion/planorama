@@ -229,7 +229,22 @@
       </div>
     </div>
 
-    <div id="tooltip">Tooltip</div>
+    <div
+      id="planorama-loader"
+      style="
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: #fff;
+        z-index: 50;
+        pointer-events: none;
+      "
+      class="z-50 pointer-events-none"
+    ></div>
+
+    <div id="tooltip" style="opacity: 0">Tooltip</div>
 
     <dialog
       id="item-dialog"
@@ -406,7 +421,7 @@
             <button
               type="button"
               id="btn-apply-changes"
-              class="w-full px-3 py-2 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white font-semibold rounded-lg transition-colors duration-150"
+              class="w-full px-3 py-2 font-semibold rounded-lg transition-colors duration-150"
             >
               Apply Changes
             </button>

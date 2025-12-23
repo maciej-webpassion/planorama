@@ -176,6 +176,9 @@ function loadSavedItems() {
 // Load saved items on initialization
 loadSavedItems();
 
+// Fade out loader after initialization
+const loader = document.querySelector<HTMLDivElement>('#planorama-loader')!;
+
 const modeSelector = document.querySelector<HTMLSelectElement>('#select-mode')!;
 const alignXButton = document.querySelector<HTMLButtonElement>('#btn-align-x')!;
 const alignYButton = document.querySelector<HTMLButtonElement>('#btn-align-y')!;
@@ -408,5 +411,6 @@ stageContainer.tabIndex = 1;
 
 setTimeout(() => {
   // setStageScale({ x: 0.5, y: 0.5 });
+  loader.classList.add('loaded');
   centerOnItems();
-}, 301);
+}, 10);

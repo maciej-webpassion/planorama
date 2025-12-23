@@ -23,20 +23,23 @@ export const setViewport = (stage: Stage, stageContainer: HTMLDivElement): void 
   zoomStage(stage, 1);
   subscribeSizeChange(stage, stageContainer);
 
-  effect(() => {
-    if (!loopActive) {
-      loopActive = true;
-      loop();
-    } else {
-      clearTimeout(timeout);
-    }
+  // for the first 300 ms after initialization, user can set scale/position without animation
+  setTimeout(() => {
+    effect(() => {
+      if (!loopActive) {
+        loopActive = true;
+        loop();
+      } else {
+        clearTimeout(timeout);
+      }
 
-    getScaleValue();
-    getPositionValue();
-    timeout = setTimeout(() => {
-      loopActive = false;
-    }, TIMEOUT_VALUE);
-  });
+      getScaleValue();
+      getPositionValue();
+      timeout = setTimeout(() => {
+        loopActive = false;
+      }, TIMEOUT_VALUE);
+    });
+  }, 300);
 
   on('viewport:action:centerOnItem', (id: string) => {
     centerStageOnObjectById(id);
@@ -46,8 +49,8 @@ export const setViewport = (stage: Stage, stageContainer: HTMLDivElement): void 
     centerStageOnPos(pos);
   });
 
-  on('viewport:action:centerOnItems', () => {
-    centerStageOnAllItems();
+  on('viewport:action:centerOnItems', (duration: number) => {
+    centerStageOnAllItems(duration);
   });
 };
 
@@ -259,7 +262,7 @@ function centerStageOnPos(pos: Vector2d) {
   });
 }
 
-function centerStageOnAllItems() {
+function centerStageOnAllItems(isWithAnimation = 0) {
   if (!STAGE) {
     return;
   }
@@ -315,12 +318,20 @@ function centerStageOnAllItems() {
   const newX = -center.x * newScale + viewport.width / 2;
   const newY = -center.y * newScale + viewport.height / 2;
 
+  // TODO: add optional animation
+  if (!isWithAnimation) {
+    STAGE.position({ x: newX, y: newY });
+    STAGE.scale({ x: newScale, y: newScale });
+    setScaleAndPosValue({ x: newX, y: newY }, { x: newScale, y: newScale });
+    return;
+  }
+
   STAGE.to({
     x: newX,
     y: newY,
     scaleX: newScale,
     scaleY: newScale,
-    duration: 0.7,
+    duration: isWithAnimation,
     easing: Easings.EaseInOut,
     onFinish: () => {
       setScaleAndPosValue({ x: newX, y: newY }, { x: newScale, y: newScale });

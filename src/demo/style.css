@@ -99,6 +99,16 @@ h1 {
   background-color: rgb(249, 250, 251);
 }
 
+#planorama-loader {
+  background: #fff;
+  opacity: 1;
+  transition: opacity 800ms ease-out;
+}
+
+#planorama-loader.loaded {
+  opacity: 0;
+}
+
 #tooltip {
   position: absolute;
   z-index: 200;
@@ -238,8 +248,7 @@ h1 {
 #item-dialog button[type='button'] {
   margin-right: 0.625rem;
   padding: 0.5rem 1rem;
-  background-color: rgb(255, 255, 255);
-  color: rgb(55, 65, 81);
+
   border: 1px solid rgb(209, 213, 219);
   border-radius: 0.5rem;
   cursor: pointer;
@@ -249,6 +258,5 @@ h1 {
 }
 
 #item-dialog button[type='button']:hover {
-  background-color: rgb(249, 250, 251);
   border-color: rgb(156, 163, 175);
 }

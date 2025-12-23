@@ -82,7 +82,7 @@ export const setStage = (config: PlanoramaConfig): Planorama => {
     setStageMode: (mode: StageMode) => setModeValue(mode),
     setStagePosition: (pos: Vector2d) => emit('viewport:action:centerOnPos', pos),
     centerStageOnObjectById: (id: string) => emit('viewport:action:centerOnItem', id),
-    centerOnItems: () => emit('viewport:action:centerOnItems'),
+    centerOnItems: (duration?: number) => emit('viewport:action:centerOnItems', duration),
     setXAlignment: (gap?: number) => emit('select:action:alignX', gap || getItemGap()),
     setYAlignment: (gap?: number) => emit('select:action:alignY', gap || getItemGap()),
     setAlignmentInCols: (cols?: number, gap?: number) =>
