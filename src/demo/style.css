@@ -48,6 +48,10 @@ body {
   box-sizing: inherit;
 }
 
+button {
+  cursor: pointer;
+}
+
 h1 {
   font-size: 2.25rem;
   line-height: 1.2;
