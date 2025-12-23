@@ -4,6 +4,7 @@ import { exportAllItems } from '../core/services/calc/utils/items.ts';
 import { RotationMode } from '../core/store/select/index.ts';
 import { setStage } from '../lib/index.ts';
 import { getTranslateForRotation } from './calc.ts';
+import { BACKGROUND_CONFIG, ITEMS_CONFIG } from './config.ts';
 
 import type { Vector2d, ItemConfig } from '../lib/index.ts';
 const stageContainer = document.querySelector<HTMLDivElement>('#planorama-stage')!;
@@ -11,39 +12,6 @@ function onViewportChange(data: { scale: Vector2d; position: Vector2d }) {
   console.log(data);
 }
 const tooltip = document.querySelector<HTMLDivElement>('#tooltip')!;
-
-export const TMP_GROUPS: ItemConfig[] = [
-  {
-    name: 'parking-spot',
-    width: 90,
-    height: 180,
-    src: 'assets/spot-1.svg',
-    scale: { x: 1.875, y: 1.875 },
-    label: {
-      fontSize: 20,
-      fontFamily: 'Helvetica',
-      fillColor: '#666',
-    },
-    background: {
-      backgroundColor: 'rgba(196, 183, 203, 0.5)',
-      strokeColor: 'rgba(196, 183, 203, 0.8)',
-      strokeWidth: 1.5,
-    },
-  },
-  {
-    name: 'computer-item',
-    width: 80,
-    height: 80,
-    src: 'assets/computer.svg',
-    scale: { x: 0.1, y: 0.1 },
-    label: {
-      defaultText: 'PC',
-      fontSize: 16,
-      fontFamily: 'Helvetica',
-      fillColor: '#003306',
-    },
-  },
-];
 
 // var MODE = 'viewport';
 
@@ -73,7 +41,7 @@ function onItemMouseClick(item: any) {
   dialog.setAttribute('data-item-id', item.id);
 
   // Get item config defaults
-  // const itemConfig = TMP_GROUPS.find((g) => g.name === item.type);
+  // const itemConfig = ITEMS_CONFIG.find((g) => g.name === item.type);
 
   // Create ItemUpdatePayload with defaults from config
   const itemProps = item.itemProps;
@@ -163,7 +131,8 @@ const {
   importItems,
 } = setStage({
   stageContainer,
-  itemsConfig: TMP_GROUPS,
+  itemsConfig: ITEMS_CONFIG,
+  backgroundConfig: BACKGROUND_CONFIG,
   onViewportChange,
   onViewModeChange,
   onItemMouseOver,
@@ -310,13 +279,13 @@ spreadByCircleButton.addEventListener('click', () => {
 computerItemButton.addEventListener('click', () => {
   setStageMode('create');
   modeSelector.value = 'create';
-  setCreatorCurrentItem(TMP_GROUPS[1]);
+  setCreatorCurrentItem(ITEMS_CONFIG[1]);
 });
 
 parkingItemButton.addEventListener('click', () => {
   setStageMode('create');
   modeSelector.value = 'create';
-  setCreatorCurrentItem(TMP_GROUPS[0]);
+  setCreatorCurrentItem(ITEMS_CONFIG[0]);
 });
 
 saveButton.addEventListener('click', () => {

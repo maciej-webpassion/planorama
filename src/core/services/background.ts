@@ -2,28 +2,38 @@ import Konva from 'konva';
 import { Layer } from 'konva/lib/Layer';
 import { Stage } from 'konva/lib/Stage';
 
-import { BACKGROUND_LAYER_NAME } from '../config/config.const';
+import { BACKGROUND_LAYER_NAME, BACKGROUND_NAME } from '../config/config.const';
+import { getBackgroundConfig } from '../store/background';
 import { getDebug } from '../store/debug';
 
-const BG_SCALE = 1.9;
-
 export const setBackground = (stage: Stage) => {
-  const bgLayer = new Konva.Layer();
+  const bgConfig = getBackgroundConfig();
+  if (!bgConfig) return;
+
+  // Check if background layer already exists
+  const existingBgLayer = stage.findOne(`.${BACKGROUND_LAYER_NAME}`) as Layer;
+  if (existingBgLayer) {
+    existingBgLayer.destroy();
+  }
+
+  const bgLayer = new Konva.Layer({
+    name: BACKGROUND_LAYER_NAME,
+  });
   stage.add(bgLayer);
 
-  Konva.Image.fromURL('assets/bg-test.svg', function (bgImg) {
+  Konva.Image.fromURL(bgConfig.src, function (bgImg) {
     const size = bgImg.getSize();
 
-    //center image on scene
-    const x = stage.width() / 2 - (size.width * BG_SCALE) / 2;
-    const y = stage.height() / 2 - (size.height * BG_SCALE) / 2;
+    // Center image on scene and add offset for positioning
+    const x = stage.width() / 2 - (size.width * bgConfig.scale) / 2 + (bgConfig.offset?.x || 0);
+    const y = stage.height() / 2 - (size.height * bgConfig.scale) / 2 + (bgConfig.offset?.y || 0);
 
     bgImg.setAttrs({
       x,
       y,
-      scaleX: BG_SCALE,
-      scaleY: BG_SCALE,
-      name: BACKGROUND_LAYER_NAME,
+      scaleX: bgConfig.scale,
+      scaleY: bgConfig.scale,
+      name: BACKGROUND_NAME,
     });
     bgLayer.add(bgImg);
   });

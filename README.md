@@ -50,6 +50,7 @@ A TypeScript library for creating and managing 2D plans like parkings, gardens, 
   - [Vector2d](#vector2d-1)
   - [StageMode](#stagemode-1)
   - [ItemConfig](#itemconfig)
+  - [BackgroundConfig](#backgroundconfig)
   - [ItemUpdatePayload](#itemupdatepayload)
   - [SpreadByOpts](#spreadbyopts)
 - [Examples](#examples)
@@ -80,6 +81,10 @@ const itemsConfig = [
 const { setStageMode, setCreatorCurrentItem } = setStage({
   stageContainer: container,
   itemsConfig,
+  backgroundConfig: {
+    src: 'assets/background.svg',
+    scale: 1.9,
+  },
   onViewportChange: (data) => {
     console.log('Viewport changed:', data);
   },
@@ -127,6 +132,10 @@ const itemsConfig = [
 const planorama = setStage({
   stageContainer: document.querySelector('#planorama-stage')!,
   itemsConfig,
+  backgroundConfig: {
+    src: 'assets/background.svg',
+    scale: 1.9,
+  },
   debug: false, // Optional: Enable debug logging
   onViewportChange: (data) => console.log('Viewport:', data),
   onItemMouseClick: (item) => console.log('Clicked:', item),
@@ -1176,6 +1185,38 @@ const itemConfig: ItemConfig = {
 
 ---
 
+### BackgroundConfig
+
+Configuration for the stage background image.
+
+```typescript
+interface BackgroundConfig {
+  src: string; // Path to SVG or image file
+  scale: number; // Scale factor for the background
+  offset?: Vector2d; // Optional: Manual offset from center {x, y} in pixels
+}
+```
+
+**Example:**
+
+```typescript
+const backgroundConfig: BackgroundConfig = {
+  src: 'assets/floor-plan.svg',
+  scale: 2.0,
+};
+
+// With custom offset
+const backgroundConfigWithOffset: BackgroundConfig = {
+  src: 'assets/floor-plan.svg',
+  scale: 1.5,
+  offset: { x: 100, y: -50 }, // Move 100px right, 50px up from center
+};
+```
+
+**Note:** The background image is automatically centered on the stage. The scale factor allows you to adjust the size of the background relative to the stage dimensions. Use the optional `offset` property to fine-tune the position by shifting the background from the center point.
+
+---
+
 ### ItemUpdatePayload
 
 Properties that can be updated on an existing item.
@@ -1275,6 +1316,7 @@ Configuration object for initializing Planorama.
 interface PlanoramaConfig {
   stageContainer: HTMLDivElement;
   itemsConfig: ItemConfig[]; // Required: Array of item configurations
+  backgroundConfig?: BackgroundConfig; // Optional: Background image configuration
   debug?: boolean; // Optional: Enable debug logging (default: false)
   onViewportChange?: (data: { scale: Vector2d; position: Vector2d }) => void;
   onViewModeChange?: (mode: StageMode) => void;
@@ -1355,6 +1397,10 @@ const itemsConfig = [
 const { setGap, setColumns, setRotationAngle } = setStage({
   stageContainer: container,
   itemsConfig,
+  backgroundConfig: {
+    src: 'assets/floor-plan.svg',
+    scale: 1.5,
+  },
   debug: false,
 
   onViewportChange: (data) => {

@@ -8,6 +8,7 @@ export type {
   ItemBackgroundColorConfig,
   ItemUpdatePayload,
   ItemConfig,
+  BackgroundConfig,
   PlanoramaItem,
   SpreadByOpts,
   PlanoramaConfig,

@@ -5,6 +5,7 @@ import { Vector2d } from 'konva/lib/types';
 import { effect } from '@preact/signals-core';
 
 import { STAGE_NAME } from '../config/config.const';
+import { setBackgroundConfig } from '../store/background';
 import { setOnCreatorEnd, setOnCreatorMove, setOnCreatorStart } from '../store/creator/index';
 import { setDebug } from '../store/debug';
 import { emit } from '../store/event-bus';
@@ -52,6 +53,7 @@ export const setStage = (config: PlanoramaConfig): Planorama => {
   const {
     stageContainer,
     itemsConfig,
+    backgroundConfig,
     debug = false,
     onViewportChange,
     onViewModeChange,
@@ -80,6 +82,7 @@ export const setStage = (config: PlanoramaConfig): Planorama => {
 
   setDebug(debug);
   setCreatorItems(itemsConfig);
+  setBackgroundConfig(backgroundConfig || null);
 
   if (!stage) {
     stage = createStage(stageContainer);

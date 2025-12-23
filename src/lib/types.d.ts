@@ -68,6 +68,18 @@ export interface ItemUpdatePayload {
 }
 
 /**
+ * Configuration for the stage background image
+ */
+export interface BackgroundConfig {
+  /** Path to SVG or image file */
+  src: string;
+  /** Scale factor to apply to the background */
+  scale: number;
+
+  offset?: Vector2d;
+}
+
+/**
  * Configuration for a type of item that can be created
  */
 export interface ItemConfig {
@@ -128,6 +140,8 @@ export interface PlanoramaConfig {
   stageContainer: HTMLDivElement;
   /** Array of item types that can be created */
   itemsConfig: ItemConfig[];
+  /** Background image configuration (optional) */
+  backgroundConfig?: BackgroundConfig;
   /** Enable debug logging (default: false) */
   debug?: boolean;
   /** Callback when viewport changes (pan/zoom) */

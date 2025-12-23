@@ -8,6 +8,7 @@ export const ITEM_ACTIONS_RECT_NAME = 'planorama-item-actions-rect';
 export const ITEMS_LAYER_NAME = 'planorama-items-layer';
 export const TRANSFORM_LAYER_NAME = 'planorama-transform-layer';
 export const STAGE_NAME = 'planorama-stage';
+export const BACKGROUND_NAME = 'planorama-background';
 export const BACKGROUND_LAYER_NAME = 'planorama-background-layer';
 
 export const SELECTION_GROUP_NAME = 'planorama-selection-group';

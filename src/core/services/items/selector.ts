@@ -7,6 +7,7 @@ import { Util } from 'konva/lib/Util';
 
 import {
   BACKGROUND_LAYER_NAME,
+  BACKGROUND_NAME,
   DEFAULT_TRANSFORM_PERFORMANCE_ITEMS_LIMIT,
   ITEM_NAME,
   ITEMS_LAYER_NAME,
@@ -29,7 +30,7 @@ import { spreadItemsByCircle } from '../calc/select/circle-spread';
 import { getTransformerState, resetGroupTransforms } from '../calc/select/common';
 import { rotateItems } from '../calc/select/rotate-items';
 
-const STAGE_OBJECT_NAMES = [BACKGROUND_LAYER_NAME, STAGE_NAME];
+const STAGE_OBJECT_NAMES = [BACKGROUND_LAYER_NAME, STAGE_NAME, BACKGROUND_NAME];
 
 export const setSelector = (layer: Layer, itemsLayer: Layer, stage: Stage) => {
   const { group, selectionRectangle, tr, onTransformChange } = getHelperObjects();
