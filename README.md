@@ -223,10 +223,14 @@ centerStageOnObjectById('item-parking-spot-1');
 #### `centerOnItems`
 
 ```typescript
-centerOnItems(): void
+centerOnItems(duration?: number): void
 ```
 
 Centers the viewport on all items and automatically calculates the optimal zoom level to fit them on screen with padding.
+
+**Parameters:**
+
+- `duration` (number, optional): Animation duration in seconds. If omitted, defaults to 0.3s
 
 **Example:**
 
@@ -235,13 +239,19 @@ const { centerOnItems } = planorama;
 
 // After adding multiple items, fit them all on screen
 centerOnItems();
+
+// With custom animation duration (0.5 seconds)
+centerOnItems(0.5);
+
+// Instant fit without animation
+centerOnItems(0);
 ```
 
 **Notes:**
 
 - Automatically calculates the bounding box of all items
 - Adjusts zoom level to fit all items with 50px padding
-- Animates the transition smoothly (0.3s duration)
+- Animates the transition smoothly (default: 0.3s duration)
 - Will not zoom in beyond 1:1 scale
 - If no items exist, a warning is logged (in debug mode)
 
@@ -1373,7 +1383,7 @@ interface Planorama {
   setStageScale: (scale: Vector2d) => void;
   setStagePosition: (position: Vector2d) => void;
   centerStageOnObjectById: (id: string) => void;
-  centerOnItems: () => void;
+  centerOnItems: (duration?: number) => void;
   setStageMode: (mode: StageMode) => void;
   setXAlignment: (gap?: number) => void;
   setYAlignment: (gap?: number) => void;
