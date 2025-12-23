@@ -183,6 +183,8 @@ export interface Planorama {
   setStagePosition: (position: Vector2d) => void;
   /** Center viewport on specific item by ID */
   centerStageOnObjectById: (id: string) => void;
+  /** Center viewport on all items and fit them on screen */
+  centerOnItems: () => void;
   /** Change stage interaction mode */
   setStageMode: (mode: StageMode) => void;
   /** Align selected items horizontally */

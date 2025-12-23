@@ -1,9 +1,11 @@
+import { Layer } from 'konva/lib/Layer';
 import { Stage } from 'konva/lib/Stage';
 import { Easings } from 'konva/lib/Tween';
 import { Vector2d } from 'konva/lib/types';
 
 import { effect } from '@preact/signals-core';
 
+import { ITEM_NAME, ITEMS_LAYER_NAME } from '../config/config.const';
 import { getDebug } from '../store/debug';
 import { emit, on } from '../store/event-bus';
 import { getPositionValue, getScaleValue, setScaleAndPosValue } from '../store/stage';
@@ -14,6 +16,7 @@ let timeout: number;
 let loopActive = false;
 let STAGE: Stage;
 const TOUCH_SCALE_ACCELERATION = 0;
+const TIMEOUT_VALUE = 300;
 
 export const setViewport = (stage: Stage, stageContainer: HTMLDivElement): void => {
   STAGE = stage;
@@ -32,7 +35,7 @@ export const setViewport = (stage: Stage, stageContainer: HTMLDivElement): void 
     getPositionValue();
     timeout = setTimeout(() => {
       loopActive = false;
-    }, 300);
+    }, TIMEOUT_VALUE);
   });
 
   on('viewport:action:centerOnItem', (id: string) => {
@@ -41,6 +44,10 @@ export const setViewport = (stage: Stage, stageContainer: HTMLDivElement): void 
 
   on('viewport:action:centerOnPos', (pos: Vector2d) => {
     centerStageOnPos(pos);
+  });
+
+  on('viewport:action:centerOnItems', () => {
+    centerStageOnAllItems();
   });
 };
 
@@ -249,5 +256,74 @@ function centerStageOnPos(pos: Vector2d) {
     y: newY,
     duration: 0.2,
     easing: Easings.EaseInOut,
+  });
+}
+
+function centerStageOnAllItems() {
+  if (!STAGE) {
+    return;
+  }
+
+  const itemsLayer = STAGE.findOne('.' + ITEMS_LAYER_NAME) as Layer;
+  if (!itemsLayer) {
+    if (getDebug()) console.warn('Items layer not found');
+    return;
+  }
+
+  const items = itemsLayer.find('.' + ITEM_NAME);
+  if (!items || items.length === 0) {
+    if (getDebug()) console.warn('No items found to center on');
+    return;
+  }
+
+  // Calculate bounding box of all items
+  let minX = Infinity;
+  let minY = Infinity;
+  let maxX = -Infinity;
+  let maxY = -Infinity;
+
+  items.forEach((item) => {
+    const rect = item.getClientRect({ relativeTo: STAGE });
+    minX = Math.min(minX, rect.x);
+    minY = Math.min(minY, rect.y);
+    maxX = Math.max(maxX, rect.x + rect.width);
+    maxY = Math.max(maxY, rect.y + rect.height);
+  });
+
+  const boundingBox = {
+    x: minX,
+    y: minY,
+    width: maxX - minX,
+    height: maxY - minY,
+  };
+
+  // Calculate center of all items
+  const center = getCenterOfBoundingBox(boundingBox);
+
+  // Calculate scale to fit all items with padding
+  const viewport = {
+    width: STAGE.width(),
+    height: STAGE.height(),
+  };
+
+  const padding = 50; // Padding in pixels
+  const scaleX = (viewport.width - padding * 2) / boundingBox.width;
+  const scaleY = (viewport.height - padding * 2) / boundingBox.height;
+  const newScale = Math.min(scaleX, scaleY, 1); // Don't zoom in beyond 1:1
+
+  // Calculate position to center items at new scale
+  const newX = -center.x * newScale + viewport.width / 2;
+  const newY = -center.y * newScale + viewport.height / 2;
+
+  STAGE.to({
+    x: newX,
+    y: newY,
+    scaleX: newScale,
+    scaleY: newScale,
+    duration: 0.7,
+    easing: Easings.EaseInOut,
+    onFinish: () => {
+      setScaleAndPosValue({ x: newX, y: newY }, { x: newScale, y: newScale });
+    },
   });
 }

@@ -11,6 +11,7 @@ type PlanoramaEvent =
   | 'select:action:cloneSelectedItems'
   | 'viewport:action:centerOnItem'
   | 'viewport:action:centerOnPos'
+  | 'viewport:action:centerOnItems'
   | 'select:action:selectById'
   | 'select:action:transformChange'
   | 'select:action:transformEnd'

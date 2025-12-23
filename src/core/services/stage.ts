@@ -10,39 +10,11 @@ import { setOnCreatorEnd, setOnCreatorMove, setOnCreatorStart } from '../store/c
 import { setDebug } from '../store/debug';
 import { emit } from '../store/event-bus';
 import {
-  getItemColumns,
-  getItemGap,
-  getItemRotationAngle,
-  ItemConfig,
-  ItemUpdatePayload,
-  PlanoramaItem,
-  setCreatorCurrentItemConfig,
-  setCreatorItems,
-  setItemColumns,
-  setItemGap,
-  setItemRotationAngle,
-  setOnItemMouseClick,
-  setOnItemMouseOut,
-  setOnItemMouseOver,
-  setOnSelectItems,
+    getItemColumns, getItemGap, getItemRotationAngle, ItemConfig, ItemUpdatePayload, PlanoramaItem, setCreatorCurrentItemConfig, setCreatorItems, setItemColumns, setItemGap,
+    setItemRotationAngle, setOnItemMouseClick, setOnItemMouseOut, setOnItemMouseOver, setOnSelectItems
 } from '../store/item';
-import {
-  getSpreadByOpts,
-  setOnTransformChange,
-  setOnTransformEnd,
-  setOnTransformStart,
-  setSpreadByOpts,
-  SpreadByOpts,
-} from '../store/select';
-import {
-  getModeValue,
-  getPositionValue,
-  getScaleValue,
-  setModeValue,
-  setPositionValue,
-  setScaleValue,
-  StageMode,
-} from '../store/stage';
+import { getSpreadByOpts, setOnTransformChange, setOnTransformEnd, setOnTransformStart, setSpreadByOpts, SpreadByOpts } from '../store/select';
+import { getModeValue, getPositionValue, getScaleValue, setModeValue, setPositionValue, setScaleValue, StageMode } from '../store/stage';
 import { setBackground } from './background';
 import { setItemsLayer } from './items/items';
 import { setViewport } from './viewport';
@@ -110,6 +82,7 @@ export const setStage = (config: PlanoramaConfig): Planorama => {
     setStageMode: (mode: StageMode) => setModeValue(mode),
     setStagePosition: (pos: Vector2d) => emit('viewport:action:centerOnPos', pos),
     centerStageOnObjectById: (id: string) => emit('viewport:action:centerOnItem', id),
+    centerOnItems: () => emit('viewport:action:centerOnItems'),
     setXAlignment: (gap?: number) => emit('select:action:alignX', gap || getItemGap()),
     setYAlignment: (gap?: number) => emit('select:action:alignY', gap || getItemGap()),
     setAlignmentInCols: (cols?: number, gap?: number) =>

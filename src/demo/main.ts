@@ -116,7 +116,8 @@ function onTransformStart(data: any) {
 const {
   stage,
   setStageMode,
-  // setStagePosition,
+  setStagePosition,
+  setStageScale,
   setXAlignment,
   setYAlignment,
   setAlignmentInCols,
@@ -133,6 +134,7 @@ const {
   centerStageOnObjectById,
   updateItemById,
   importItems,
+  centerOnItems,
 } = setStage({
   stageContainer,
   itemsConfig: ITEMS_CONFIG,
@@ -406,4 +408,5 @@ stageContainer.tabIndex = 1;
 
 setTimeout(() => {
   // setStageScale({ x: 0.5, y: 0.5 });
-}, 2000);
+  centerOnItems();
+}, 301);

@@ -12,6 +12,7 @@ A TypeScript library for creating and managing 2D plans like parkings, gardens, 
     - [setStageScale](#setstagescale)
     - [setStagePosition](#setstageposition)
     - [centerStageOnObjectById](#centerstageobjectbyid)
+    - [centerOnItems](#centeronItems)
     - [setStageMode](#setstagemode)
   - [Item Alignment](#item-alignment)
     - [setXAlignment](#setxalignment)
@@ -216,6 +217,33 @@ const { centerStageOnObjectById } = planorama;
 
 centerStageOnObjectById('item-parking-spot-1');
 ```
+
+---
+
+#### `centerOnItems`
+
+```typescript
+centerOnItems(): void
+```
+
+Centers the viewport on all items and automatically calculates the optimal zoom level to fit them on screen with padding.
+
+**Example:**
+
+```typescript
+const { centerOnItems } = planorama;
+
+// After adding multiple items, fit them all on screen
+centerOnItems();
+```
+
+**Notes:**
+
+- Automatically calculates the bounding box of all items
+- Adjusts zoom level to fit all items with 50px padding
+- Animates the transition smoothly (0.3s duration)
+- Will not zoom in beyond 1:1 scale
+- If no items exist, a warning is logged (in debug mode)
 
 ---
 
@@ -1345,6 +1373,7 @@ interface Planorama {
   setStageScale: (scale: Vector2d) => void;
   setStagePosition: (position: Vector2d) => void;
   centerStageOnObjectById: (id: string) => void;
+  centerOnItems: () => void;
   setStageMode: (mode: StageMode) => void;
   setXAlignment: (gap?: number) => void;
   setYAlignment: (gap?: number) => void;
@@ -1580,6 +1609,35 @@ exportAllItems((items) => {
 
   console.log('Items by type:', report);
 });
+```
+
+### Fitting All Items on Screen
+
+```typescript
+const { centerOnItems, exportAllItems } = planorama;
+
+// After loading or importing items, fit them all on screen
+exportAllItems((items) => {
+  console.log(`Loaded ${items.length} items`);
+  // Automatically zoom and pan to fit all items
+  centerOnItems();
+});
+
+// Add a "Fit All" button to your UI
+fitAllButton.addEventListener('click', () => {
+  centerOnItems();
+});
+
+// Reset view after bulk operations
+const { setAlignmentInCols, centerOnItems } = planorama;
+
+// Align items in a grid
+setAlignmentInCols(5, 20);
+
+// Then fit them on screen
+setTimeout(() => {
+  centerOnItems();
+}, 100);
 ```
 
 ### Keyboard Shortcuts
