@@ -60,22 +60,22 @@ export const setCreatorItems = (items: ItemConfig[]) => {
 };
 export const getCreatorItems = (): ItemConfig[] => creatorItems.value;
 
-export const setOnItemMouseOver = (fn: (item: any) => void) => {
+export const setOnItemMouseOver = (fn: (item: PlanoramaItem) => void) => {
   onItemMouseOver.value = fn;
 };
-export const getOnItemMouseOver = (): ((item: any) => void) => onItemMouseOver.value;
+export const getOnItemMouseOver = (): ((item: PlanoramaItem) => void) => onItemMouseOver.value;
 
-export const setOnItemMouseOut = (fn: (item: any) => void) => {
+export const setOnItemMouseOut = (fn: (item: PlanoramaItem) => void) => {
   onItemMouseOut.value = fn;
 };
-export const getOnItemMouseOut = (): ((item: any) => void) => onItemMouseOut.value;
+export const getOnItemMouseOut = (): ((item: PlanoramaItem) => void) => onItemMouseOut.value;
 
-export const setOnItemMouseClick = (fn: (item: any) => void) => {
+export const setOnItemMouseClick = (fn: (item: PlanoramaItem) => void) => {
   onItemMouseClick.value = fn;
 };
-export const getOnItemMouseClick = (): ((item: any) => void) => onItemMouseClick.value;
+export const getOnItemMouseClick = (): ((item: PlanoramaItem) => void) => onItemMouseClick.value;
 
-export const setOnSelectItems = (fn: (items: Group[]) => void) => {
+export const setOnSelectItems = (fn: (items: PlanoramaItem[]) => void) => {
   onSelectItems.value = fn;
 };
-export const getOnSelectItems = (): ((items: Group[]) => void) => onSelectItems.value;
+export const getOnSelectItems = (): ((items: PlanoramaItem[]) => void) => onSelectItems.value;

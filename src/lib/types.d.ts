@@ -149,13 +149,13 @@ export interface PlanoramaConfig {
   /** Callback when stage mode changes */
   onViewModeChange?: (mode: StageMode) => void;
   /** Callback when mouse hovers over an item */
-  onItemMouseOver?: (item: any) => void;
+  onItemMouseOver?: (item: PlanoramaItem) => void;
   /** Callback when mouse leaves an item */
-  onItemMouseOut?: (item: any) => void;
+  onItemMouseOut?: (item: PlanoramaItem) => void;
   /** Callback when an item is clicked */
-  onItemMouseClick?: (item: any) => void;
+  onItemMouseClick?: (item: PlanoramaItem) => void;
   /** Callback when items are selected */
-  onItemsSelected?: (items: any[]) => void;
+  onItemsSelected?: (items: PlanoramaItem[]) => void;
   /** Callback when item creation starts */
   onCreatorStart?: (data: any) => void;
   /** Callback when item is being created (dragging) */

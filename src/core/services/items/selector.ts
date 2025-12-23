@@ -29,6 +29,7 @@ import { alignItemsY } from '../calc/select/align-y';
 import { spreadItemsByCircle } from '../calc/select/circle-spread';
 import { getTransformerState, resetGroupTransforms } from '../calc/select/common';
 import { rotateItems } from '../calc/select/rotate-items';
+import { extractItem } from '../calc/utils/items';
 
 const STAGE_OBJECT_NAMES = [BACKGROUND_LAYER_NAME, STAGE_NAME, BACKGROUND_NAME];
 
@@ -365,7 +366,8 @@ function setSelection(tr: Transformer, selectionGroup: Group) {
   const onTransformStart = getOnTransformStart();
   const items = selectionGroup.getChildren().filter((child) => child.hasName(ITEM_NAME)) as Group[];
   const fn = getOnSelectItems();
-  fn(items);
+
+  fn(items.map((item) => extractItem(item)));
 
   debugSelectedItems(items);
 

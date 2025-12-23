@@ -62,16 +62,24 @@ export const extractItemData = (item: Rect): PlanoramaItem => {
   }
 
   const parent = item.getParent() as Group;
+  return extractItem(parent);
+};
+
+export const extractItem = (item: Group): PlanoramaItem => {
+  const stage = item.getStage();
+  if (!stage) {
+    throw new Error('Stage not found for the item');
+  }
 
   return {
-    id: parent?.attrs.id,
-    type: parent?.attrs.type,
-    boundingBox: parent?.getClientRect({ relativeTo: stage }),
-    pos: parent?.getRelativePointerPosition()!,
-    itemCenter: stageToWindow(stage, getCenterOfBoundingBox(parent?.getClientRect({ relativeTo: stage }))),
+    id: item?.attrs.id,
+    type: item?.attrs.type,
+    boundingBox: item?.getClientRect({ relativeTo: stage }),
+    pos: item?.getRelativePointerPosition()!,
+    itemCenter: stageToWindow(stage, getCenterOfBoundingBox(item?.getClientRect({ relativeTo: stage }))),
     scale: stage.attrs.scaleX,
-    transform: parent?.getTransform().decompose(),
-    itemProps: extractItemProps(parent),
+    transform: item?.getTransform().decompose(),
+    itemProps: extractItemProps(item),
   };
 };
 

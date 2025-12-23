@@ -6,12 +6,15 @@ import { setStage } from '../lib/index.ts';
 import { getTranslateForRotation } from './calc.ts';
 import { BACKGROUND_CONFIG, ITEMS_CONFIG } from './config.ts';
 
-import type { Vector2d, ItemConfig } from '../lib/index.ts';
+import type { Vector2d, PlanoramaItem } from '../lib/index.ts';
 const stageContainer = document.querySelector<HTMLDivElement>('#planorama-stage')!;
 function onViewportChange(data: { scale: Vector2d; position: Vector2d }) {
   console.log(data);
 }
 const tooltip = document.querySelector<HTMLDivElement>('#tooltip')!;
+
+// Track selected items
+let selectedItems: any[] = [];
 
 // var MODE = 'viewport';
 
@@ -63,8 +66,9 @@ function onItemMouseClick(item: any) {
   dialog.showModal();
 }
 
-function onItemsSelected(items: any[]) {
+function onItemsSelected(items: PlanoramaItem[]) {
   console.log('Items selected:', items);
+  selectedItems = items;
 }
 
 function onCreatorStart(data: any) {
@@ -318,8 +322,6 @@ stageContainer.addEventListener('keydown', (e) => {
 });
 
 btnCenterItem.addEventListener('click', () => {
-  console.log('ccugicuyg');
-
   const itemId = dialog.getAttribute('data-item-id');
   console.log(itemId);
 
@@ -330,9 +332,8 @@ btnCenterItem.addEventListener('click', () => {
 
 btnApplyChanges.addEventListener('click', () => {
   const itemId = dialog.getAttribute('data-item-id');
-  if (!itemId) return;
 
-  updateItemById(itemId, {
+  const updatePayload = {
     background: {
       backgroundColor: inputBgColor.value,
       strokeColor: inputStrokeColor.value,
@@ -346,12 +347,59 @@ btnApplyChanges.addEventListener('click', () => {
       verticalAlignment: parseInt(inputLabelVerticalAlign.value, 10),
       horizontalAlignment: parseInt(inputLabelHorizontalAlign.value, 10),
     },
-  });
+  };
+
+  if (itemId) {
+    // Update single item
+    updateItemById(itemId, updatePayload);
+  } else if (selectedItems.length > 0) {
+    // Update all selected items
+    selectedItems.forEach((item) => {
+      updateItemById(item.id, updatePayload);
+    });
+  }
 });
 
 transformerOpts.addEventListener('click', (ev) => {
   ev.stopPropagation();
   console.log('opts clicked');
+
+  if (selectedItems.length > 0) {
+    const dialogText = dialog.querySelector<HTMLParagraphElement>('.dialog-text')!;
+
+    const itemProps = selectedItems[0].itemProps;
+
+    console.log(itemProps);
+
+    // Populate form with single item data
+    inputBgColor.value = itemProps.background?.backgroundColor ?? '';
+    inputStrokeColor.value = itemProps.background?.strokeColor ?? '';
+    inputStrokeWidth.value = itemProps.background?.strokeWidth != null ? String(itemProps.background.strokeWidth) : '';
+    inputLabelText.value = itemProps.label?.text ?? '';
+    inputLabelFontSize.value = itemProps.label?.fontSize != null ? String(itemProps.label.fontSize) : '';
+    inputLabelFontFamily.value = itemProps.label?.fontFamily ?? '';
+    inputLabelColor.value = itemProps.label?.fillColor ?? '';
+    inputLabelVerticalAlign.value =
+      itemProps.label?.verticalAlignment != null ? String(itemProps.label.verticalAlignment) : '';
+    inputLabelHorizontalAlign.value =
+      itemProps.label?.horizontalAlignment != null ? String(itemProps.label.horizontalAlignment) : '';
+
+    if (selectedItems.length === 1) {
+      dialogText.innerText = `Selected item: ${selectedItems[0].type} (Id: ${selectedItems[0].id})`;
+      dialog.setAttribute('data-item-id', selectedItems[0].id);
+
+      btnCenterItem.style.display = 'inline-block';
+    } else {
+      const itemTypes = selectedItems.map((item) => item.type);
+      const uniqueTypes = [...new Set(itemTypes)];
+      dialogText.innerText = `Selected ${selectedItems.length} items: ${uniqueTypes.join(', ')}`;
+      dialog.removeAttribute('data-item-id');
+
+      btnCenterItem.style.display = 'none';
+    }
+
+    dialog.showModal();
+  }
 });
 
 stageContainer.tabIndex = 1;
