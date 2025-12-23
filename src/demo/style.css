@@ -1,15 +1,14 @@
 @import 'tailwindcss';
 
 :root {
-  font-family: 'Inter var', Inter, system-ui, -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, sans-serif;
+  font-family: Inter, system-ui, -apple-system, sans-serif;
   font-size: 14px;
   line-height: 1.6;
   font-weight: 400;
 
-  color-scheme: dark;
-  color: rgb(229, 231, 235);
-  background-color: rgb(17, 24, 39);
+  color-scheme: light;
+  color: rgb(17, 23, 41);
+  background-color: rgb(249, 250, 251);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -24,7 +23,7 @@ a {
   transition: color 150ms ease;
 }
 a:hover {
-  color: rgb(129, 140, 248);
+  color: rgb(79, 70, 229);
 }
 
 html {
@@ -59,16 +58,6 @@ h1 {
   letter-spacing: -0.025em;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: rgb(55, 65, 81);
-    background-color: rgb(255, 255, 255);
-  }
-  a:hover {
-    color: rgb(79, 70, 229);
-  }
-}
-
 .layout {
   width: 100%;
   height: 100vh;
@@ -101,30 +90,30 @@ h1 {
 .sidebar {
   flex-grow: 0;
   flex-shrink: 0;
-  width: 300px;
+  width: 260px;
   height: 100%;
-  padding: 1.25rem;
+  padding: 1.5rem;
 
-  border-right: 1px solid rgb(55, 65, 81);
+  border-right: 1px solid rgb(229, 231, 235);
   z-index: 50;
-  background-color: rgb(17, 24, 39);
+  background-color: rgb(249, 250, 251);
 }
 
 #tooltip {
   position: absolute;
   z-index: 200;
   padding: 0.5rem 0.75rem;
-  background-color: rgb(17, 24, 39);
-  color: rgb(243, 244, 246);
-  border-radius: 0.375rem;
+  background-color: rgb(17, 23, 41);
+  color: rgb(255, 255, 255);
+  border-radius: 0.5rem;
   font-size: 0.875rem;
   font-weight: 500;
   pointer-events: none;
   opacity: 0;
   transition: opacity 150ms ease-in-out;
   transform-origin: center left;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3),
-    0 4px 6px -2px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 #tooltip.visible {
@@ -134,8 +123,8 @@ h1 {
 #transformer-opts {
   position: absolute;
   z-index: 150;
-  background-color: rgb(17, 24, 39);
-  color: rgb(243, 244, 246);
+  background-color: rgb(255, 255, 255);
+  color: rgb(17, 23, 41);
   display: none;
   align-items: center;
   justify-content: center;
@@ -143,18 +132,18 @@ h1 {
   font-size: 0.625rem;
   font-weight: 600;
   pointer-events: auto;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 40px;
+  height: 40px;
   transform: translate(-30px, -10px);
   cursor: pointer;
   user-select: none;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2),
-    0 2px 4px -1px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgb(209, 213, 219);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.08);
   transition: background-color 150ms ease;
 }
 
 #transformer-opts:hover {
-  background-color: rgb(31, 41, 55);
+  background-color: rgb(249, 250, 251);
 }
 
 #transformer-opts.visible {
@@ -162,22 +151,18 @@ h1 {
 }
 
 #item-dialog {
-  max-width: 32rem;
-  padding: 1.5rem;
-  border-radius: 0.5rem;
-  border: 1px solid rgb(55, 65, 81);
+  max-width: 36rem;
+
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   margin: 0;
-  background-color: rgb(17, 24, 39);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3),
-    0 10px 10px -5px rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.04);
 }
 
 #item-dialog::backdrop {
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0, 0, 0, 0.01);
 }
 
 #item-edit-form {
@@ -185,20 +170,20 @@ h1 {
 }
 
 #item-edit-form fieldset {
-  border: 1px solid rgb(55, 65, 81);
-  border-radius: 0.5rem;
+  border: 1px solid rgb(229, 231, 235);
+  border-radius: 0.75rem;
   padding: 1rem;
 }
 
 #item-edit-form legend {
   padding: 0 0.625rem;
   font-weight: 600;
-  color: rgb(243, 244, 246);
+  color: rgb(17, 23, 41);
 }
 
 #item-edit-form h4 {
   margin: 0.75rem 0 0.5rem 0;
-  color: rgb(99, 102, 241);
+  color: rgb(55, 65, 81);
   font-weight: 600;
   font-size: 0.875rem;
 }
@@ -208,24 +193,24 @@ h1 {
   width: 11.25rem;
   margin-bottom: 0.5rem;
   font-size: 0.875rem;
-  color: rgb(209, 213, 219);
+  color: rgb(107, 114, 128);
 }
 
 #item-edit-form input {
   padding: 0.5rem 0.75rem;
-  border: 1px solid rgb(55, 65, 81);
-  border-radius: 0.375rem;
+  border: 1px solid rgb(209, 213, 219);
+  border-radius: 0.5rem;
   font-size: 0.875rem;
   width: calc(100% - 12rem);
-  background-color: rgb(31, 41, 55);
-  color: rgb(243, 244, 246);
+  background-color: rgb(255, 255, 255);
+  color: rgb(17, 23, 41);
   transition: border-color 150ms ease, box-shadow 150ms ease;
 }
 
 #item-edit-form input:focus {
   outline: none;
   border-color: rgb(99, 102, 241);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
 }
 
 #btn-apply-changes {
@@ -234,18 +219,16 @@ h1 {
   background-color: rgb(99, 102, 241);
   color: rgb(255, 255, 255);
   border: none;
-  border-radius: 0.375rem;
+  border-radius: 0.5rem;
   cursor: pointer;
   font-size: 0.875rem;
   font-weight: 600;
-  transition: background-color 150ms ease, box-shadow 150ms ease;
+  transition: background-color 150ms ease;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
 #btn-apply-changes:hover {
   background-color: rgb(79, 70, 229);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 #btn-apply-changes:active {
@@ -255,16 +238,17 @@ h1 {
 #item-dialog button[type='button'] {
   margin-right: 0.625rem;
   padding: 0.5rem 1rem;
-  background-color: rgb(55, 65, 81);
-  color: rgb(243, 244, 246);
-  border: none;
-  border-radius: 0.375rem;
+  background-color: rgb(255, 255, 255);
+  color: rgb(55, 65, 81);
+  border: 1px solid rgb(209, 213, 219);
+  border-radius: 0.5rem;
   cursor: pointer;
   font-size: 0.875rem;
   font-weight: 500;
-  transition: background-color 150ms ease;
+  transition: background-color 150ms ease, border-color 150ms ease;
 }
 
 #item-dialog button[type='button']:hover {
-  background-color: rgb(75, 85, 99);
+  background-color: rgb(249, 250, 251);
+  border-color: rgb(156, 163, 175);
 }

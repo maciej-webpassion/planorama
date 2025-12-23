@@ -188,7 +188,7 @@ const computerItemButton = document.querySelector<HTMLButtonElement>('#btn-creat
 const parkingItemButton = document.querySelector<HTMLButtonElement>('#btn-creator-parking')!;
 
 const saveButton = document.querySelector<HTMLButtonElement>('#btn-save')!;
-const loadButton = document.querySelector<HTMLButtonElement>('#btn-load')!;
+// const loadButton = document.querySelector<HTMLButtonElement>('#btn-load')!;
 
 const gapInput = document.querySelector<HTMLInputElement>('#input-gap')!;
 const columnsInput = document.querySelector<HTMLInputElement>('#input-cols')!;
@@ -295,16 +295,16 @@ saveButton.addEventListener('click', () => {
   alert(`Saved ${items.length} items to localStorage`);
 });
 
-loadButton.addEventListener('click', () => {
-  const count = loadSavedItems();
-  if (count === null) {
-    alert('Error loading items from localStorage');
-  } else if (count === 0) {
-    alert('No saved data found in localStorage');
-  } else {
-    alert(`Successfully loaded ${count} items from localStorage`);
-  }
-});
+// loadButton.addEventListener('click', () => {
+//   const count = loadSavedItems();
+//   if (count === null) {
+//     alert('Error loading items from localStorage');
+//   } else if (count === 0) {
+//     alert('No saved data found in localStorage');
+//   } else {
+//     alert(`Successfully loaded ${count} items from localStorage`);
+//   }
+// });
 
 stageContainer.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
@@ -318,7 +318,11 @@ stageContainer.addEventListener('keydown', (e) => {
 });
 
 btnCenterItem.addEventListener('click', () => {
+  console.log('ccugicuyg');
+
   const itemId = dialog.getAttribute('data-item-id');
+  console.log(itemId);
+
   if (itemId) {
     centerStageOnObjectById(itemId);
   }
