@@ -5,16 +5,12 @@ import { Vector2d } from 'konva/lib/types';
 import { effect } from '@preact/signals-core';
 
 import { STAGE_NAME } from '../config/constants';
-import { setBackgroundConfig } from '../store/background';
-import { setOnCreatorEnd, setOnCreatorMove, setOnCreatorStart } from '../store/creator/index';
-import { setDebug } from '../store/debug';
-import { emit } from '../store/event-bus';
 import {
-    getItemColumns, getItemGap, getItemRotationAngle, ItemConfig, ItemUpdatePayload, PlanoramaItem, setCreatorCurrentItemConfig, setCreatorItems, setItemColumns, setItemGap,
-    setItemRotationAngle, setOnItemMouseClick, setOnItemMouseOut, setOnItemMouseOver, setOnSelectItems
-} from '../store/item';
-import { getSpreadByOpts, setOnTransformChange, setOnTransformEnd, setOnTransformStart, setSpreadByOpts, SpreadByOpts } from '../store/select';
-import { getModeValue, getPositionValue, getScaleValue, setModeValue, setPositionValue, setScaleValue, StageMode } from '../store/stage';
+    emit, getItemColumns, getItemGap, getItemRotationAngle, getModeValue, getPositionValue, getScaleValue, getSpreadByOpts, ItemConfig, ItemUpdatePayload, PlanoramaItem,
+    setBackgroundConfig, setCreatorCurrentItemConfig, setCreatorItems, setDebug, setItemColumns, setItemGap, setItemRotationAngle, setModeValue, setOnCreatorEnd, setOnCreatorMove,
+    setOnCreatorStart, setOnItemMouseClick, setOnItemMouseOut, setOnItemMouseOver, setOnSelectItems, setOnTransformChange, setOnTransformEnd, setOnTransformStart, setPositionValue,
+    setScaleValue, setSpreadByOpts, SpreadByOpts, StageMode
+} from '../state';
 import { setBackground } from './background';
 import { setItemsLayer } from './items/items';
 import { setViewport } from './viewport';

@@ -1,11 +1,9 @@
-
-
 import { Signal, signal } from '@preact/signals-core';
 
 import {
     DEFAULT_HORIZONTAL_ALIGNMENT, DEFAULT_ITEM_COLUMNS, DEFAULT_ITEM_CORNER_RADIUS, DEFAULT_ITEM_GAP, DEFAULT_ITEM_LABEL_FONT_FAMILY, DEFAULT_ITEM_ROTATION_ANGLE,
     DEFAULT_VERTICAL_ALIGNMENT
-} from '../../config/defaults';
+} from '../config/defaults';
 
 import type {
   ItemBackgroundColorConfig,
@@ -13,7 +11,7 @@ import type {
   ItemLabelConfig,
   ItemUpdatePayload,
   PlanoramaItem,
-} from '../../../lib/types';
+} from '../../lib/types';
 
 export type { ItemBackgroundColorConfig, ItemConfig, ItemLabelConfig, ItemUpdatePayload, PlanoramaItem };
 export {

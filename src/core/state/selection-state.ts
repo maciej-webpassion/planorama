@@ -1,6 +1,6 @@
 import { Signal, signal } from '@preact/signals-core';
 
-import type { RotationMode, SpreadByOpts } from '../../../lib/types';
+import type { RotationMode, SpreadByOpts } from '../../lib/types';
 
 export type { RotationMode, SpreadByOpts };
 

@@ -2,7 +2,7 @@ import { Vector2d } from 'konva/lib/types';
 
 import { batch, Signal, signal } from '@preact/signals-core';
 
-import type { StageMode } from '../../../lib/types';
+import type { StageMode } from '../../lib/types';
 
 export type { StageMode };
 

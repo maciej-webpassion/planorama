@@ -1,7 +1,8 @@
 import { Signal, signal } from '@preact/signals-core';
 
-import { DEFAULT_BACKGROUND_SCALE } from '../../config/defaults';
-import type { BackgroundConfig } from '../../../lib/types';
+import { DEFAULT_BACKGROUND_SCALE } from '../config/defaults';
+
+import type { BackgroundConfig } from '../../lib/types';
 
 export type { BackgroundConfig };
 

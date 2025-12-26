@@ -6,9 +6,7 @@ import { Vector2d } from 'konva/lib/types';
 import { effect } from '@preact/signals-core';
 
 import { ITEM_NAME, ITEMS_LAYER_NAME } from '../config/constants';
-import { getDebug } from '../store/debug';
-import { emit, on } from '../store/event-bus';
-import { getPositionValue, getScaleValue, setScaleAndPosValue } from '../store/stage';
+import { emit, getDebug, getPositionValue, getScaleValue, on, setScaleAndPosValue } from '../state';
 import { getCenterOfBoundingBox } from './calc/utils';
 import { setStageDraggableWithMode } from './stage';
 

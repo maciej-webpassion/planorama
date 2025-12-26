@@ -6,10 +6,7 @@ import { Stage } from 'konva/lib/Stage';
 import { Vector2d } from 'konva/lib/types';
 
 import { CREATOR_GROUP_NAME, CREATOR_ITEMS_GROUP_NAME } from '../../config/constants';
-import { getOnCreatorEnd, getOnCreatorMove, getOnCreatorStart } from '../../store/creator/index';
-import { getDebug } from '../../store/debug';
-import { getCreatorCurrentItemConfig, getItemGap, getItemRotationAngle } from '../../store/item';
-import { getModeValue } from '../../store/stage';
+import { getCreatorCurrentItemConfig, getDebug, getItemGap, getItemRotationAngle, getModeValue, getOnCreatorEnd, getOnCreatorMove, getOnCreatorStart } from '../../state';
 import { calculateDistance, calculateRotationAngle, degToRad, getRotatedRectPoints, nearestAngle } from '../calc';
 import { stageToWindow } from '../calc/utils';
 import { createItem } from './items';

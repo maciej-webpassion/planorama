@@ -6,16 +6,10 @@ import { Stage } from 'konva/lib/Stage';
 import { Util } from 'konva/lib/Util';
 
 import {
-    BACKGROUND_LAYER_NAME, BACKGROUND_NAME, ITEM_NAME, ITEMS_LAYER_NAME, SELECTION_GROUP_NAME, STAGE_NAME, TRANSFORMER_NAME,
-    TRANSFORMER_OBJECT_NAMES, TRANSFORMER_PADDING
+    BACKGROUND_LAYER_NAME, BACKGROUND_NAME, ITEM_NAME, ITEMS_LAYER_NAME, SELECTION_GROUP_NAME, STAGE_NAME, TRANSFORMER_NAME, TRANSFORMER_OBJECT_NAMES, TRANSFORMER_PADDING
 } from '../../config/constants';
 import { DEFAULT_TRANSFORM_PERFORMANCE_ITEMS_LIMIT } from '../../config/defaults';
-import { getDebug } from '../../store/debug';
-import { on } from '../../store/event-bus';
-import { getOnSelectItems } from '../../store/item';
-import { SpreadByOpts } from '../../store/select';
-import { getOnTransformChange, getOnTransformStart } from '../../store/select/index';
-import { getModeValue } from '../../store/stage';
+import { getDebug, getModeValue, getOnSelectItems, getOnTransformChange, getOnTransformStart, on, SpreadByOpts } from '../../state';
 import { alignItemsInCols } from '../calc/select/align-cols-rows';
 import { alignItemsX } from '../calc/select/align-x';
 import { alignItemsY } from '../calc/select/align-y';

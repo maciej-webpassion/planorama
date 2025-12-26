@@ -1,7 +1,7 @@
 import './style.css';
 
 import { exportAllItems } from '../core/services/calc/utils/items.ts';
-import { RotationMode } from '../core/store/select/index.ts';
+import { RotationMode } from '../core/state/selection-state.ts';
 import { setStage } from '../lib/index.ts';
 import { getTranslateForRotation } from './calc.ts';
 import { BACKGROUND_CONFIG, ITEMS_CONFIG } from './config.ts';

@@ -6,7 +6,7 @@ import { Stage } from 'konva/lib/Stage';
 import { orderBy } from 'lodash-es';
 
 import { DEFAULT_TRANSFORM_PERFORMANCE_ITEMS_LIMIT, TRANSFORM_ANIMATION_SETTINGS } from '../../../config/defaults';
-import { getDebug } from '../../../store/debug';
+import { getDebug } from '../../../state';
 import { moveSelectedItemsToTransformer } from '../../items/selector';
 import { resetGroupTransforms, setTransformTween } from './common';
 
