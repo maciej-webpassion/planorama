@@ -116,8 +116,8 @@ function onTransformStart(data: any) {
 const {
   stage,
   setStageMode,
-  setStagePosition,
-  setStageScale,
+  // setStagePosition,
+  // setStageScale,
   setXAlignment,
   setYAlignment,
   setAlignmentInCols,

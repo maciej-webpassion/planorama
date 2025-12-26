@@ -1,6 +1,11 @@
-import { Group } from 'konva/lib/Group';
+
 
 import { Signal, signal } from '@preact/signals-core';
+
+import {
+    DEFAULT_HORIZONTAL_ALIGNMENT, DEFAULT_ITEM_COLUMNS, DEFAULT_ITEM_CORNER_RADIUS, DEFAULT_ITEM_GAP, DEFAULT_ITEM_LABEL_FONT_FAMILY, DEFAULT_ITEM_ROTATION_ANGLE,
+    DEFAULT_VERTICAL_ALIGNMENT
+} from '../../config/defaults';
 
 import type {
   ItemBackgroundColorConfig,
@@ -11,14 +16,15 @@ import type {
 } from '../../../lib/types';
 
 export type { ItemBackgroundColorConfig, ItemConfig, ItemLabelConfig, ItemUpdatePayload, PlanoramaItem };
-
-export const DEFAULT_ITEM_GAP = 10;
-export const DEFAULT_ITEM_COLUMNS = 3;
-const DEFAULT_ITEM_ROTATION_ANGLE = 0;
-export const DEFAULT_VERTICAL_ALIGNMENT = 50;
-export const DEFAULT_HORIZONTAL_ALIGNMENT = 50;
-export const DEFAULT_ITEM_LABEL_FONT_FAMILY = 'Arial';
-export const DEFAULT_ITEM_CORNER_RADIUS = 8;
+export {
+  DEFAULT_HORIZONTAL_ALIGNMENT,
+  DEFAULT_ITEM_COLUMNS,
+  DEFAULT_ITEM_CORNER_RADIUS,
+  DEFAULT_ITEM_GAP,
+  DEFAULT_ITEM_LABEL_FONT_FAMILY,
+  DEFAULT_ITEM_ROTATION_ANGLE,
+  DEFAULT_VERTICAL_ALIGNMENT,
+};
 
 export const itemGap: Signal<number> = signal(DEFAULT_ITEM_GAP);
 export const itemColumns: Signal<number> = signal(DEFAULT_ITEM_COLUMNS);
@@ -26,10 +32,10 @@ export const itemRotationAngle: Signal<number> = signal(DEFAULT_ITEM_ROTATION_AN
 
 export const creatorCurrentItemConfig: Signal<ItemConfig | null> = signal(null);
 export const creatorItems: Signal<ItemConfig[]> = signal([]);
-export const onItemMouseOver: Signal<(item: any) => void> = signal(() => {});
-export const onItemMouseOut: Signal<(item: any) => void> = signal(() => {});
-export const onItemMouseClick: Signal<(item: any) => void> = signal(() => {});
-export const onSelectItems: Signal<(items: Group[]) => void> = signal(() => {});
+export const onItemMouseOver: Signal<(item: PlanoramaItem) => void> = signal(() => {});
+export const onItemMouseOut: Signal<(item: PlanoramaItem) => void> = signal(() => {});
+export const onItemMouseClick: Signal<(item: PlanoramaItem) => void> = signal(() => {});
+export const onSelectItems: Signal<(items: PlanoramaItem[]) => void> = signal(() => {});
 
 export const setItemGap = (value: number) => {
   itemGap.value = value;

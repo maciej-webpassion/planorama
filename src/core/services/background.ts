@@ -2,7 +2,7 @@ import Konva from 'konva';
 import { Layer } from 'konva/lib/Layer';
 import { Stage } from 'konva/lib/Stage';
 
-import { BACKGROUND_LAYER_NAME, BACKGROUND_NAME } from '../config/config.const';
+import { BACKGROUND_LAYER_NAME, BACKGROUND_NAME } from '../config/constants';
 import { getBackgroundConfig } from '../store/background';
 import { getDebug } from '../store/debug';
 

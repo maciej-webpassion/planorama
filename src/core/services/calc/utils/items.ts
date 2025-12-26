@@ -4,20 +4,9 @@ import { Rect } from 'konva/lib/shapes/Rect';
 import { Text } from 'konva/lib/shapes/Text';
 import { Stage } from 'konva/lib/Stage';
 
-import {
-  ITEM_ACTIONS_RECT_NAME,
-  ITEM_BACKGROUND_NAME,
-  ITEM_LABEL_NAME,
-  ITEM_NAME,
-  ITEMS_LAYER_NAME,
-} from '../../../config/config.const';
+import { ITEM_ACTIONS_RECT_NAME, ITEM_BACKGROUND_NAME, ITEM_LABEL_NAME, ITEM_NAME, ITEMS_LAYER_NAME } from '../../../config/constants';
 import { getDebug } from '../../../store/debug';
-import {
-  DEFAULT_HORIZONTAL_ALIGNMENT,
-  DEFAULT_VERTICAL_ALIGNMENT,
-  ItemUpdatePayload,
-  PlanoramaItem,
-} from '../../../store/item';
+import { DEFAULT_HORIZONTAL_ALIGNMENT, DEFAULT_VERTICAL_ALIGNMENT, ItemUpdatePayload, PlanoramaItem } from '../../../store/item';
 import { getCenterOfBoundingBox, stageToWindow } from './';
 
 /**

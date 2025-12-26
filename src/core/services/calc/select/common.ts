@@ -3,7 +3,7 @@ import { Shape, ShapeConfig } from 'konva/lib/Shape';
 import { Transformer } from 'konva/lib/shapes/Transformer';
 import { Tween } from 'konva/lib/Tween';
 
-import { TransformAnimationSettings } from '../../../config/config.const';
+import { TransformAnimationSettings } from '../../../config/defaults';
 import { getDebug } from '../../../store/debug';
 import { getOnTransformEnd } from '../../../store/select';
 import { degToRad, getRotatedRectPoints } from '../../calc';

@@ -1,10 +1,9 @@
 import { Signal, signal } from '@preact/signals-core';
 
+import { DEFAULT_BACKGROUND_SCALE } from '../../config/defaults';
 import type { BackgroundConfig } from '../../../lib/types';
 
 export type { BackgroundConfig };
-
-const DEFAULT_BACKGROUND_SCALE = 1.9;
 
 export const backgroundConfig: Signal<BackgroundConfig | null> = signal(null);
 

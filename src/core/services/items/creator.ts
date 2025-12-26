@@ -5,7 +5,7 @@ import { Rect } from 'konva/lib/shapes/Rect';
 import { Stage } from 'konva/lib/Stage';
 import { Vector2d } from 'konva/lib/types';
 
-import { CREATOR_GROUP_NAME, CREATOR_ITEMS_GROUP_NAME } from '../../config/config.const';
+import { CREATOR_GROUP_NAME, CREATOR_ITEMS_GROUP_NAME } from '../../config/constants';
 import { getOnCreatorEnd, getOnCreatorMove, getOnCreatorStart } from '../../store/creator/index';
 import { getDebug } from '../../store/debug';
 import { getCreatorCurrentItemConfig, getItemGap, getItemRotationAngle } from '../../store/item';

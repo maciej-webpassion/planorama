@@ -4,7 +4,7 @@ import { Vector2d } from 'konva/lib/types';
 
 import { effect } from '@preact/signals-core';
 
-import { STAGE_NAME } from '../config/config.const';
+import { STAGE_NAME } from '../config/constants';
 import { setBackgroundConfig } from '../store/background';
 import { setOnCreatorEnd, setOnCreatorMove, setOnCreatorStart } from '../store/creator/index';
 import { setDebug } from '../store/debug';
