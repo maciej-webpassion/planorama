@@ -6,29 +6,12 @@ import { Rect } from 'konva/lib/shapes/Rect';
 import { Text } from 'konva/lib/shapes/Text';
 import { Stage } from 'konva/lib/Stage';
 
-import {
-  ITEM_ACTIONS_RECT_NAME,
-  ITEM_BACKGROUND_NAME,
-  ITEM_LABEL_NAME,
-  ITEM_NAME,
-  ITEMS_LAYER_NAME,
-  TRANSFORM_LAYER_NAME,
-} from '../../config/config.const';
+import { ITEM_ACTIONS_RECT_NAME, ITEM_BACKGROUND_NAME, ITEM_LABEL_NAME, ITEM_NAME, ITEMS_LAYER_NAME, TRANSFORM_LAYER_NAME } from '../../config/config.const';
 import { getDebug } from '../../store/debug';
 import { on } from '../../store/event-bus';
 import {
-  DEFAULT_HORIZONTAL_ALIGNMENT,
-  DEFAULT_ITEM_CORNER_RADIUS,
-  DEFAULT_ITEM_LABEL_FONT_FAMILY,
-  DEFAULT_VERTICAL_ALIGNMENT,
-  getCreatorItems,
-  getOnItemMouseClick,
-  getOnItemMouseOut,
-  getOnItemMouseOver,
-  ItemBackgroundColorConfig,
-  ItemConfig,
-  ItemUpdatePayload,
-  PlanoramaItem,
+    DEFAULT_HORIZONTAL_ALIGNMENT, DEFAULT_ITEM_CORNER_RADIUS, DEFAULT_ITEM_LABEL_FONT_FAMILY, DEFAULT_VERTICAL_ALIGNMENT, getCreatorItems, getOnItemMouseClick, getOnItemMouseOut,
+    getOnItemMouseOver, ItemBackgroundColorConfig, ItemConfig, ItemLabelConfig, ItemUpdatePayload, PlanoramaItem
 } from '../../store/item';
 import { getModeValue } from '../../store/stage';
 import { exportAllItems, extractItemData } from '../calc/utils/items';
@@ -311,17 +294,26 @@ export function importItems(items: PlanoramaItem[], stage: Stage): void {
         return;
       }
 
-      // Item doesn't exist, create it
-      if (getDebug()) console.log(`Creating new item ${item.id}...`);
-      createItem(item.transform.x, item.transform.y, item.transform.rotation, itemConfig, stage, item.id);
+      // Merge itemConfig with item.itemProps to create complete configuration
+      const mergedConfig: ItemConfig = {
+        ...itemConfig,
+        label: item.itemProps?.label
+          ? ({
+              ...itemConfig.label,
+              ...item.itemProps.label,
+            } as ItemLabelConfig)
+          : itemConfig.label,
+        background: item.itemProps?.background
+          ? ({
+              ...itemConfig.background,
+              ...item.itemProps.background,
+            } as ItemBackgroundColorConfig)
+          : itemConfig.background,
+      };
 
-      // After creating, update with itemProps if they exist
-      if (item.itemProps && (item.itemProps.background || item.itemProps.label)) {
-        // Wait for next tick to ensure item is fully created
-        setTimeout(() => {
-          updateItemById(item.id, item.itemProps, stage);
-        }, 0);
-      }
+      // Item doesn't exist, create it with merged configuration
+      if (getDebug()) console.log(`Creating new item ${item.id}...`);
+      createItem(item.transform.x, item.transform.y, item.transform.rotation, mergedConfig, stage, item.id);
     }
   });
 
