@@ -7,7 +7,7 @@ import { orderBy } from 'lodash-es';
 
 import { DEFAULT_TRANSFORM_PERFORMANCE_ITEMS_LIMIT, TRANSFORM_ANIMATION_SETTINGS } from '../../../config/defaults';
 import { getDebug } from '../../../state';
-import { moveSelectedItemsToTransformer } from '../../items';
+import { moveSelectedItemsToTransformer } from '../selection-manager';
 import { resetGroupTransforms, setTransformTween } from '../transform/common';
 
 /**

@@ -4,18 +4,48 @@ import { Vector2d } from 'konva/lib/types';
 
 import { effect } from '@preact/signals-core';
 
-import { STAGE_NAME } from '../config/constants';
+import { STAGE_NAME } from '../../config/constants';
 import {
-    emit, getItemColumns, getItemGap, getItemRotationAngle, getModeValue, getPositionValue, getScaleValue, getSpreadByOpts, ItemConfig, ItemUpdatePayload, PlanoramaItem,
-    setBackgroundConfig, setCreatorCurrentItemConfig, setCreatorItems, setDebug, setItemColumns, setItemGap, setItemRotationAngle, setModeValue, setOnCreatorEnd, setOnCreatorMove,
-    setOnCreatorStart, setOnItemMouseClick, setOnItemMouseOut, setOnItemMouseOver, setOnSelectItems, setOnTransformChange, setOnTransformEnd, setOnTransformStart, setPositionValue,
-    setScaleValue, setSpreadByOpts, SpreadByOpts, StageMode
-} from '../state';
+  emit,
+  getItemColumns,
+  getItemGap,
+  getItemRotationAngle,
+  getModeValue,
+  getPositionValue,
+  getScaleValue,
+  getSpreadByOpts,
+  ItemConfig,
+  ItemUpdatePayload,
+  PlanoramaItem,
+  setBackgroundConfig,
+  setCreatorCurrentItemConfig,
+  setCreatorItems,
+  setDebug,
+  setItemColumns,
+  setItemGap,
+  setItemRotationAngle,
+  setModeValue,
+  setOnCreatorEnd,
+  setOnCreatorMove,
+  setOnCreatorStart,
+  setOnItemMouseClick,
+  setOnItemMouseOut,
+  setOnItemMouseOver,
+  setOnSelectItems,
+  setOnTransformChange,
+  setOnTransformEnd,
+  setOnTransformStart,
+  setPositionValue,
+  setScaleValue,
+  setSpreadByOpts,
+  SpreadByOpts,
+  StageMode,
+} from '../../state';
+import { setItemsLayer } from '../items';
 import { setBackground } from './background';
-import { setItemsLayer } from './items';
 import { setViewport } from './viewport';
 
-import type { Planorama, PlanoramaConfig } from '../../lib/types';
+import type { Planorama, PlanoramaConfig } from '../../../lib/types';
 let stage: Stage;
 export const setStage = (config: PlanoramaConfig): Planorama => {
   const {

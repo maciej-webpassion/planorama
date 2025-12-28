@@ -5,10 +5,10 @@ import { Vector2d } from 'konva/lib/types';
 
 import { effect } from '@preact/signals-core';
 
-import { ITEM_NAME, ITEMS_LAYER_NAME } from '../config/constants';
-import { emit, getDebug, getPositionValue, getScaleValue, on, setScaleAndPosValue } from '../state';
-import { getCenterOfBoundingBox } from '../utils/transform';
-import { setStageDraggableWithMode } from './stage';
+import { ITEM_NAME, ITEMS_LAYER_NAME } from '../../config/constants';
+import { emit, getDebug, getPositionValue, getScaleValue, on, setScaleAndPosValue } from '../../state';
+import { getCenterOfBoundingBox } from '../../utils/transform';
+import { setStageDraggableWithMode } from './';
 
 let timeout: number;
 let loopActive = false;

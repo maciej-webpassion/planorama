@@ -2,8 +2,8 @@ import Konva from 'konva';
 import { Layer } from 'konva/lib/Layer';
 import { Stage } from 'konva/lib/Stage';
 
-import { BACKGROUND_LAYER_NAME, BACKGROUND_NAME } from '../config/constants';
-import { getBackgroundConfig, getDebug } from '../state';
+import { BACKGROUND_LAYER_NAME, BACKGROUND_NAME } from '../../config/constants';
+import { getBackgroundConfig, getDebug } from '../../state';
 
 export const setBackground = (stage: Stage) => {
   const bgConfig = getBackgroundConfig();
