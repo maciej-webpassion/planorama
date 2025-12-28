@@ -37,6 +37,7 @@ function onItemMouseOut(item: any) {
   console.log('Item mouse out:', item);
   tooltip.classList.remove('visible');
 }
+
 function onItemMouseClick(item: any) {
   console.log('Item mouse click:', item);
   const dialogText = dialog.querySelector<HTMLParagraphElement>('.dialog-text')!;
@@ -50,10 +51,18 @@ function onItemMouseClick(item: any) {
   const itemProps = item.itemProps;
 
   // Populate form inputs from itemProps
+  const hasBackground = itemProps.background != null;
+  const hasLabel = itemProps.label != null;
+
+  // Background fields
   inputBgColor.value = itemProps.background?.backgroundColor ?? '';
   inputStrokeColor.value = itemProps.background?.strokeColor ?? '';
   inputStrokeWidth.value = itemProps.background?.strokeWidth != null ? String(itemProps.background.strokeWidth) : '';
+  inputBgColor.disabled = !hasBackground;
+  inputStrokeColor.disabled = !hasBackground;
+  inputStrokeWidth.disabled = !hasBackground;
 
+  // Label fields
   inputLabelText.value = itemProps.label?.text ?? '';
   inputLabelFontSize.value = itemProps.label?.fontSize != null ? String(itemProps.label.fontSize) : '';
   inputLabelFontFamily.value = itemProps.label?.fontFamily ?? '';
@@ -62,6 +71,12 @@ function onItemMouseClick(item: any) {
     itemProps.label?.verticalAlignment != null ? String(itemProps.label.verticalAlignment) : '';
   inputLabelHorizontalAlign.value =
     itemProps.label?.horizontalAlignment != null ? String(itemProps.label.horizontalAlignment) : '';
+  inputLabelText.disabled = !hasLabel;
+  inputLabelFontSize.disabled = !hasLabel;
+  inputLabelFontFamily.disabled = !hasLabel;
+  inputLabelColor.disabled = !hasLabel;
+  inputLabelVerticalAlign.disabled = !hasLabel;
+  inputLabelHorizontalAlign.disabled = !hasLabel;
 
   dialog.showModal();
 }
@@ -376,10 +391,17 @@ transformerOpts.addEventListener('click', (ev) => {
 
     console.log(itemProps);
 
+    const hasBackground = itemProps.background != null;
+    const hasLabel = itemProps.label != null;
+
     // Populate form with single item data
     inputBgColor.value = itemProps.background?.backgroundColor ?? '';
     inputStrokeColor.value = itemProps.background?.strokeColor ?? '';
     inputStrokeWidth.value = itemProps.background?.strokeWidth != null ? String(itemProps.background.strokeWidth) : '';
+    inputBgColor.disabled = !hasBackground;
+    inputStrokeColor.disabled = !hasBackground;
+    inputStrokeWidth.disabled = !hasBackground;
+
     inputLabelText.value = itemProps.label?.text ?? '';
     inputLabelFontSize.value = itemProps.label?.fontSize != null ? String(itemProps.label.fontSize) : '';
     inputLabelFontFamily.value = itemProps.label?.fontFamily ?? '';
@@ -388,6 +410,12 @@ transformerOpts.addEventListener('click', (ev) => {
       itemProps.label?.verticalAlignment != null ? String(itemProps.label.verticalAlignment) : '';
     inputLabelHorizontalAlign.value =
       itemProps.label?.horizontalAlignment != null ? String(itemProps.label.horizontalAlignment) : '';
+    inputLabelText.disabled = !hasLabel;
+    inputLabelFontSize.disabled = !hasLabel;
+    inputLabelFontFamily.disabled = !hasLabel;
+    inputLabelColor.disabled = !hasLabel;
+    inputLabelVerticalAlign.disabled = !hasLabel;
+    inputLabelHorizontalAlign.disabled = !hasLabel;
 
     if (selectedItems.length === 1) {
       dialogText.innerText = `Selected item: ${selectedItems[0].type} (Id: ${selectedItems[0].id})`;
