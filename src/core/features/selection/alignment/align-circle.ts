@@ -92,7 +92,7 @@ export function spreadItemsByCircle(spreadOpts: SpreadByOpts, tr: Transformer, i
     const y = clone.y();
     let rotation = clone.rotation();
 
-    if (rotation === normalizeAngle(shape.rotation())) {
+    if (normalizeAngle(rotation) === normalizeAngle(shape.rotation())) {
       rotation = shape.rotation();
     }
 

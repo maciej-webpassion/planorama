@@ -82,12 +82,12 @@ function onItemMouseClick(item: any) {
 }
 
 function onItemsSelected(items: PlanoramaItem[]) {
-  console.log('Items selected:', items);
+  // console.log('Items selected:', items);
   selectedItems = items;
 }
 
 function onCreatorStart(data: any) {
-  console.log('Creator started:', data);
+  // console.log('Creator started:', data);
   tooltip.classList.add('visible');
 }
 
@@ -102,12 +102,12 @@ function onCreatorMove(data: any) {
 }
 
 function onCreatorEnd(data: any) {
-  console.log('Creator ended:', data);
+  // console.log('Creator ended:', data);
   tooltip.classList.remove('visible');
 }
 
 function onTransformChange(data: any) {
-  console.log('Transform changed:', data);
+  // console.log('Transform changed:', data);
   transformerOpts.style.left = data.rectPoints.topRight.x + 'px';
   transformerOpts.style.top = data.rectPoints.topRight.y + 'px';
   transformerOpts.innerText = `${data.rotation.toFixed(2)}°`;
@@ -115,12 +115,12 @@ function onTransformChange(data: any) {
 }
 
 function onTransformEnd(data: any) {
-  console.log('Transform ended:', data);
+  // console.log('Transform ended:', data);
   transformerOpts.classList.remove('visible');
 }
 
 function onTransformStart(data: any) {
-  console.log('Transform started:', data);
+  // console.log('Transform started:', data);
   transformerOpts.classList.add('visible');
   transformerOpts.style.left = data.rectPoints.topRight.x + 'px';
   transformerOpts.style.top = data.rectPoints.topRight.y + 'px';
