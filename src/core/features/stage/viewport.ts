@@ -33,7 +33,7 @@ export const setViewport = (stage: Stage, stageContainer: HTMLDivElement): void 
 
       getScaleValue();
       getPositionValue();
-      timeout = setTimeout(() => {
+      timeout = window.setTimeout(() => {
         loopActive = false;
       }, TIMEOUT_VALUE);
     });
