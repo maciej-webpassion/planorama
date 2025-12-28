@@ -1,4 +1,4 @@
-export { setStage } from '../core/services/stage';
+export { setStage } from '../core/features/stage';
 
 export type {
   Vector2d,

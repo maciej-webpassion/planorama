@@ -5,8 +5,8 @@ import { Tween } from 'konva/lib/Tween';
 
 import { TransformAnimationSettings } from '../../../config/defaults';
 import { getDebug, getOnTransformEnd } from '../../../state';
-import { degToRad, getRotatedRectPoints } from '../../calc';
-import { transformerToWindow } from '../utils';
+import { degToRad, getRotatedRectPoints } from '../../../utils/transform';
+import { transformerToWindow } from '../../../utils/window';
 
 export function resetGroupTransforms(group: Group, tr: Transformer) {
   const onTransformEnd = getOnTransformEnd();

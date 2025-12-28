@@ -1,3 +1,20 @@
+import { IRect, Vector2d } from 'konva/lib/types';
+
+/**
+ * Get the center point of a bounding box.
+ * @param boundingBox IRect | undefined
+ * @returns Vector2d center point
+ */
+export function getCenterOfBoundingBox(boundingBox: IRect | undefined): Vector2d {
+  if (!boundingBox) {
+    return { x: 0, y: 0 };
+  }
+  return {
+    x: boundingBox.x + boundingBox.width / 2,
+    y: boundingBox.y + boundingBox.height / 2,
+  };
+}
+
 const ANGLE_JUMP = 5;
 
 /**

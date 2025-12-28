@@ -6,7 +6,7 @@ import { Transformer } from 'konva/lib/shapes/Transformer';
 import { Stage } from 'konva/lib/Stage';
 
 import { DEFAULT_TRANSFORM_PERFORMANCE_ITEMS_LIMIT, TRANSFORM_ANIMATION_SETTINGS } from '../../../config/defaults';
-import { moveSelectedItemsToTransformer } from '../../items/selector';
+import { moveSelectedItemsToTransformer } from '../selection-manager';
 import { resetGroupTransforms, setTransformTween } from './common';
 
 /**

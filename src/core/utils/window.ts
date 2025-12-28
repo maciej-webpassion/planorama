@@ -1,5 +1,5 @@
 import { Stage } from 'konva/lib/Stage';
-import { IRect, Vector2d } from 'konva/lib/types';
+import { Vector2d } from 'konva/lib/types';
 
 /**
  * Converts a point from stage coordinates to window coordinates.
@@ -19,21 +19,6 @@ export function stageToWindow(stage: Stage, konvaPoint: Vector2d, omitScale = fa
   return {
     x: rect.left + (konvaPoint.x * scaleX + pos.x),
     y: rect.top + (konvaPoint.y * scaleY + pos.y),
-  };
-}
-
-/**
- * Get the center point of a bounding box.
- * @param boundingBox IRect | undefined
- * @returns Vector2d center point
- */
-export function getCenterOfBoundingBox(boundingBox: IRect | undefined): Vector2d {
-  if (!boundingBox) {
-    return { x: 0, y: 0 };
-  }
-  return {
-    x: boundingBox.x + boundingBox.width / 2,
-    y: boundingBox.y + boundingBox.height / 2,
   };
 }
 

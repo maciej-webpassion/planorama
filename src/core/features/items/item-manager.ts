@@ -6,14 +6,35 @@ import { Rect } from 'konva/lib/shapes/Rect';
 import { Text } from 'konva/lib/shapes/Text';
 import { Stage } from 'konva/lib/Stage';
 
-import { ITEM_ACTIONS_RECT_NAME, ITEM_BACKGROUND_NAME, ITEM_LABEL_NAME, ITEM_NAME, ITEMS_LAYER_NAME, TRANSFORM_LAYER_NAME } from '../../config/constants';
 import {
-    DEFAULT_HORIZONTAL_ALIGNMENT, DEFAULT_ITEM_CORNER_RADIUS, DEFAULT_ITEM_LABEL_FONT_FAMILY, DEFAULT_VERTICAL_ALIGNMENT, getCreatorItems, getDebug, getModeValue,
-    getOnItemMouseClick, getOnItemMouseOut, getOnItemMouseOver, ItemBackgroundColorConfig, ItemConfig, ItemLabelConfig, ItemUpdatePayload, on, PlanoramaItem
+  ITEM_ACTIONS_RECT_NAME,
+  ITEM_BACKGROUND_NAME,
+  ITEM_LABEL_NAME,
+  ITEM_NAME,
+  ITEMS_LAYER_NAME,
+  TRANSFORM_LAYER_NAME,
+} from '../../config/constants';
+import {
+  DEFAULT_HORIZONTAL_ALIGNMENT,
+  DEFAULT_ITEM_CORNER_RADIUS,
+  DEFAULT_ITEM_LABEL_FONT_FAMILY,
+  DEFAULT_VERTICAL_ALIGNMENT,
+  getCreatorItems,
+  getDebug,
+  getModeValue,
+  getOnItemMouseClick,
+  getOnItemMouseOut,
+  getOnItemMouseOver,
+  ItemBackgroundColorConfig,
+  ItemConfig,
+  ItemLabelConfig,
+  ItemUpdatePayload,
+  on,
+  PlanoramaItem,
 } from '../../state';
-import { exportAllItems, extractItemData } from '../calc/utils/items';
-import { setCreator } from './creator';
-import { setSelector } from './selector';
+import { exportAllItems, extractItemData } from '../../utils/items';
+import { setSelector } from '../selection/selection-manager';
+import { setCreator } from './item-creator';
 
 type MouseEventCallbackFn = (data: PlanoramaItem) => void;
 type MouseOverActionType = 'over' | 'out';

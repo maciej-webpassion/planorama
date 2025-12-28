@@ -6,8 +6,8 @@ import { Stage } from 'konva/lib/Stage';
 import { orderBy } from 'lodash-es';
 
 import { DEFAULT_TRANSFORM_PERFORMANCE_ITEMS_LIMIT, TRANSFORM_ANIMATION_SETTINGS } from '../../../config/defaults';
-import { moveSelectedItemsToTransformer } from '../../items/selector';
-import { resetGroupTransforms, setTransformTween } from './common';
+import { moveSelectedItemsToTransformer } from '../../items';
+import { resetGroupTransforms, setTransformTween } from '../transform/common';
 
 /**
  * Align items in columns and rows

@@ -6,17 +6,33 @@ import { Stage } from 'konva/lib/Stage';
 import { Util } from 'konva/lib/Util';
 
 import {
-    BACKGROUND_LAYER_NAME, BACKGROUND_NAME, ITEM_NAME, ITEMS_LAYER_NAME, SELECTION_GROUP_NAME, STAGE_NAME, TRANSFORMER_NAME, TRANSFORMER_OBJECT_NAMES, TRANSFORMER_PADDING
+  BACKGROUND_LAYER_NAME,
+  BACKGROUND_NAME,
+  ITEM_NAME,
+  ITEMS_LAYER_NAME,
+  SELECTION_GROUP_NAME,
+  STAGE_NAME,
+  TRANSFORMER_NAME,
+  TRANSFORMER_OBJECT_NAMES,
+  TRANSFORMER_PADDING,
 } from '../../config/constants';
 import { DEFAULT_TRANSFORM_PERFORMANCE_ITEMS_LIMIT } from '../../config/defaults';
-import { getDebug, getModeValue, getOnSelectItems, getOnTransformChange, getOnTransformStart, on, SpreadByOpts } from '../../state';
-import { alignItemsInCols } from '../calc/select/align-cols-rows';
-import { alignItemsX } from '../calc/select/align-x';
-import { alignItemsY } from '../calc/select/align-y';
-import { spreadItemsByCircle } from '../calc/select/circle-spread';
-import { getTransformerState, resetGroupTransforms } from '../calc/select/common';
-import { rotateItems } from '../calc/select/rotate-items';
-import { extractItem } from '../calc/utils/items';
+import {
+  getDebug,
+  getModeValue,
+  getOnSelectItems,
+  getOnTransformChange,
+  getOnTransformStart,
+  on,
+  SpreadByOpts,
+} from '../../state';
+import { extractItem } from '../../utils/items';
+import { spreadItemsByCircle } from './alignment/align-circle';
+import { alignItemsInCols } from './alignment/align-grid';
+import { alignItemsX } from './alignment/align-x';
+import { alignItemsY } from './alignment/align-y';
+import { getTransformerState, resetGroupTransforms } from './transform/common';
+import { rotateItems } from './transform/rotate';
 
 const STAGE_OBJECT_NAMES = [BACKGROUND_LAYER_NAME, STAGE_NAME, BACKGROUND_NAME];
 

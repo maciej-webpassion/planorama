@@ -7,9 +7,9 @@ import { Vector2d } from 'konva/lib/types';
 
 import { CREATOR_GROUP_NAME, CREATOR_ITEMS_GROUP_NAME } from '../../config/constants';
 import { getCreatorCurrentItemConfig, getDebug, getItemGap, getItemRotationAngle, getModeValue, getOnCreatorEnd, getOnCreatorMove, getOnCreatorStart } from '../../state';
-import { calculateDistance, calculateRotationAngle, degToRad, getRotatedRectPoints, nearestAngle } from '../calc';
-import { stageToWindow } from '../calc/utils';
-import { createItem } from './items';
+import { calculateDistance, calculateRotationAngle, degToRad, getRotatedRectPoints, nearestAngle } from '../../utils/transform';
+import { stageToWindow } from '../../utils/window';
+import { createItem } from './item-manager';
 
 export const setCreator = (layer: Layer, stage: Stage) => {
   let GAP = getItemGap();

@@ -7,7 +7,7 @@ import { effect } from '@preact/signals-core';
 
 import { ITEM_NAME, ITEMS_LAYER_NAME } from '../config/constants';
 import { emit, getDebug, getPositionValue, getScaleValue, on, setScaleAndPosValue } from '../state';
-import { getCenterOfBoundingBox } from './calc/utils';
+import { getCenterOfBoundingBox } from '../utils/transform';
 import { setStageDraggableWithMode } from './stage';
 
 let timeout: number;

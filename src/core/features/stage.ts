@@ -12,7 +12,7 @@ import {
     setScaleValue, setSpreadByOpts, SpreadByOpts, StageMode
 } from '../state';
 import { setBackground } from './background';
-import { setItemsLayer } from './items/items';
+import { setItemsLayer } from './items';
 import { setViewport } from './viewport';
 
 import type { Planorama, PlanoramaConfig } from '../../lib/types';
