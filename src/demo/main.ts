@@ -43,6 +43,7 @@ function onItemMouseClick(item: any) {
   const dialogText = dialog.querySelector<HTMLParagraphElement>('.dialog-text')!;
   dialogText.innerText = `You clicked on item Id: ${item.id} Type: ${item.type}`;
   dialog.setAttribute('data-item-id', item.id);
+  btnCenterItem.style.display = 'inline-block';
 
   // Get item config defaults
   // const itemConfig = ITEMS_CONFIG.find((g) => g.name === item.type);
