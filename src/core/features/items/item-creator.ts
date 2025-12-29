@@ -25,7 +25,9 @@ export const setCreator = (layer: Layer, stage: Stage) => {
   let lastPos: Vector2d | null = null;
   let itemWidth = 0;
 
-  if (getDebug()) console.log('CURRENT_ITEM', CURRENT_ITEM);
+  const isDebug = getDebug();
+
+  if (isDebug) console.log('CURRENT_ITEM', CURRENT_ITEM);
 
   stage.on('mousedown touchstart', function () {
     if (getModeValue() !== 'create') return;
@@ -45,7 +47,6 @@ export const setCreator = (layer: Layer, stage: Stage) => {
     lastPos = stage.getRelativePointerPosition();
     if (!lastPos) return;
 
-    lastLine = createHelperLine();
     rect = createCreatorRect(CURRENT_ITEM.height + 10, CURRENT_ITEM.height / 2 + GAP / 2);
 
     group = new Group({
@@ -63,7 +64,11 @@ export const setCreator = (layer: Layer, stage: Stage) => {
       offsetX: -5,
     });
 
-    group.add(lastLine);
+    if (isDebug) {
+      lastLine = createHelperLine();
+      group.add(lastLine);
+    }
+
     group.add(rect);
     group.add(itemsGroup);
     layer.add(group);
@@ -74,13 +79,37 @@ export const setCreator = (layer: Layer, stage: Stage) => {
 
   stage.on('mouseup touchend', function () {
     if (getModeValue() !== 'create') return;
-    itemsGroup.find('Rect').forEach((item) => {
-      const pos = item.getAbsolutePosition(this);
-      const CURRENT_ITEM = getCreatorCurrentItemConfig();
-      if (CURRENT_ITEM) {
-        createItem(pos.x, pos.y, item.getAbsoluteRotation(), CURRENT_ITEM, stage);
+
+    const currentPos = stage.getRelativePointerPosition();
+    const CURRENT_ITEM = getCreatorCurrentItemConfig();
+    // Check if movement was minimal (less than 10 pixels)
+    if (lastPos && currentPos) {
+      const distance = calculateDistance(lastPos.x, lastPos.y, currentPos.x, currentPos.y);
+
+      if (distance < 10) {
+        // Create single item at pointer position
+
+        if (CURRENT_ITEM) {
+          // set center of item to pointer position
+          createItem(
+            currentPos.x - CURRENT_ITEM.width / 2,
+            currentPos.y - CURRENT_ITEM.height / 2,
+            ROTATION,
+            CURRENT_ITEM,
+            stage
+          );
+        }
+      } else {
+        // Create items based on preview
+        itemsGroup.find('Rect').forEach((item) => {
+          const pos = item.getAbsolutePosition(this);
+          if (CURRENT_ITEM) {
+            createItem(pos.x, pos.y, item.getAbsoluteRotation(), CURRENT_ITEM, stage);
+          }
+        });
       }
-    });
+    }
+
     isPaint = false;
     group.destroy();
     itemsGroup.destroy();
@@ -101,6 +130,8 @@ export const setCreator = (layer: Layer, stage: Stage) => {
     // prevent scrolling on touch devices
 
     const pos = stage.getRelativePointerPosition();
+    console.log(pos);
+
     if (!pos || !lastPos) return;
 
     const rotation = nearestAngle(calculateRotationAngle(lastPos.x, lastPos.y, pos.x, pos.y));
@@ -116,7 +147,9 @@ export const setCreator = (layer: Layer, stage: Stage) => {
       }
     }
 
-    lastLine.points([0, 0, width, 0]);
+    if (isDebug) {
+      lastLine.points([0, 0, width, 0]);
+    }
 
     rect.width(width);
     group.rotation(rotation);
