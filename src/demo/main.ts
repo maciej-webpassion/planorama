@@ -2,7 +2,7 @@ import './style.css';
 
 import { RotationMode } from '../core/state/selection-state.ts';
 import { exportAllItems } from '../core/utils/items.ts';
-import { setStage } from '../lib/index.ts';
+import { setPlanorama } from '../lib/index.ts';
 import { getTranslateForRotation } from './calc.ts';
 import { BACKGROUND_CONFIG, ITEMS_CONFIG } from './config.ts';
 
@@ -119,7 +119,6 @@ function onTransformChange(data: any) {
 
 function onTransformEnd(data: any) {
   // console.log('Transform ended:', data);
-
   transformerOpts.classList.remove('visible');
 }
 
@@ -154,7 +153,7 @@ const {
   updateItemById,
   importItems,
   centerOnItems,
-} = setStage({
+} = setPlanorama({
   stageContainer,
   itemsConfig: ITEMS_CONFIG,
   backgroundConfig: BACKGROUND_CONFIG,
