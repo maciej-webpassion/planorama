@@ -1,4 +1,4 @@
-import { Vector2d } from '../lib';
+import type { Vector2d } from 'planorama';
 
 // Keyframe offsets for 0°, 90°, 180°, 270°
 const rotationOffsets: Record<number, Vector2d> = {

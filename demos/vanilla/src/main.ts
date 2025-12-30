@@ -1,12 +1,11 @@
 import './style.css';
 
-import { RotationMode } from '../core/state/selection-state.ts';
-import { exportAllItems } from '../core/utils/items.ts';
-import { setPlanorama } from '../lib/index.ts';
+import { setPlanorama } from 'planorama';
+
 import { getTranslateForRotation } from './calc.ts';
 import { BACKGROUND_CONFIG, ITEMS_CONFIG } from './config.ts';
 
-import type { Vector2d, PlanoramaItem } from '../lib/index.ts';
+import type { Vector2d, PlanoramaItem, RotationMode } from 'planorama';
 const stageContainer = document.querySelector<HTMLDivElement>('#planorama-stage')!;
 function onViewportChange(data: { scale: Vector2d; position: Vector2d }) {
   console.log(data);
@@ -132,7 +131,7 @@ function onTransformStart(data: any) {
 }
 
 const {
-  stage,
+  // stage,
   setStageMode,
   // setStagePosition,
   // setStageScale,
@@ -152,6 +151,7 @@ const {
   centerStageOnObjectById,
   updateItemById,
   importItems,
+  exportAllItems,
   centerOnItems,
 } = setPlanorama({
   stageContainer,
@@ -316,10 +316,12 @@ parkingItemButton.addEventListener('click', () => {
 });
 
 saveButton.addEventListener('click', () => {
-  const items = exportAllItems(stage);
-  localStorage.setItem('planorama-items', JSON.stringify(items));
-  console.log('Items saved to localStorage:', items);
-  alert(`Saved ${items.length} items to localStorage`);
+  discardSelection();
+  exportAllItems((items: PlanoramaItem[]) => {
+    localStorage.setItem('planorama-items', JSON.stringify(items));
+    console.log('Items saved to localStorage:', items);
+    alert(`Saved ${items.length} items to localStorage`);
+  });
 });
 
 // loadButton.addEventListener('click', () => {

@@ -4,6 +4,9 @@
   "version": "0.0.1",
   "description": "2D planning library for creating interactive layouts like parkings, gardens, and playgrounds using Konva.js",
   "type": "module",
+  "workspaces": [
+    "demos/*"
+  ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -34,11 +37,13 @@
     "url": "https://github.com/maciej-webpassion/planorama"
   },
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
+    "dev": "npm run dev:vanilla",
+    "dev:vanilla": "npm run dev -w demos/vanilla",
+    "build": "npm run build:lib",
     "build:lib": "vite build --config vite.config.lib.ts && tsc --project tsconfig.lib.json",
+    "build:demos": "npm run build --workspaces --if-present",
     "prepublishOnly": "npm run test:run && npm run build:lib",
-    "preview": "vite preview",
+    "preview": "npm run preview -w demos/vanilla",
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
