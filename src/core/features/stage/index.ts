@@ -6,11 +6,42 @@ import { effect } from '@preact/signals-core';
 
 import { STAGE_NAME } from '../../config/constants';
 import {
-    emit, getItemColumns, getItemGap, getItemRotationAngle, getModeValue, getPositionValue, getScaleValue, getSpreadByOpts, ItemConfig, ItemUpdatePayload, PlanoramaItem,
-    setBackgroundConfig, setCreatorCurrentItemConfig, setCreatorItems, setDebug, setItemColumns, setItemGap, setItemRotationAngle, setModeValue, setOnCreatorEnd, setOnCreatorMove,
-    setOnCreatorStart, setOnItemMouseClick, setOnItemMouseOut, setOnItemMouseOver, setOnSelectItems, setOnTransformChange, setOnTransformEnd, setOnTransformStart, setPositionValue,
-    setScaleValue, setSpreadByOpts, SpreadByOpts, StageMode
+  emit,
+  getItemColumns,
+  getItemGap,
+  getItemRotationAngle,
+  getModeValue,
+  getPositionValue,
+  getScaleValue,
+  getSpreadByOpts,
+  ItemConfig,
+  ItemUpdatePayload,
+  PlanoramaItem,
+  setBackgroundConfig,
+  setCreatorCurrentItemConfig,
+  setCreatorItems,
+  setDebug,
+  setItemColumns,
+  setItemGap,
+  setItemRotationAngle,
+  setModeValue,
+  setOnCreatorEnd,
+  setOnCreatorMove,
+  setOnCreatorStart,
+  setOnItemMouseClick,
+  setOnItemMouseOut,
+  setOnItemMouseOver,
+  setOnSelectItems,
+  setOnTransformChange,
+  setOnTransformEnd,
+  setOnTransformStart,
+  setPositionValue,
+  setScaleValue,
+  setSpreadByOpts,
+  SpreadByOpts,
+  StageMode,
 } from '../../state';
+import { setCustomConsoleLog } from '../../utils/customConsoleLog';
 import { setItemsLayer } from '../items';
 import { setBackground } from './background';
 import { setViewport } from './viewport';
@@ -36,6 +67,8 @@ export const setPlanorama = (config: PlanoramaConfig): Planorama => {
     onTransformEnd,
     onTransformStart,
   } = config;
+
+  setCustomConsoleLog('Planorama', '', 'success');
 
   onItemMouseOver && setOnItemMouseOver(onItemMouseOver);
   onItemMouseOut && setOnItemMouseOut(onItemMouseOut);
