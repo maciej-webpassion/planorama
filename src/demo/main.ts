@@ -16,15 +16,16 @@ const tooltip = document.querySelector<HTMLDivElement>('#tooltip')!;
 // Track selected items
 let selectedItems: any[] = [];
 
-// var MODE = 'viewport';
+let MODE = 'viewport';
 
 function onViewModeChange(mode: string) {
   console.log('View mode changed to:', mode);
-  // MODE = mode;
+  MODE = mode;
 }
 
 function onItemMouseOver(item: any) {
-  console.log('Item mouse over:', item);
+  // console.log('Item mouse over:', item);
+  if (MODE === 'create') return;
   tooltip.classList.add('visible');
   if (item.itemCenter) {
     tooltip.style.left = item.itemCenter.x + 'px';
@@ -34,12 +35,13 @@ function onItemMouseOver(item: any) {
 }
 
 function onItemMouseOut(item: any) {
-  console.log('Item mouse out:', item);
+  // console.log('Item mouse out:', item);
+  if (MODE === 'create') return;
   tooltip.classList.remove('visible');
 }
 
 function onItemMouseClick(item: any) {
-  console.log('Item mouse click:', item);
+  // console.log('Item mouse click:', item);
   const dialogText = dialog.querySelector<HTMLParagraphElement>('.dialog-text')!;
   dialogText.innerText = `You clicked on item Id: ${item.id} Type: ${item.type}`;
   dialog.setAttribute('data-item-id', item.id);
@@ -88,7 +90,7 @@ function onItemsSelected(items: PlanoramaItem[]) {
 }
 
 function onCreatorStart(data: any) {
-  // console.log('Creator started:', data);
+  console.log('Creator started:', data);
   tooltip.classList.add('visible');
 }
 
@@ -97,13 +99,13 @@ function onCreatorMove(data: any) {
   tooltip.style.left = data.centerRight.x + 'px';
   tooltip.style.top = data.centerRight.y + 'px';
   tooltip.innerText = `Items: (${data.count}), Rotation: ${data.rotation}°`;
-  tooltip.classList.add('visible');
+  // tooltip.classList.add('visible');
   tooltip.style.transform = `translate(0, -50%) rotate(${data.rotation}deg)`;
   tooltip.style.transformOrigin = `center left`;
 }
 
 function onCreatorEnd(data: any) {
-  // console.log('Creator ended:', data);
+  console.log('Creator ended:', data);
   tooltip.classList.remove('visible');
 }
 
@@ -117,6 +119,7 @@ function onTransformChange(data: any) {
 
 function onTransformEnd(data: any) {
   // console.log('Transform ended:', data);
+
   transformerOpts.classList.remove('visible');
 }
 

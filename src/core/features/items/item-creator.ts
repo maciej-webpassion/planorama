@@ -24,6 +24,7 @@ export const setCreator = (layer: Layer, stage: Stage) => {
   let itemsCount = 0;
   let lastPos: Vector2d | null = null;
   let itemWidth = 0;
+  let creatorInitialized = false;
 
   const isDebug = getDebug();
 
@@ -54,6 +55,7 @@ export const setCreator = (layer: Layer, stage: Stage) => {
       y: lastPos.y,
       rotation: 0,
       name: CREATOR_GROUP_NAME,
+      visible: false,
     });
 
     itemsGroup = new Group({
@@ -73,8 +75,7 @@ export const setCreator = (layer: Layer, stage: Stage) => {
     group.add(itemsGroup);
     layer.add(group);
 
-    const onCreatorStart = getOnCreatorStart();
-    onCreatorStart && onCreatorStart(CURRENT_ITEM);
+    creatorInitialized = false;
   });
 
   stage.on('mouseup touchend', function () {
@@ -83,12 +84,11 @@ export const setCreator = (layer: Layer, stage: Stage) => {
     const currentPos = stage.getRelativePointerPosition();
     const CURRENT_ITEM = getCreatorCurrentItemConfig();
     // Check if movement was minimal (less than 10 pixels)
-    if (lastPos && currentPos) {
+    if (lastPos && currentPos && CURRENT_ITEM) {
       const distance = calculateDistance(lastPos.x, lastPos.y, currentPos.x, currentPos.y);
 
-      if (distance < 10) {
+      if (distance < CURRENT_ITEM.width / 2) {
         // Create single item at pointer position
-
         if (CURRENT_ITEM) {
           // set center of item to pointer position
           createItem(
@@ -116,6 +116,7 @@ export const setCreator = (layer: Layer, stage: Stage) => {
 
     const onCreatorEnd = getOnCreatorEnd();
     onCreatorEnd && onCreatorEnd(CURRENT_ITEM);
+    creatorInitialized = false;
   });
 
   // and core function - drawing
@@ -126,14 +127,20 @@ export const setCreator = (layer: Layer, stage: Stage) => {
       return;
     }
     e.evt.preventDefault();
-
-    // prevent scrolling on touch devices
-
     const pos = stage.getRelativePointerPosition();
-    console.log(pos);
 
     if (!pos || !lastPos) return;
 
+    const distance = calculateDistance(lastPos.x, lastPos.y, pos.x, pos.y);
+    if (distance > CURRENT_ITEM.width / 2) {
+      if (!creatorInitialized) {
+        console.log(creatorInitialized);
+        const onCreatorStart = getOnCreatorStart();
+        onCreatorStart && onCreatorStart(CURRENT_ITEM);
+        creatorInitialized = true;
+      }
+      group.visible(true);
+    }
     const rotation = nearestAngle(calculateRotationAngle(lastPos.x, lastPos.y, pos.x, pos.y));
 
     const width = calculateDistance(lastPos.x, lastPos.y, pos.x, pos.y);
