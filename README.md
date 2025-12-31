@@ -17,6 +17,11 @@ Creating your first 2D plan requires just a few steps:
 
 That's it! Planorama handles viewport navigation, item selection, transformations, and all the canvas complexity for you.
 
+## Demo & Live Examples
+
+- 🚀 [**Live Demo**](https://planorama.webpassion.pl/demo/) - Try it out in your browser
+- 💻 [**Stackblitz Demo**](https://stackblitz.com/edit/planorama-demo?file=src%2Fmain.ts) - Explore and edit the code online
+
 ## Table of Contents
 
 - [Installation](#installation)
