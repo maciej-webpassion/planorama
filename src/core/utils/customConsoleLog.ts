@@ -1,6 +1,6 @@
 type CustomLogType = 'info' | 'success' | 'fail';
 export const setCustomConsoleLog = (title: string, content: string, type: CustomLogType) => {
-  const text = `%cv0.0.3%c${title}%c${content}%cMaciej Węgrzynek maciej@webpassion.pl`;
+  const text = `%cv0.0.4%c${title}%c${content}%cMaciej Węgrzynek maciej@webpassion.pl`;
   let contentTextColor = '#33443f';
   let contentBgColor = '#cdd5e3';
 
