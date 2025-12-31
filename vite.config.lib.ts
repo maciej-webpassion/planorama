@@ -14,9 +14,14 @@ export default defineConfig({
     emptyOutDir: true,
     sourcemap: true,
     rollupOptions: {
-      external: ['konva', '@preact/signals-core', 'lodash-es'],
+      external: ['konva', /^konva\/.*/, '@preact/signals-core', 'lodash-es', /^lodash-es\/.*/],
       output: {
         preserveModules: false,
+        globals: {
+          konva: 'Konva',
+          '@preact/signals-core': 'signals',
+          'lodash-es': '_',
+        },
       },
     },
   },
