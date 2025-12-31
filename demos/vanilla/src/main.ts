@@ -1,11 +1,11 @@
 import './style.css';
 
-import { setPlanorama } from 'planorama';
+import { setPlanorama } from '@maciejwegrzynek/planorama';
 
 import { getTranslateForRotation } from './calc.ts';
 import { BACKGROUND_CONFIG, ITEMS_CONFIG } from './config.ts';
 
-import type { Vector2d, PlanoramaItem, RotationMode } from 'planorama';
+import type { Vector2d, PlanoramaItem, RotationMode } from '@maciejwegrzynek/planorama';
 const stageContainer = document.querySelector<HTMLDivElement>('#planorama-stage')!;
 function onViewportChange(data: { scale: Vector2d; position: Vector2d }) {
   console.log(data);

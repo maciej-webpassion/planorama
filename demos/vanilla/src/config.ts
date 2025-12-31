@@ -1,4 +1,4 @@
-import type { BackgroundConfig, ItemConfig } from 'planorama';
+import type { BackgroundConfig, ItemConfig } from '@maciejwegrzynek/planorama';
 
 export const ITEMS_CONFIG: ItemConfig[] = [
   {

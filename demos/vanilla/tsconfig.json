@@ -4,7 +4,7 @@
     "baseUrl": ".",
     "noEmit": true,
     "paths": {
-      "planorama": ["../../src/lib/index.ts"]
+      "@maciejwegrzynek/planorama": ["../../src/lib/index.ts"]
     }
   },
   "include": ["src/**/*.ts"],

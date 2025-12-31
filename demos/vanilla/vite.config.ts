@@ -16,7 +16,7 @@ export default defineConfig({
   plugins: [tailwindcss()],
   resolve: {
     alias: {
-      planorama: resolve(__dirname, '../../src/lib/index.ts'),
+      '@maciejwegrzynek/planorama': resolve(__dirname, '../../src/lib/index.ts'),
     },
   },
 });

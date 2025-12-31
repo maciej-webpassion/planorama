@@ -74,13 +74,13 @@ That's it! Planorama handles viewport navigation, item selection, transformation
 ## Installation
 
 ```bash
-npm install planorama
+npm install @maciejwegrzynek/planorama
 ```
 
 ## Quick Start
 
 ```typescript
-import { setStage } from 'planorama';
+import { setPlanorama } from '@maciejwegrzynek/planorama';
 
 const container = document.querySelector('#planorama-stage')!;
 
@@ -94,7 +94,7 @@ const itemsConfig = [
   },
 ];
 
-const { setStageMode, setCreatorCurrentItem } = setStage({
+const { setStageMode, setCreatorCurrentItem } = setPlanorama({
   stageContainer: container,
   itemsConfig,
   backgroundConfig: {
@@ -122,7 +122,7 @@ setCreatorCurrentItem(itemsConfig[0]);
 
 ### Initialization
 
-#### `setStage(config: PlanoramaConfig): Planorama`
+#### `setPlanorama(config: PlanoramaConfig): Planorama`
 
 Initializes and returns the Planorama instance with all API methods.
 
@@ -145,7 +145,7 @@ const itemsConfig = [
   },
 ];
 
-const planorama = setStage({
+const planorama = setPlanorama({
   stageContainer: document.querySelector('#planorama-stage')!,
   itemsConfig,
   backgroundConfig: {
@@ -846,7 +846,7 @@ Called when the viewport scale or position changes.
 **Example:**
 
 ```typescript
-const planorama = setStage({
+const planorama = setPlanorama({
   stageContainer: container,
   onViewportChange: (data) => {
     console.log('Scale:', data.scale);
@@ -872,7 +872,7 @@ Called when the stage mode changes.
 **Example:**
 
 ```typescript
-const planorama = setStage({
+const planorama = setPlanorama({
   stageContainer: container,
   onViewModeChange: (mode) => {
     console.log('Mode changed to:', mode);
@@ -898,7 +898,7 @@ Called when the mouse hovers over an item.
 **Example:**
 
 ```typescript
-const planorama = setStage({
+const planorama = setPlanorama({
   stageContainer: container,
   onItemMouseOver: (item) => {
     console.log('Hovering over:', item.id, item.type);
@@ -928,7 +928,7 @@ Called when the mouse leaves an item.
 **Example:**
 
 ```typescript
-const planorama = setStage({
+const planorama = setPlanorama({
   stageContainer: container,
   onItemMouseOut: (item) => {
     console.log('Mouse left:', item.id);
@@ -955,7 +955,7 @@ Called when an item is clicked.
 **Example:**
 
 ```typescript
-const { centerStageOnObjectById } = setStage({
+const { centerStageOnObjectById } = setPlanorama({
   stageContainer: container,
   itemsConfig,
   onItemMouseClick: (item) => {
@@ -986,7 +986,7 @@ Called when items are selected or selection changes.
 **Example:**
 
 ```typescript
-const planorama = setStage({
+const planorama = setPlanorama({
   stageContainer: container,
   onItemsSelected: (items) => {
     console.log(`${items.length} items selected`);
@@ -1017,7 +1017,7 @@ Called when item creation starts (mouse down in create mode).
 **Example:**
 
 ```typescript
-const planorama = setStage({
+const planorama = setPlanorama({
   stageContainer: container,
   onCreatorStart: (data) => {
     console.log('Started creating items');
@@ -1046,7 +1046,7 @@ Called continuously as the mouse moves during item creation.
 **Example:**
 
 ```typescript
-const planorama = setStage({
+const planorama = setPlanorama({
   stageContainer: container,
   onCreatorMove: (data) => {
     // Update creation indicator
@@ -1074,7 +1074,7 @@ Called when item creation completes (mouse up in create mode).
 **Example:**
 
 ```typescript
-const planorama = setStage({
+const planorama = setPlanorama({
   stageContainer: container,
   onCreatorEnd: (data) => {
     console.log('Finished creating items');
@@ -1102,7 +1102,7 @@ Called continuously during transformation (rotation, scaling, moving) of selecte
 **Example:**
 
 ```typescript
-const planorama = setStage({
+const planorama = setPlanorama({
   stageContainer: container,
   onTransformChange: (data) => {
     // Show rotation indicator
@@ -1130,7 +1130,7 @@ Called when transformation completes.
 **Example:**
 
 ```typescript
-const planorama = setStage({
+const planorama = setPlanorama({
   stageContainer: container,
   onTransformEnd: (data) => {
     console.log('Transform ended at rotation:', data.rotation);
@@ -1156,7 +1156,7 @@ Called when transformation begins.
 **Example:**
 
 ```typescript
-const planorama = setStage({
+const planorama = setPlanorama({
   stageContainer: container,
   onTransformStart: (data) => {
     console.log('Transform started');
@@ -1390,7 +1390,7 @@ interface PlanoramaConfig {
 
 ### Planorama
 
-Return type of `setStage()` containing all API methods.
+Return type of `setPlanorama()` containing all API methods.
 
 ```typescript
 interface Planorama {
@@ -1427,7 +1427,7 @@ interface Planorama {
 ### Complete Setup
 
 ```typescript
-import { setStage } from 'planorama';
+import { setPlanorama } from '@maciejwegrzynek/planorama';
 
 const container = document.querySelector('#planorama-stage')!;
 
@@ -1448,7 +1448,7 @@ const itemsConfig = [
   },
 ];
 
-const { setGap, setColumns, setRotationAngle } = setStage({
+const { setGap, setColumns, setRotationAngle } = setPlanorama({
   stageContainer: container,
   itemsConfig,
   backgroundConfig: {

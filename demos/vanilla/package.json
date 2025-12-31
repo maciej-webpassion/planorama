@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "planorama": "file:../.."
+    "@maciejwegrzynek/planorama": "file:../.."
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.1.18",
