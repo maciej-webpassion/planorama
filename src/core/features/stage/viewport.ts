@@ -13,7 +13,7 @@ import { setStageDraggableWithMode } from './';
 let timeout: number;
 let loopActive = false;
 let STAGE: Stage;
-const TOUCH_SCALE_ACCELERATION = 0;
+const TOUCH_SCALE_ACCELERATION = 0.2;
 const TIMEOUT_VALUE = 300;
 
 export const setViewport = (stage: Stage, stageContainer: HTMLDivElement): void => {
@@ -129,7 +129,6 @@ function zoomStage(stage: Stage, scaleBy: number) {
     } else {
       factor -= TOUCH_SCALE_ACCELERATION;
     }
-
     return stage.scaleX() * factor;
   }
 
@@ -146,24 +145,24 @@ function zoomStage(stage: Stage, scaleBy: number) {
       // we need to stop it, and implement our own pan logic with two pointers
       stage.draggable(false);
 
+      const rect = stage.container().getBoundingClientRect();
+
       const p1 = {
-        x: touch1.clientX,
-        y: touch1.clientY,
+        x: touch1.clientX - rect.left,
+        y: touch1.clientY - rect.top,
       };
       const p2 = {
-        x: touch2.clientX,
-        y: touch2.clientY,
+        x: touch2.clientX - rect.left,
+        y: touch2.clientY - rect.top,
       };
 
       if (!lastCenter) {
         lastCenter = getCenter(p1, p2);
         return;
       }
-
       const newCenter = getCenter(p1, p2);
-      const dist = getDistance(p1, p2);
 
-      if (getDebug()) console.log(dist);
+      const dist = getDistance(p1, p2);
 
       if (!lastDist) {
         lastDist = dist;
@@ -186,10 +185,10 @@ function zoomStage(stage: Stage, scaleBy: number) {
         y: newCenter.y - pointTo.y * scale + dy,
       };
 
-      setScaleAndPosValue(newPos, { x: scale, y: scale });
-
       lastDist = dist;
       lastCenter = newCenter;
+
+      setScaleAndPosValue(newPos, { x: scale, y: scale });
     }
   });
 
