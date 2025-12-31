@@ -1,7 +1,10 @@
 {
-  "name": "planorama",
+  "name": "@maciejwegrzynek/planorama",
   "private": false,
-  "version": "0.0.1",
+  "version": "0.0.2",
+  "publishConfig": {
+    "access": "public"
+  },
   "description": "2D planning library for creating interactive layouts like parkings, gardens, and playgrounds using Konva.js",
   "type": "module",
   "workspaces": [
@@ -60,6 +63,7 @@
     "jsdom": "^27.4.0",
     "typescript": "~5.8.3",
     "vite": "^7.1.3",
+    "vite-plugin-dts": "^4.5.4",
     "vitest": "^4.0.16"
   },
   "dependencies": {
