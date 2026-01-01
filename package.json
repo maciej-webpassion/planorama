@@ -52,6 +52,7 @@
     "build:demos": "npm run build --workspaces --if-present",
     "prepublishOnly": "npm run test:run && npm run build:lib",
     "preview": "npm run preview -w demos/vanilla",
+    "version:bump": "node scripts/bump-version.js",
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:run": "vitest run",

@@ -21,11 +21,13 @@ That's it! Planorama handles viewport navigation, item selection, transformation
 
 - 🚀 [**Live Demo**](https://planorama.webpassion.pl/demo/) - Try it out in your browser
 - 💻 [**Stackblitz Demo**](https://stackblitz.com/edit/planorama-demo?file=src%2Fmain.ts) - Explore and edit the code online
+- 📦 [**NPM Package**](https://www.npmjs.com/package/@maciejwegrzynek/planorama) - View package details and documentation
 
 ## Table of Contents
 
 - [Installation](#installation)
 - [Quick Start](#quick-start)
+- [Use Cases](#use-cases)
 - [API Reference](#api-reference)
   - [Initialization](#initialization)
   - [Stage Management](#stage-management)
@@ -120,6 +122,120 @@ setStageMode('create');
 // Configure an item to create
 setCreatorCurrentItem(itemsConfig[0]);
 ```
+
+---
+
+## Use Cases
+
+Planorama is designed to handle various 2D planning scenarios where administrators need to create layouts and users need to interact with specific areas or objects. Here are some practical applications:
+
+### Parking Management System
+
+**Admin Role:**
+
+- Create a new parking facility by uploading a floor plan or satellite image as the background
+- Define parking spots by placing spot items on the canvas
+- Add additional elements like entrances, exits, payment kiosks, EV charging stations, and disabled parking zones
+- Configure spot properties (size, type, restrictions, pricing)
+- Organize spots using alignment tools for consistent spacing
+
+**User Role:**
+
+- Browse the interactive parking map
+- View real-time availability of parking spots
+- Click to select and book a specific parking spot
+- See spot details (dimensions, features, distance to entrance)
+- Receive visual confirmation of their reserved spot
+
+### Office Space Planning
+
+**Admin Role:**
+
+- Upload office floor plans as the background layer
+- Place and arrange desks, meeting rooms, and collaborative spaces
+- Add facilities like printers, coffee stations, emergency exits, and restrooms
+- Define hot-desking zones vs. assigned workstations
+- Configure room capacities and equipment lists
+
+**User Role:**
+
+- View the office layout and available desks
+- Book a desk for specific dates (hot-desking)
+- See which colleagues are seated nearby
+- Find meeting rooms and check their availability
+- Navigate to facilities like printers or break rooms
+
+### Event Venue & Seating Management
+
+**Admin Role:**
+
+- Import venue layout (theater, conference hall, stadium)
+- Create seating sections with different categories (VIP, standard, accessible)
+- Place tables for banquet-style events
+- Define stage, entrance, exit, and emergency assembly points
+- Set pricing tiers for different seating areas
+
+**User Role:**
+
+- Browse available seats with interactive venue map
+- Select specific seats based on view preferences
+- Book multiple adjacent seats for groups
+- View seat details (row, number, view angle, accessibility)
+- Receive seat assignment confirmation with visual reference
+
+### Garden & Landscape Design
+
+**Admin Role:**
+
+- Load property survey or satellite imagery as background
+- Place various plant types, trees, and shrubs on the layout
+- Add hardscape elements like paths, patios, water features, and fences
+- Organize plants in rows or circular patterns using alignment tools
+- Annotate with planting zones and maintenance areas
+
+**User Role:**
+
+- Visualize the proposed garden design
+- Select specific plants to view details (species, care requirements, mature size)
+- Provide feedback by highlighting areas for changes
+- Track planting progress by marking completed sections
+- Export the final design for implementation
+
+### Playground & Recreation Area Planning
+
+**Admin Role:**
+
+- Create playground layout with equipment placement
+- Define play zones (toddler area, climbing structures, swings, slides)
+- Add safety elements like soft surfaces, fencing, and benches
+- Mark shaded areas and water fountains
+- Set age-appropriate zones with safety clearances
+
+**User Role:**
+
+- Explore playground features interactively
+- View equipment specifications and age recommendations
+- Report maintenance issues by clicking on specific equipment
+- Plan visits based on available facilities
+- Access accessibility information for inclusive play
+
+### Warehouse & Inventory Management
+
+**Admin Role:**
+
+- Upload warehouse floor plan
+- Define storage zones, shelving units, and pallet positions
+- Create aisles, loading docks, and packing stations
+- Label zones by product category or temperature requirements
+- Configure storage capacity and weight limits
+
+**User Role:**
+
+- Locate specific inventory items on the warehouse map
+- View stock levels by clicking on storage locations
+- Plan picking routes for order fulfillment
+- Update inventory status after stock movements
+- Identify available storage space for new shipments
 
 ---
 
