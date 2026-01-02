@@ -272,6 +272,10 @@ rotationRadius.addEventListener('change', () => {
 
 modeSelector.addEventListener('change', () => {
   setStageMode(modeSelector.value as any);
+  // set default creator item when switching to create mode
+  if (modeSelector.value === 'create') {
+    setCreatorCurrentItem(ITEMS_CONFIG[0]);
+  }
 });
 
 alignXButton.addEventListener('click', () => {
