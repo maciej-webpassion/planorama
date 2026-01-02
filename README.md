@@ -17,6 +17,16 @@ Creating your first 2D plan requires just a few steps:
 
 That's it! Planorama handles viewport navigation, item selection, transformations, and all the canvas complexity for you.
 
+### Three Interaction Modes
+
+Planorama operates in three distinct modes to separate different user interactions:
+
+- **Viewport Mode** - Navigate and explore the canvas by panning and zooming
+- **Select Mode** - Select, move, rotate, and transform existing items
+- **Create Mode** - Place new items on the canvas
+
+You can switch between modes programmatically using `setStageMode()` to control the user experience. See [Use Cases](#use-cases) for practical examples of how these modes work together in real applications.
+
 ## Demo & Live Examples
 
 - 🚀 [**Live Demo**](https://planorama.webpassion.pl/demo/) - Try it out in your browser
