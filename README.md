@@ -118,9 +118,7 @@ const { setStageMode, setCreatorCurrentItem } = setPlanorama({
     src: 'assets/background.svg',
     scale: 1.9,
   },
-  onViewportChange: (data) => {
-    console.log('Viewport changed:', data);
-  },
+  onViewportChange: (data) => {},
   onItemMouseClick: (item) => {
     console.log('Item clicked:', item);
   },
