@@ -1,4 +1,4 @@
-import { Stage } from 'konva/lib/Stage';
+import Konva from 'konva';
 import { Vector2d } from 'konva/lib/types';
 
 import { effect } from '@preact/signals-core';
@@ -46,7 +46,7 @@ import { setBackground } from './background';
 import { setViewport } from './viewport';
 
 import type { Planorama, PlanoramaConfig } from '../../../lib/types';
-let stage: Stage;
+let stage: Konva.Stage;
 export const setPlanorama = (config: PlanoramaConfig): Planorama => {
   const {
     stageContainer,
@@ -140,8 +140,8 @@ export const setPlanorama = (config: PlanoramaConfig): Planorama => {
   };
 };
 
-function createStage(stageContainer: HTMLDivElement): Stage {
-  return new Stage({
+function createStage(stageContainer: HTMLDivElement): Konva.Stage {
+  return new Konva.Stage({
     container: stageContainer,
     width: stageContainer.offsetWidth,
     height: stageContainer.offsetHeight,
@@ -154,7 +154,7 @@ function createStage(stageContainer: HTMLDivElement): Stage {
   });
 }
 
-export function setStageDraggableWithMode(stage: Stage, onViewModeChange?: (mode: StageMode) => void) {
+export function setStageDraggableWithMode(stage: Konva.Stage, onViewModeChange?: (mode: StageMode) => void) {
   const mode = getModeValue();
   onViewModeChange?.(mode);
   stage.draggable(mode === 'viewport' ? true : false);
