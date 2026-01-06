@@ -1,4 +1,3 @@
-import Konva from 'konva';
 import { Group } from 'konva/lib/Group';
 import { Layer } from 'konva/lib/Layer';
 import { Image } from 'konva/lib/shapes/Image';
@@ -56,10 +55,10 @@ const handleMouseClickAction = (e: any, object: Rect, fn: MouseEventCallbackFn) 
 };
 
 export const setItemsLayer = (stage: Stage) => {
-  const itemsLayer = new Konva.Layer({
+  const itemsLayer = new Layer({
     name: ITEMS_LAYER_NAME,
   });
-  const transformLayer = new Konva.Layer({
+  const transformLayer = new Layer({
     name: TRANSFORM_LAYER_NAME,
   });
   stage.add(itemsLayer);
@@ -134,29 +133,35 @@ export const createItem = (
     handleMouseClickAction(e, this, getOnItemMouseClick());
   });
 
-  Image.fromURL(CURRENT_ITEM.src, function (img) {
-    img.setAttrs({
-      x: 0,
-      y: 0,
-      listening: false,
-      perfectDrawEnabled: false,
-      scale: CURRENT_ITEM.scale,
-    });
+  Image.fromURL(
+    CURRENT_ITEM.src,
+    function (img) {
+      img.setAttrs({
+        x: 0,
+        y: 0,
+        listening: false,
+        perfectDrawEnabled: false,
+        scale: CURRENT_ITEM.scale,
+      });
 
-    if (CURRENT_ITEM.background) {
-      const background = createBackgroundRect(CURRENT_ITEM.width, CURRENT_ITEM.height, CURRENT_ITEM.background);
-      group.add(background);
+      if (CURRENT_ITEM.background) {
+        const background = createBackgroundRect(CURRENT_ITEM.width, CURRENT_ITEM.height, CURRENT_ITEM.background);
+        group.add(background);
+      }
+
+      group.add(img);
+
+      if (CURRENT_ITEM.label) {
+        const label = createLabel(CURRENT_ITEM, String(group?._id || ''));
+        group.add(label);
+      }
+
+      group.add(item);
+    },
+    () => {
+      console.error('Failed to load background image from URL:', CURRENT_ITEM.src);
     }
-
-    group.add(img);
-
-    if (CURRENT_ITEM.label) {
-      const label = createLabel(CURRENT_ITEM, String(group?._id || ''));
-      group.add(label);
-    }
-
-    group.add(item);
-  });
+  );
 
   itemsLayer.add(group);
   return itemId;
@@ -167,7 +172,7 @@ function createLabel(config: ItemConfig, groupId: string): Text {
     throw new Error('Label config is missing');
   }
 
-  const label = new Konva.Text({
+  const label = new Text({
     x: calculateLabelXPosition(config.label.horizontalAlignment, config.width),
     y: calculateLabelYPosition(config.label.verticalAlignment, config.height),
     text: config.label?.defaultText || groupId,

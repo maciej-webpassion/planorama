@@ -109,7 +109,7 @@ export function Sidebar({ planorama, isReady, itemsConfig, onCreateMode, current
             type="number"
             label="Gap"
             value={gap}
-            onChange={(e) => setGap(Number(e.target.value))}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setGap(Number(e.target.value))}
             sx={{ mb: 1 }}
           />
           <TextField
@@ -118,8 +118,12 @@ export function Sidebar({ planorama, isReady, itemsConfig, onCreateMode, current
             type="number"
             label="Columns"
             value={cols}
-            onChange={(e) => setCols(Number(e.target.value))}
-            inputProps={{ min: 1 }}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCols(Number(e.target.value))}
+            slotProps={{
+              htmlInput: {
+                min: 1,
+              },
+            }}
             sx={{ mb: 1 }}
           />
           <TextField
@@ -128,7 +132,7 @@ export function Sidebar({ planorama, isReady, itemsConfig, onCreateMode, current
             type="number"
             label="Rotate (degrees)"
             value={rotateAngle}
-            onChange={(e) => setRotateAngle(Number(e.target.value))}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setRotateAngle(Number(e.target.value))}
           />
         </Box>
 
@@ -206,7 +210,7 @@ export function Sidebar({ planorama, isReady, itemsConfig, onCreateMode, current
             type="number"
             label="Radius"
             value={radius}
-            onChange={(e) => setRadius(Number(e.target.value))}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setRadius(Number(e.target.value))}
             slotProps={{
               htmlInput: {
                 min: 0,

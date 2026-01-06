@@ -1,4 +1,3 @@
-import Konva from 'konva';
 import { Stage } from 'konva/lib/Stage';
 import { Vector2d } from 'konva/lib/types';
 
@@ -142,7 +141,7 @@ export const setPlanorama = (config: PlanoramaConfig): Planorama => {
 };
 
 function createStage(stageContainer: HTMLDivElement): Stage {
-  return new Konva.Stage({
+  return new Stage({
     container: stageContainer,
     width: stageContainer.offsetWidth,
     height: stageContainer.offsetHeight,
