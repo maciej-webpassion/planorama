@@ -235,3 +235,132 @@ type PlanoramaEvent = 'existing:events' | 'my:new:event';
 - Reset transforms when moving items between layers
 - Apply animations conditionally based on performance limits
 - Use `TRANSFORM_ANIMATION_SETTINGS` for consistent animation behavior
+
+### Commit message rules:
+
+✅ What makes a good commit message?
+
+A good commit message clearly and briefly explains what was changed and why.
+It should not explain how — that’s visible in the code.
+
+⸻
+
+✅ Best practice: Conventional Commits
+
+Format
+
+<type>(optional-scope): short description
+
+[optional longer explanation]
+
+⸻
+
+1️⃣ Commit types (most common)
+
+Type When to use
+feat new feature
+fix bug fix
+refactor code change without behavior change
+style formatting, CSS, visual changes
+chore tooling, config, maintenance
+test tests
+docs documentation
+perf performance improvements
+build build system / bundler
+ci CI/CD related changes
+
+⸻
+
+2️⃣ TypeScript examples
+
+New feature
+
+feat(auth): add JWT token refresh logic
+
+Bug fix
+
+fix(api): handle 401 response in fetch wrapper
+
+Refactor
+
+refactor(user-service): extract validation logic
+
+Types-only changes
+
+chore(types): tighten UserDTO typings
+
+⸻
+
+3️⃣ HTML / CSS examples
+
+Layout change
+
+style(layout): adjust spacing in header navigation
+
+UI bug fix
+
+fix(ui): prevent button overflow on mobile
+
+New UI component
+
+feat(ui): add modal dialog for delete confirmation
+
+⸻
+
+4️⃣ Scope – when should you use it?
+
+The scope describes the area of the codebase:
+
+feat(auth)
+fix(ui)
+refactor(api)
+style(header)
+
+It helps with:
+• browsing commit history
+• generating changelogs
+• CI and release automation
+
+⸻
+
+5️⃣ Longer description (optional but recommended)
+
+For non-trivial commits:
+
+feat(search): add debounced input handling
+
+- add debounce utility
+- prevent duplicate API calls
+- improve performance on slow devices
+
+⸻
+
+6️⃣ Rules for good commit messages
+
+✔ use present tense (“add”, “fix”, not “added”)
+✔ keep the first line under ~50 characters
+✔ write in English (industry standard)
+✔ one logical change per commit
+❌ avoid: update, fix stuff, changes, wip
+
+⸻
+
+7️⃣ Bad vs good examples
+
+❌ Bad
+
+update files
+fix bug
+changes
+
+✅ Good
+
+fix(form): prevent submit when fields are invalid
+
+⸻
+
+8️⃣ If you want, I can:
+• set up commitlint
+• suggest a simpler style for small/solo projects
+• define a commit policy for CI / releases
+• adapt this for monorepos or frontend-only repos
